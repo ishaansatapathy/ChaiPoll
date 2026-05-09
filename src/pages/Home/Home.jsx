@@ -1,0 +1,127 @@
+import { motion } from "framer-motion";
+import { ArrowRight, BarChart3, MousePointer2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { RoughNotation } from "react-rough-notation";
+import { Navbar } from "../../components/layout/Navbar.jsx";
+import { Button } from "../../components/ui/Button.jsx";
+import { useSpotlight } from "../../hooks/useSpotlight.js";
+import heroImage from "../../../bg-image/ChatGPT Image May 10, 2026, 01_12_17 AM.png";
+
+function Highlight({ children }) {
+  return (
+    <span className="relative inline-block rounded-[2px] border border-white/14 bg-white/[0.015] px-[0.055em] pb-[0.01em]">
+      {["-left-1 -top-1", "-right-1 -top-1", "-bottom-1 -left-1", "-bottom-1 -right-1"].map((pos) => (
+        <span key={pos} className={`absolute ${pos} h-1 w-1 rounded-[1px] border border-white/25 bg-black`} />
+      ))}
+      {children}
+    </span>
+  );
+}
+
+export default function Home() {
+  useSpotlight();
+  const [showCross, setShowCross] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCross(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <main className="relative min-h-screen overflow-hidden bg-ink-950">
+      <div className="fixed inset-0 h-screen w-screen overflow-hidden">
+        <img src={heroImage} alt="" className="h-full w-full object-cover opacity-80 grayscale contrast-110 brightness-75" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_52%,rgba(255,255,255,0.08),rgba(0,0,0,0)_45%)]" />
+        <div className="absolute inset-0 shadow-[inset_70px_0_120px_#020202,inset_-70px_0_120px_#020202,inset_0_100px_130px_#020202,inset_0_-120px_150px_#020202]" />
+      </div>
+      <div
+        className="pointer-events-none fixed inset-0 z-10 bg-black/80 [mask-image:radial-gradient(circle_340px_at_var(--spotlight-x)_var(--spotlight-y),transparent_0%,transparent_34%,rgba(0,0,0,0.35)_55%,#000_100%)]"
+        aria-hidden="true"
+      />
+      <Navbar />
+      <section className="relative z-20 grid min-h-screen place-items-center px-5 pt-20 text-center">
+        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mx-auto max-w-5xl">
+          <p className="mb-8 text-xs font-semibold uppercase tracking-[0.16em] text-white/56">Realtime polling for teams</p>
+          <h1 className="mx-auto max-w-[920px] font-display text-[clamp(3.1rem,6.4vw,5.9rem)] font-normal leading-[0.93] tracking-[-0.045em] text-white">
+            Create <Highlight>Polls</Highlight> That
+            <br />
+            People Want To Answer
+          </h1>
+          <p className="mx-auto mt-10 max-w-2xl text-base leading-8 text-white/62 sm:text-lg">
+            Collect responses without boring people using{" "}
+            <span className="relative inline-block">
+              <RoughNotation
+                type="crossed-off"
+                show={showCross}
+                color="white"
+                strokeWidth={2}
+                padding={[2, 4]}
+              >
+                <span>boring polls</span>
+              </RoughNotation>
+              {showCross && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  transition={{ delay: 2, duration: 0.5, type: "spring" }}
+                  className="absolute -right-24 -top-12 flex flex-col items-start"
+                >
+                  <div className="relative">
+                    <RoughNotation
+                      type="circle"
+                      show={true}
+                      color="white"
+                      strokeWidth={2}
+                      padding={10}
+                      animationDelay={2500}
+                    >
+                      <span className="font-handwriting text-2xl tracking-wide text-white">
+                        ChaiPolls
+                      </span>
+                    </RoughNotation>
+                    
+                    {/* Curly Arrow */}
+                    <svg
+                      className="absolute -bottom-8 -left-10 h-12 w-12 -rotate-[15deg]"
+                      viewBox="0 0 50 50"
+                      fill="none"
+                    >
+                      <motion.path
+                        d="M10 40c5-15 15-25 25-25"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ delay: 2.3, duration: 0.6 }}
+                      />
+                      <motion.path
+                        d="M30 10l5 5l-5 5"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 2.9 }}
+                      />
+                    </svg>
+                  </div>
+                </motion.div>
+              )}
+            </span>.
+          </p>
+          <div className="mt-12 flex flex-wrap justify-center gap-4">
+            <Button to="/create" className="gap-2">Create a poll <ArrowRight size={16} /></Button>
+            <Button to="/dashboard" variant="secondary">View dashboard</Button>
+          </div>
+        </motion.div>
+      </section>
+      <div className="pointer-events-none absolute bottom-8 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-2 text-xs text-white/34 md:flex">
+        <MousePointer2 size={14} />
+        Move cursor to reveal the workspace
+      </div>
+    </main>
+  );
+}
