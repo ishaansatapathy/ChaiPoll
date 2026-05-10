@@ -21,12 +21,12 @@ export function LiveResponseSection() {
               viewport={{ once: true }}
               className="font-display text-6xl md:text-8xl font-normal text-white mb-8"
             >
-              Alive with <br /> 
+              Alive with <br />
               <span className="relative inline-block">
                 <RoughNotation
                   type="underline"
-                  color="white"
-                  strokeWidth={2}
+                  color="#ef4444"
+                  strokeWidth={4}
                   animationDelay={500}
                 >
                   Part
@@ -51,8 +51,8 @@ export function LiveResponseSection() {
               <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ 
-                  opacity: 0.15, 
+                whileInView={{
+                  opacity: 0.15,
                   scale: 1,
                 }}
                 animate={{

@@ -16,8 +16,8 @@ export function TypographySection() {
             <div className="inline-block relative">
               <RoughNotation
                 type="circle"
-                color="white"
-                strokeWidth={1.5}
+                color="#ef4444"
+                strokeWidth={3}
                 padding={40}
                 animationDelay={500}
               >
@@ -27,7 +27,7 @@ export function TypographySection() {
                     <RoughNotation
                       type="underline"
                       color="white"
-                      strokeWidth={1.5}
+                      strokeWidth={2}
                       animationDelay={1500}
                     >
                       participation.
@@ -36,9 +36,9 @@ export function TypographySection() {
                 </h2>
               </RoughNotation>
             </div>
-          
+
             <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] leading-[1] font-normal tracking-[-0.04em] text-white/30">
-              Because nobody likes <br /> 
+              Because nobody likes <br />
               <span className="text-white line-through decoration-white/20">boring surveys.</span>
             </h2>
 

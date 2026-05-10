@@ -103,7 +103,7 @@ export function StickyScrollSection() {
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ 
+                animate={{
                   opacity: activeIndex === index ? 1 : 0,
                   y: activeIndex === index ? 0 : 20,
                   pointerEvents: activeIndex === index ? "auto" : "none"
@@ -125,7 +125,7 @@ export function StickyScrollSection() {
           {/* Right: Preview Window */}
           <div className="relative aspect-square md:aspect-[4/3] w-full">
             <RoughNotationGroup show={true}>
-              <motion.div 
+              <motion.div
                 key={activeIndex}
                 initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
@@ -135,7 +135,7 @@ export function StickyScrollSection() {
                 {slides[activeIndex].preview}
               </motion.div>
             </RoughNotationGroup>
-            
+
             {/* Subtle glass effect border */}
             <div className="absolute inset-0 pointer-events-none rounded-xl border border-white/5 shadow-2xl" />
           </div>
