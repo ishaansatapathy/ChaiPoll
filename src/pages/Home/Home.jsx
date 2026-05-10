@@ -62,7 +62,7 @@ export default function Home() {
               <RoughNotation
                 type="crossed-off"
                 show={showCross}
-                color="white"
+                color="#ef4444"
                 strokeWidth={2}
                 padding={[2, 4]}
               >
@@ -79,7 +79,7 @@ export default function Home() {
                     <RoughNotation
                       type="circle"
                       show={true}
-                      color="white"
+                      color="#ef4444"
                       strokeWidth={2}
                       padding={10}
                       animationDelay={2500}
@@ -97,7 +97,7 @@ export default function Home() {
                     >
                       <motion.path
                         d="M10 40c5-15 15-25 25-25"
-                        stroke="white"
+                        stroke="#ef4444"
                         strokeWidth="2"
                         strokeLinecap="round"
                         initial={{ pathLength: 0 }}
@@ -106,7 +106,7 @@ export default function Home() {
                       />
                       <motion.path
                         d="M30 10l5 5l-5 5"
-                        stroke="white"
+                        stroke="#ef4444"
                         strokeWidth="2"
                         strokeLinecap="round"
                         initial={{ opacity: 0 }}

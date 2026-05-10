@@ -35,8 +35,8 @@ export function WorkflowSection() {
                   that feels like <br />
                   <RoughNotation 
                     type="underline" 
-                    color="white" 
-                    strokeWidth={1.5} 
+                    color="#ef4444" 
+                    strokeWidth={3} 
                     animationDelay={1000}
                   >
                     magic.
@@ -74,8 +74,8 @@ export function WorkflowSection() {
               >
                 <RoughNotation
                   type="circle"
-                  color="white"
-                  strokeWidth={1.5}
+                  color={index === 2 ? "#ef4444" : "white"}
+                  strokeWidth={2}
                   padding={8}
                   animationDelay={index * 200 + 1500}
                 >
