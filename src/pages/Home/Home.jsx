@@ -1,11 +1,16 @@
 import { motion } from "framer-motion";
-import { ArrowRight, BarChart3, MousePointer2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { RoughNotation } from "react-rough-notation";
 import { Navbar } from "../../components/layout/Navbar.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import { useSpotlight } from "../../hooks/useSpotlight.js";
 import heroImage from "../../../bg-image/ChatGPT Image May 10, 2026, 01_12_17 AM.png";
+
+import { WorkflowSection } from "../../components/showcase/WorkflowSection.jsx";
+import { StickyScrollSection } from "../../components/showcase/StickyScrollSection.jsx";
+import { LiveResponseSection } from "../../components/showcase/LiveResponseSection.jsx";
+import { TypographySection } from "../../components/showcase/TypographySection.jsx";
 
 function Highlight({ children }) {
   return (
@@ -30,7 +35,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-ink-950">
+    <main className="relative bg-ink-950">
       <div className="fixed inset-0 h-screen w-screen overflow-hidden">
         <img src={heroImage} alt="" className="h-full w-full object-cover opacity-80 grayscale contrast-110 brightness-75" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_52%,rgba(255,255,255,0.08),rgba(0,0,0,0)_45%)]" />
@@ -41,6 +46,8 @@ export default function Home() {
         aria-hidden="true"
       />
       <Navbar />
+      
+      {/* Hero Section */}
       <section className="relative z-20 grid min-h-screen place-items-center px-5 pt-20 text-center">
         <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mx-auto max-w-5xl">
           <p className="mb-8 text-xs font-semibold uppercase tracking-[0.16em] text-white/56">Realtime polling for teams</p>
@@ -78,7 +85,7 @@ export default function Home() {
                       animationDelay={2500}
                     >
                       <span className="font-handwriting text-2xl tracking-wide text-white">
-                        ChaiPolls
+                        ChaiPoll
                       </span>
                     </RoughNotation>
                     
@@ -118,10 +125,29 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
-      <div className="pointer-events-none absolute bottom-8 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-2 text-xs text-white/34 md:flex">
-        <MousePointer2 size={14} />
-        Move cursor to reveal the workspace
-      </div>
+
+      {/* New Cinematic Sections */}
+      <WorkflowSection />
+      <StickyScrollSection />
+      <LiveResponseSection />
+      <TypographySection />
+
+      {/* Minimal Footer */}
+      <footer className="relative z-20 py-20 px-5 md:px-20 border-t border-white/5">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-10">
+          <div className="flex items-center gap-8">
+            <span className="text-white font-display text-2xl tracking-tighter">ChaiPoll</span>
+            <div className="flex gap-6 text-xs uppercase tracking-widest text-white/30">
+              <a href="#" className="hover:text-white transition-colors">Twitter</a>
+              <a href="#" className="hover:text-white transition-colors">Github</a>
+              <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            </div>
+          </div>
+          <p className="text-[10px] uppercase tracking-widest text-white/20">
+            © 2026 ChaiPoll. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }
