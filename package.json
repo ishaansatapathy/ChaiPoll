@@ -23,6 +23,7 @@
     "react-dom": "^19.2.6",
     "react-rough-notation": "^1.0.8",
     "react-router-dom": "^7.15.0",
+    "reactflow": "^11.11.4",
     "recharts": "^3.8.1",
     "rough-notation": "^0.5.1"
   }
