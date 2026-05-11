@@ -57,7 +57,7 @@ export default function Dashboard() {
     return () => clearTimeout(timer);
   }, [user]);
 
-  const totalVotes = Array.isArray(polls) ? polls.reduce((acc, poll) => acc + (poll.totalVotes || 0), 0) : 0;
+  const totalVotes = Array.isArray(polls) ? polls.reduce((acc, poll) => acc + (poll.totalParticipants || 0), 0) : 0;
   const activePolls = Array.isArray(polls) ? polls.filter(p => p.isActive).length : 0;
   const pollList = Array.isArray(polls) ? polls : [];
 
