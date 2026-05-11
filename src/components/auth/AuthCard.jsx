@@ -4,6 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import SocialButtons from './SocialButtons';
 
+import { RoughNotation } from 'react-rough-notation';
+
 const AuthCard = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const AuthCard = () => {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
+  const [showErrorNotation, setShowErrorNotation] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { login, signup } = useAuth();
@@ -21,12 +24,14 @@ const AuthCard = () => {
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
+    setShowErrorNotation(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setShowErrorNotation(false);
 
     try {
       if (isLogin) {
@@ -39,14 +44,18 @@ const AuthCard = () => {
       }
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Something went wrong');
+      const msg = err.response?.data?.message || err.message || 'Something went wrong';
+      setError(msg);
+      if (msg.toLowerCase().includes('already exists') || msg.toLowerCase().includes('compromised')) {
+        setTimeout(() => setShowErrorNotation(true), 100);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative w-full max-w-[360px] mx-auto bg-[#0c0c0c] border border-white/[0.04] rounded-[1.5rem] p-8 shadow-2xl">
+    <div className="relative w-full max-w-[360px] mx-auto bg-[#0c0c0c] border border-white/[0.04] rounded-[1.5rem] p-8 shadow-2xl overflow-visible">
       <div className="flex items-start justify-between mb-8">
         <h2 className="text-[32px] font-bold text-white tracking-tight leading-[1.1]">
           {isLogin ? (
@@ -58,6 +67,7 @@ const AuthCard = () => {
         
         <div className="flex bg-[#1a1a1a] rounded-[1.2rem] p-1 border border-white/[0.04] mt-1">
           <button
+            type="button"
             onClick={() => setIsLogin(true)}
             className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
               isLogin ? 'bg-[#2a2a2a] text-white shadow-md' : 'text-white/40 hover:text-white/60'
@@ -67,6 +77,7 @@ const AuthCard = () => {
             <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">In</span>
           </button>
           <button
+            type="button"
             onClick={() => setIsLogin(false)}
             className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
               !isLogin ? 'bg-[#2a2a2a] text-white shadow-md' : 'text-white/40 hover:text-white/60'
@@ -136,9 +147,28 @@ const AuthCard = () => {
           />
         )}
 
-        {error && (
-          <p className="text-[11px] text-red-500/80 px-1 italic">{error}</p>
-        )}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="py-2"
+            >
+              <RoughNotation
+                type="underline"
+                show={showErrorNotation}
+                color="#ef4444"
+                strokeWidth={2}
+                padding={2}
+              >
+                <p className="text-[11px] text-red-500 font-bold uppercase tracking-widest italic flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                  {error.includes('already exists') ? 'Identity already compromised.' : error}
+                </p>
+              </RoughNotation>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <button
           disabled={loading}
