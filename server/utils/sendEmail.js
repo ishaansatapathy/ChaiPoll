@@ -2,9 +2,9 @@ import nodemailer from 'nodemailer';
 
 const sendEmail = async (options) => {
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: process.env.SMTP_PORT || 465,
-    secure: true, // true for 465, false for other ports
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Use STARTTLS
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -15,7 +15,7 @@ const sendEmail = async (options) => {
   });
 
   const mailOptions = {
-    from: `"${process.env.FROM_NAME || 'ChaiPoll'}" <${process.env.SMTP_USER}>`,
+    from: `"ChaiPoll Intelligence" <${process.env.SMTP_USER}>`,
     to: options.email,
     subject: options.subject,
     html: options.html,
