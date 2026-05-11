@@ -1,6 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .font-handwriting {
+    font-family: 'Caveat', cursive;
+  }
+  .bg-radial-vignette {
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+  }
+}
 
 :root {
   color-scheme: dark;

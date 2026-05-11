@@ -6,11 +6,15 @@ import "./styles/globals.css";
 
 import { ErrorBoundary } from "./components/utils/ErrorBoundary.jsx";
 
+import { AuthProvider } from "./context/AuthContext.jsx";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </BrowserRouter>
     </ErrorBoundary>
   </React.StrictMode>
