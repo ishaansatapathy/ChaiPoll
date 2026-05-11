@@ -187,19 +187,92 @@ export default function Analytics() {
                 </div>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <AnalyticsCard label="Total Participants" value={poll?.totalParticipants || 0} trend="+12%" icon={Users} showRough={showRough} />
-                <AnalyticsCard label="Sector Sync" value="REALTIME" trend="Active" icon={Activity} showRough={showRough} />
-                <AnalyticsCard label="Mission Status" value={new Date(poll?.expiresAt) > new Date() ? "ACTIVE" : "EXPIRED"} trend="Live" icon={Zap} showRough={showRough} />
-                
-                <div className="relative group overflow-hidden rounded-[32px] border border-[#ef4444]/30 bg-[#ef4444]/5 p-6 flex flex-col justify-between">
-                   <div className="flex justify-between items-start">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">Broadcasting</p>
-                      <Activity className={`${poll?.settings?.isPublished ? "text-emerald-500" : "text-white/20"}`} size={16} />
-                   </div>
-                   <div>
-                      <p className="text-2xl font-display text-white mb-4">{poll?.settings?.isPublished ? "PUBLISHED" : "OFFLINE"}</p>
-                      <button 
+              {/* Tactical Intelligence Console */}
+              <div className="relative group overflow-hidden rounded-[40px] border border-white/5 bg-[#050505]/80 backdrop-blur-3xl p-10 shadow-2xl">
+                {/* Background Tactical Grid & Scanlines */}
+                <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
+                     style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ef4444]/5 to-transparent opacity-10 pointer-events-none animate-scanline" />
+
+                <div className="relative z-10 grid lg:grid-cols-[1.5fr_1fr] gap-12">
+                  
+                  {/* Left Sector: Core Metrics */}
+                  <div className="space-y-12">
+                    <div className="flex items-center gap-4">
+                      <div className="h-2 w-2 rounded-full bg-[#ef4444] shadow-[0_0_15px_#ef4444] animate-pulse" />
+                      <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#ef4444]">Neural Link Active</p>
+                    </div>
+
+                    <div className="flex items-end gap-10">
+                      <div>
+                        <p className="text-[11px] font-black uppercase tracking-[0.4em] text-white/20 mb-6">Total Intercepts</p>
+                        <RoughNotation type="box" show={showRough} color="#ef4444" strokeWidth={3} padding={12}>
+                          <h2 className="text-9xl font-display tracking-tighter text-white leading-none">
+                            {poll?.totalParticipants || 0}
+                          </h2>
+                        </RoughNotation>
+                      </div>
+                      <div className="pb-4 space-y-2">
+                        <div className="flex items-center gap-3">
+                           <TrendingUp size={16} className="text-emerald-500" />
+                           <span className="text-xs font-bold text-emerald-500">+14% Growth</span>
+                        </div>
+                        <p className="text-[9px] font-bold text-white/10 uppercase tracking-widest leading-relaxed">
+                          Participation Velocity <br /> Optimized for Sector 7
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
+                      <div>
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 mb-3">Sector Status</p>
+                        <div className="flex items-center gap-3">
+                          <Zap size={18} className="text-[#ef4444]" />
+                          <span className="text-lg font-display text-white uppercase tracking-wider">
+                            {new Date(poll?.expiresAt) > new Date() ? "Active Deploy" : "Mission Over"}
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 mb-3">Sync Fidelity</p>
+                        <div className="flex items-center gap-3">
+                          <Activity size={18} className="text-emerald-500" />
+                          <span className="text-lg font-display text-white uppercase tracking-wider italic">99.9% Realtime</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Sector: Visualization & Controls */}
+                  <div className="flex flex-col justify-between border-l border-white/5 pl-12 py-4">
+                    <div className="space-y-8">
+                       <div className="flex justify-between items-start">
+                          <div>
+                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 mb-2">Broadcasting</p>
+                            <h3 className="text-2xl font-display text-white">{poll?.settings?.isPublished ? "SIGNAL PUBLIC" : "ENCRYPTED"}</h3>
+                          </div>
+                          <div className={`p-3 rounded-xl border ${poll?.settings?.isPublished ? "bg-emerald-500/10 border-emerald-500/30" : "bg-white/5 border-white/10"}`}>
+                             <Activity className={poll?.settings?.isPublished ? "text-emerald-500" : "text-white/20"} size={20} />
+                          </div>
+                       </div>
+
+                       <div className="h-20 flex items-center justify-center bg-white/[0.02] rounded-2xl border border-white/5 relative overflow-hidden">
+                          {/* Animated Waveform Simulation */}
+                          <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-20">
+                             {[...Array(20)].map((_, i) => (
+                               <motion.div 
+                                 key={i}
+                                 animate={{ height: [10, 40, 10] }}
+                                 transition={{ duration: 1, repeat: Infinity, delay: i * 0.05 }}
+                                 className="w-1 bg-[#ef4444] rounded-full"
+                               />
+                             ))}
+                          </div>
+                          <p className="relative z-10 text-[9px] font-black uppercase tracking-[0.4em] text-white/40">Intercepting Packets...</p>
+                       </div>
+                    </div>
+
+                    <button 
                         onClick={async () => {
                           try {
                             await publishPoll(id);
@@ -207,20 +280,26 @@ export default function Analytics() {
                           } catch (err) { alert("Failed to publish"); }
                         }}
                         disabled={poll?.settings?.isPublished}
-                        className={`w-full py-2.5 rounded-xl text-[10px] font-bold tracking-[0.2em] transition-all ${
+                        className={`w-full py-5 rounded-[22px] text-[10px] font-black tracking-[0.4em] transition-all duration-500 ${
                           poll?.settings?.isPublished 
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 cursor-not-allowed" 
-                          : "bg-[#ef4444] text-white hover:bg-[#ff5555] active:scale-95"
+                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 cursor-not-allowed" 
+                          : "bg-[#ef4444] text-white hover:bg-[#ff5555] shadow-[0_0_30px_rgba(239,68,68,0.2)] active:scale-95"
                         }`}
                       >
-                        {poll?.settings?.isPublished ? "VICTORY SHARED" : "PUBLISH RESULTS"}
-                      </button>
-                   </div>
+                        {poll?.settings?.isPublished ? "MISSION PUBLISHED" : "INITIALIZE BROADCAST"}
+                    </button>
+                  </div>
                 </div>
+
+                {/* Viewfinder Decorative Corner */}
+                <div className="absolute top-8 left-8 w-6 h-6 border-t-2 border-l-2 border-[#ef4444]/30" />
+                <div className="absolute top-8 right-8 w-6 h-6 border-t-2 border-r-2 border-[#ef4444]/30" />
+                <div className="absolute bottom-8 left-8 w-6 h-6 border-b-2 border-l-2 border-[#ef4444]/30" />
+                <div className="absolute bottom-8 right-8 w-6 h-6 border-b-2 border-r-2 border-[#ef4444]/30" />
               </div>
 
               {activeTab === 'charts' ? (
-                <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="space-y-16 animate-in fade-in slide-in-from-bottom-6 duration-700">
                   <h2 className="font-display text-3xl text-white border-l-4 border-[#ef4444] pl-6">Question-wise Intel</h2>
                   <div className="grid gap-10">
                     {poll?.questions.map((q, idx) => (
