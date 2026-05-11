@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import rough from "roughjs/bundled/rough.esm.js";
 
-export default function CinematicLogo({ size = 40, showText = true, className = "" }) {
+export function CinematicLogo({ size = 40, showText = true, className = "" }) {
   const roughLayerRef = useRef(null);
   const ink = "rgba(255,255,255,0.9)";
 
