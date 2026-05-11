@@ -146,6 +146,12 @@ export const getPollAnalytics = async (req, res) => {
       .populate('voterId', 'name email callsign avatar')
       .sort('-createdAt')
       .limit(200);
+
+    // Auto-repair: If totalParticipants mismatch with votes count, fix it
+    if (poll.totalParticipants !== votes.length) {
+      poll.totalParticipants = votes.length;
+      await poll.save();
+    }
     
     res.json({ poll, recentVotes: votes });
   } catch (error) {
