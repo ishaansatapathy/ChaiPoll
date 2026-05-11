@@ -1,7 +1,7 @@
 import Home from "../pages/Home/Home.jsx";
-import Login from "../pages/Login/Login.jsx";
-import Signup from "../pages/Signup/Signup.jsx";
+import Auth from "../pages/Auth/Auth.jsx";
 import Dashboard from "../pages/Dashboard/Dashboard.jsx";
+import Settings from "../pages/Settings/Settings.jsx";
 import CreatePoll from "../pages/CreatePoll/CreatePoll.jsx";
 import PollView from "../pages/PollView/PollView.jsx";
 import Analytics from "../pages/Analytics/Analytics.jsx";
@@ -14,8 +14,9 @@ export const routes = [
     element: <PublicLayout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/login", element: <Login /> },
-      { path: "/signup", element: <Signup /> },
+      { path: "/login", element: <Auth /> },
+      { path: "/signup", element: <Auth /> },
+      { path: "/auth", element: <Auth /> },
       { path: "/poll/:id", element: <PollView /> },
       { path: "/results/:id", element: <Results /> },
     ],
@@ -25,7 +26,9 @@ export const routes = [
     children: [
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/create", element: <CreatePoll /> },
+      { path: "/analytics/global", element: <Analytics /> },
       { path: "/analytics/:id", element: <Analytics /> },
+      { path: "/settings", element: <Settings /> },
     ],
   },
 ];

@@ -1,8 +1,12 @@
 import { useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
 import Lenis from "lenis";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export function PublicLayout() {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -26,6 +30,12 @@ export function PublicLayout() {
       lenis.destroy();
     };
   }, []);
+
+  // If user is already logged in and trying to access auth pages, redirect to dashboard
+  const authPaths = ["/login", "/signup", "/auth"];
+  if (!loading && user && authPaths.includes(location.pathname)) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   return (
     <div className="bg-ink-950">
