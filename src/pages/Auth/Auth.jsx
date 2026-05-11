@@ -108,7 +108,7 @@ const Auth = () => {
         </div>
 
         {/* Right Side: Auth Card */}
-        <div className="relative flex w-[45%] min-w-[500px] flex-col items-center justify-center p-12 bg-gradient-to-l from-black/80 to-transparent border-l border-white/5">
+        <div className="relative flex w-[35%] min-w-[400px] flex-col items-center justify-center p-12 bg-gradient-to-l from-black/80 to-transparent border-l border-white/5">
           <div className="w-full max-w-md">
             <motion.div
               initial={{ opacity: 0, y: 16, scale: 0.98, filter: 'blur(10px)' }}

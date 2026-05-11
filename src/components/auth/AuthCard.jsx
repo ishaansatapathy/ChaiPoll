@@ -65,7 +65,7 @@ const AuthCard = () => {
   };
 
   return (
-    <div className="relative w-full max-w-[360px] mx-auto bg-[#0c0c0c] border border-white/[0.04] rounded-[1.5rem] p-8 shadow-2xl overflow-visible">
+    <div className="relative w-full max-w-[310px] mx-auto bg-[#0c0c0c] border border-white/[0.04] rounded-[1.8rem] p-7 shadow-2xl overflow-visible">
       <div className="flex items-start justify-between mb-8">
         <h2 className="text-[32px] font-bold text-white tracking-tight leading-[1.1]">
           {isLogin ? (
