@@ -57,7 +57,10 @@ export default function Analytics() {
 
   // Fetch detailed data for the selected poll
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setLoading(false);
+      return;
+    }
     
     const fetchData = async () => {
       setLoading(true);
