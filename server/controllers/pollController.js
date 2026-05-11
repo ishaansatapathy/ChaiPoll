@@ -142,7 +142,10 @@ export const getPollAnalytics = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const votes = await Vote.find({ pollId: poll._id }).sort('-createdAt').limit(100);
+    const votes = await Vote.find({ pollId: poll._id })
+      .populate('voterId', 'name email callsign avatar')
+      .sort('-createdAt')
+      .limit(200);
     
     res.json({ poll, recentVotes: votes });
   } catch (error) {

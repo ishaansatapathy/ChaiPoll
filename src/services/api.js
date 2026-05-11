@@ -27,4 +27,7 @@ export const getPollAnalytics = (code) => API.get(`/polls/${code}/analytics`);
 // Vote APIs
 export const submitVote = (voteData) => API.post('/votes', voteData);
 
+// Auth APIs
+export const updateCallsign = (callsign) => API.patch('/auth/update-callsign', { callsign });
+
 export default API;
