@@ -35,7 +35,7 @@ export function PollCard({ poll }) {
           </button>
         </div>
         <div className="mt-6 flex flex-wrap gap-4 text-sm text-white/50">
-          <span className="flex items-center gap-2"><BarChart3 size={15} />{poll.totalVotes || 0} Votes</span>
+          <span className="flex items-center gap-2"><BarChart3 size={15} />{poll.totalParticipants || 0} Votes</span>
           <span className="flex items-center gap-2"><Clock size={15} />{expiryText}</span>
           <span className="flex items-center gap-2"><Eye size={15} className={poll.visibility === 'public' ? 'text-emerald-400' : 'text-amber-400'} />{poll.visibility}</span>
         </div>
