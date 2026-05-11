@@ -221,18 +221,7 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div className="mt-12 pt-8 border-t border-white/5">
-                <div className="flex items-center gap-4">
-                  <div className="flex -space-x-3">
-                    {[1, 2, 3].map(i => (
-                      <div key={i} className="h-8 w-8 rounded-full border-2 border-[#020202] bg-white/10" />
-                    ))}
-                  </div>
-                  <p className="text-[11px] text-white/30 uppercase tracking-widest font-bold">
-                    +1.2k users voting now
-                  </p>
-                </div>
-              </div>
+
               
               <div className="absolute bottom-4 right-8 pointer-events-none">
                  <span className="font-handwriting text-[#ef4444] text-xl opacity-40">Live sync</span>
