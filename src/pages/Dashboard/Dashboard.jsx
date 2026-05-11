@@ -112,19 +112,22 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="flex flex-wrap items-center gap-16 py-10 border-b border-white/5 mb-16">
         {analyticsSummary.map((item, i) => (
           <motion.div 
             key={item.label} 
-            initial={{ opacity: 0, y: 30 }} 
+            initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ delay: 0.2 + i * 0.1, duration: 0.8 }}
+            transition={{ delay: 0.2 + i * 0.15, duration: 0.8 }}
             className="relative"
           >
-            <AnalyticsCard {...item} showRough={showRough} />
-            {i === 1 && (
-               <span className="absolute -bottom-6 right-4 font-handwriting text-[#ef4444] text-lg rotate-2 pointer-events-none">Peak stats.</span>
-            )}
+            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/15 mb-3">{item.label}</p>
+            <div className="flex items-baseline gap-4">
+              <RoughNotation type="underline" show={showRough} color="#ef4444" strokeWidth={2} padding={4} iterations={2}>
+                <span className="font-display text-5xl text-white tracking-tighter leading-none">{item.value}</span>
+              </RoughNotation>
+              <span className="font-handwriting text-lg text-[#ef4444]/50 rotate-[-5deg]">{item.trend}</span>
+            </div>
           </motion.div>
         ))}
       </div>
