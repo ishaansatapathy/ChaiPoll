@@ -27,7 +27,7 @@ export function Sidebar() {
   return (
     <aside className="hidden min-h-screen w-72 border-r border-white/5 bg-[#020202] lg:flex flex-col">
       <div className="p-8 border-b border-white/5">
-        <CinematicLogo size={38} />
+        <CinematicLogo size={48} />
       </div>
 
       <nav className="flex-1 p-6 space-y-1.5">
