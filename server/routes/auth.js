@@ -83,7 +83,8 @@ router.post('/forgot-password', async (req, res) => {
     }
     res.status(200).json({ message: 'Recovery signal dispatched.' });
   } catch (error) {
-    res.status(500).json({ message: 'Signal failure.' });
+    console.error('Email error:', error);
+    res.status(500).json({ message: `Signal failure: ${error.message}` });
   }
 });
 
