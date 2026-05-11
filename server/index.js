@@ -34,22 +34,16 @@ const io = new Server(httpServer, {
 app.set('io', io);
 initializeSockets(io);
 
-// Security Middleware
-app.use(helmet()); // Basic security headers
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://chai-poll.vercel.app'
+  'https://chai-poll.vercel.app',
+  'https://chai-poll.vercel.app/'
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
 // Rate Limiting: Prevent spam
