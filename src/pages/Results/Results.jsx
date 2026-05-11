@@ -6,7 +6,7 @@ import { Navbar } from "../../components/layout/Navbar.jsx";
 import { Badge } from "../../components/ui/Badge.jsx";
 import { Card } from "../../components/ui/Card.jsx";
 import { Button } from "../../components/ui/Button.jsx";
-import { getPollByCode } from "../../services/api.js";
+import { getPollByCode, getPollAnalytics } from "../../services/api.js";
 import { socket } from "../../socket/index.js";
 import { Loader2, Share2, BarChart3, Trophy, Globe, Lock, LayoutGrid, Network, Users, Shield } from "lucide-react";
 import TacticalFlow from "../../components/analytics/TacticalFlow.jsx";
@@ -28,6 +28,7 @@ export default function Results() {
   const [poll, setPoll] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [votes, setVotes] = useState([]);
   const [showRough, setShowRough] = useState(false);
   const [viewMode, setViewMode] = useState("traditional"); // 'traditional' or 'tactical'
 
@@ -39,6 +40,14 @@ export default function Results() {
         const { data } = await getPollByCode(id);
         if (isMounted) {
           setPoll(data);
+          
+          // Fetch votes with voter names for the flowchart
+          try {
+            const analyticsRes = await getPollAnalytics(id);
+            setVotes(analyticsRes.data.recentVotes || []);
+          } catch (e) {
+            // Non-critical: flowchart just won't show voter names
+          }
           
           if (!socket.connected) socket.connect();
           socket.emit("joinPollRoom", id);
@@ -183,7 +192,7 @@ export default function Results() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
             >
-              <TacticalFlow poll={poll} />
+              <TacticalFlow poll={poll} votes={votes} />
             </motion.div>
           )}
         </AnimatePresence>
