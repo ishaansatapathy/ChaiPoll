@@ -24,7 +24,7 @@ const httpServer = createServer(app);
 // Socket.io Setup
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://chai-poll.vercel.app'],
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -36,8 +36,19 @@ initializeSockets(io);
 
 // Security Middleware
 app.use(helmet()); // Basic security headers
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://chai-poll.vercel.app'
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
