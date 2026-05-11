@@ -99,37 +99,42 @@ export default function Analytics() {
         
         {/* Sidebar: Mission Navigator */}
         <aside className="space-y-8">
-           <div className="surface rounded-3xl border border-white/5 bg-white/[0.01] p-6 sticky top-8">
-              <div className="flex items-center gap-3 mb-8 px-2">
-                 <LayoutDashboard className="text-[#ef4444]" size={18} />
-                 <h3 className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-bold">Mission Control</h3>
+           <div className="surface rounded-3xl border border-white/5 bg-[#050505]/50 backdrop-blur-3xl p-6 sticky top-8 shadow-2xl">
+              <div className="flex items-center gap-3 mb-8 px-2 border-b border-white/5 pb-4">
+                 <div className="p-2 rounded-lg bg-[#ef4444]/10 border border-[#ef4444]/20">
+                    <LayoutDashboard className="text-[#ef4444]" size={16} />
+                 </div>
+                 <h3 className="text-[10px] uppercase tracking-[0.4em] text-white/60 font-black">Mission Control</h3>
               </div>
 
-              <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                  {pollListLoading ? (
-                    [1,2,3].map(i => <div key={i} className="h-12 w-full bg-white/5 rounded-xl animate-pulse" />)
+                    [1,2,3].map(i => <div key={i} className="h-16 w-full bg-white/5 rounded-2xl animate-pulse" />)
                  ) : allPolls.map((p) => (
                     <Link 
                        key={p._id}
                        to={`/analytics/${p.pollCode}`}
-                       className={`group block p-4 rounded-2xl border transition-all ${
+                       className={`group block p-5 rounded-2xl border transition-all duration-500 relative overflow-hidden ${
                           id === p.pollCode 
-                          ? "bg-[#ef4444]/10 border-[#ef4444]/30 shadow-[0_0_20px_rgba(239,68,68,0.1)]" 
+                          ? "bg-[#ef4444]/10 border-[#ef4444]/40 shadow-[0_0_30px_rgba(239,68,68,0.15)]" 
                           : "bg-white/[0.02] border-white/5 hover:bg-white/[0.05] hover:border-white/10"
                        }`}
                     >
-                       <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${id === p.pollCode ? "text-[#ef4444]" : "text-white/20"}`}>
-                          {p.pollCode}
+                       {id === p.pollCode && (
+                          <motion.div layoutId="activeMission" className="absolute left-0 top-0 bottom-0 w-1 bg-[#ef4444]" />
+                       )}
+                       <p className={`text-[9px] font-black uppercase tracking-[0.2em] mb-2 ${id === p.pollCode ? "text-[#ef4444]" : "text-white/20"}`}>
+                          SECTOR {p.pollCode}
                        </p>
-                       <h4 className={`text-sm font-medium truncate ${id === p.pollCode ? "text-white" : "text-white/50 group-hover:text-white/80"}`}>
+                       <h4 className={`text-sm font-display tracking-tight truncate ${id === p.pollCode ? "text-white" : "text-white/40 group-hover:text-white/80"}`}>
                           {p.title}
                        </h4>
                     </Link>
                  ))}
               </div>
 
-              <Link to="/create" className="mt-8 flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-white/5 border border-dashed border-white/10 text-[10px] font-bold tracking-widest text-white/40 hover:text-white hover:bg-[#ef4444]/20 hover:border-[#ef4444]/30 transition-all uppercase">
-                 <BarChart2 size={14} /> NEW CAMPAIGN
+              <Link to="/create" className="mt-8 flex items-center justify-center gap-3 w-full py-5 rounded-2xl bg-[#ef4444]/5 border border-dashed border-[#ef4444]/20 text-[10px] font-black tracking-[0.3em] text-[#ef4444] hover:text-white hover:bg-[#ef4444] transition-all uppercase">
+                 <Plus size={14} strokeWidth={3} /> NEW CAMPAIGN
               </Link>
            </div>
         </aside>
@@ -137,40 +142,47 @@ export default function Analytics() {
         {/* Main Content: Intel Sanctum */}
         <div className="space-y-12">
           {!id ? (
-             <div className="h-full flex flex-col items-center justify-center text-center py-20">
-                <div className="mb-8 p-6 rounded-full bg-white/5 border border-white/5">
-                   <Target className="text-white/10" size={64} />
+             <div className="h-full flex flex-col items-center justify-center text-center py-32 border border-dashed border-white/5 rounded-[40px] bg-white/[0.01]">
+                <div className="mb-8 p-8 rounded-full bg-[#ef4444]/5 border border-[#ef4444]/10 relative">
+                   <div className="absolute inset-0 bg-[#ef4444]/10 blur-3xl rounded-full" />
+                   <Target className="text-[#ef4444]/40 relative z-10 animate-pulse" size={80} />
                 </div>
-                <h2 className="font-display text-4xl text-white mb-4">Select a Mission</h2>
-                <p className="text-white/30 max-w-md mx-auto font-handwriting text-xl italic">"The archives are vast, Captain. Choose a sector to begin the tactical analysis."</p>
+                <h2 className="font-display text-5xl text-white mb-4 tracking-tighter">Select a Mission</h2>
+                <p className="text-white/30 max-w-sm mx-auto font-handwriting text-2xl italic leading-relaxed">
+                   "The tactical archives await your command, Captain. Choose a sector to begin."
+                </p>
              </div>
           ) : (
             <>
-              <div className="border-b border-white/5 pb-10 flex flex-wrap items-end justify-between gap-6">
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-bold mb-3">Live Intelligence / {poll?.pollCode}</p>
-                  <h1 className="font-display text-5xl font-normal tracking-tight text-white md:text-7xl">
-                    RESPONSE <span className="text-white/40 italic"><Highlight>Sanctum</Highlight></span>
+              <div className="border-b border-white/5 pb-10 flex flex-wrap items-end justify-between gap-8">
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                  <div className="flex items-center gap-3 mb-4">
+                     <span className="h-[1px] w-8 bg-[#ef4444]" />
+                     <p className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-black">Live Signal / {poll?.pollCode}</p>
+                  </div>
+                  <h1 className="font-display text-6xl font-normal tracking-tighter text-white md:text-8xl">
+                    RESPONSE <span className="text-white/20 italic">HUB</span>
                   </h1>
-                  <div className="mt-4 relative inline-block">
-                     <span className="font-handwriting text-2xl text-[#ef4444] rotate-[-1deg] block">
+                  <div className="mt-6 flex items-center gap-4">
+                     <span className="px-3 py-1 rounded-md bg-[#ef4444]/10 border border-[#ef4444]/20 text-[10px] font-black text-[#ef4444] uppercase tracking-widest">Active Sector</span>
+                     <span className="font-handwriting text-3xl text-white/40 rotate-[-1deg]">
                        {poll?.title}
                      </span>
                   </div>
                 </motion.div>
                 
-                <div className="flex gap-2 p-1 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur-xl">
+                <div className="flex p-1.5 rounded-[22px] bg-[#050505] border border-white/10 backdrop-blur-2xl shadow-2xl">
                    <button 
                       onClick={() => setActiveTab('charts')}
-                      className={`px-6 py-2.5 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all ${activeTab === 'charts' ? "bg-white text-black shadow-lg" : "text-white/40 hover:text-white"}`}
+                      className={`px-8 py-3 rounded-[18px] text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 flex items-center gap-2 ${activeTab === 'charts' ? "bg-[#ef4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]" : "text-white/30 hover:text-white/60"}`}
                    >
-                      Analytics
+                      <BarChart2 size={14} /> Analytics
                    </button>
                    <button 
                       onClick={() => setActiveTab('participants')}
-                      className={`px-6 py-2.5 rounded-xl text-[10px] font-bold tracking-widest uppercase transition-all ${activeTab === 'participants' ? "bg-white text-black shadow-lg" : "text-white/40 hover:text-white"}`}
+                      className={`px-8 py-3 rounded-[18px] text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 flex items-center gap-2 ${activeTab === 'participants' ? "bg-[#ef4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]" : "text-white/30 hover:text-white/60"}`}
                    >
-                      Participants
+                      <Users size={14} /> Participants
                    </button>
                 </div>
               </div>
