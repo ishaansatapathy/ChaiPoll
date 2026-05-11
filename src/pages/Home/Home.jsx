@@ -11,6 +11,7 @@ import { WorkflowSection } from "../../components/showcase/WorkflowSection.jsx";
 import { StickyScrollSection } from "../../components/showcase/StickyScrollSection.jsx";
 import { LiveResponseSection } from "../../components/showcase/LiveResponseSection.jsx";
 import { TypographySection } from "../../components/showcase/TypographySection.jsx";
+import { CinematicLogo } from "../../components/ui/CinematicLogo.jsx";
 
 function Highlight({ children }) {
   return (
@@ -136,7 +137,7 @@ export default function Home() {
       <footer className="relative z-20 py-20 px-5 md:px-20 border-t border-white/5">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="flex items-center gap-8">
-            <span className="text-white font-display text-2xl tracking-tighter">ChaiPoll</span>
+            <CinematicLogo size={28} />
             <div className="flex gap-6 text-xs uppercase tracking-widest text-white/30">
               <a href="#" className="hover:text-white transition-colors">Twitter</a>
               <a href="#" className="hover:text-white transition-colors">Github</a>
