@@ -1,28 +1,26 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY || 're_QRXxmMDi_6zBCqEcuMy9wK1M3ceowNCcj');
 
 const sendEmail = async (options) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      }
-    });
-
-    const mailOptions = {
-      from: `"ChaiPoll Intelligence" <${process.env.SMTP_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: 'ChaiPoll <onboarding@resend.dev>',
       to: options.email,
       subject: options.subject,
       html: options.html,
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Message sent: %s', info.messageId);
-    return info;
-  } catch (error) {
-    console.error('Mail system failure:', error);
-    throw error;
+    if (error) {
+      console.error('Resend API Error:', error);
+      throw new Error(error.message);
+    }
+
+    console.log('Signal sent successfully via Resend:', data.id);
+    return data;
+  } catch (err) {
+    console.error('Nexus Mail Failure:', err);
+    throw err;
   }
 };
 
