@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Clock, ChevronRight } from 'lucide-react';
+import { User, Clock, ChevronRight, Target } from 'lucide-react';
 
 export default function ParticipantList({ votes }) {
   if (!votes || votes.length === 0) {
