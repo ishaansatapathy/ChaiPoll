@@ -206,9 +206,9 @@ export default function TacticalFlow({ poll, votes = [] }) {
             source: oId,
             target: vId,
             style: { 
-              stroke: 'rgba(255,255,255,0.04)', 
-              strokeWidth: 1,
-              strokeDasharray: '4 4',
+              stroke: 'rgba(239, 68, 68, 0.5)', 
+              strokeWidth: 1.5,
+              strokeDasharray: '6 4',
             },
           });
         });
