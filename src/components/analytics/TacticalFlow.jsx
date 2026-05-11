@@ -58,19 +58,22 @@ const OptionNode = React.memo(({ data }) => {
 const VoterNode = React.memo(({ data }) => (
   <div className="px-3 py-2 rounded-lg bg-transparent min-w-[100px]">
     <Handle type="target" position={Position.Left} className="!bg-white/10 !w-1.5 !h-1.5 !border-none" />
-    <RoughNotation
-      type={data.notationType || 'underline'}
-      show={true}
-      color="#ef4444"
-      strokeWidth={1.5}
-      padding={3}
-      iterations={2}
-      animate={true}
-    >
-      <span className="font-handwriting text-base text-white/80 whitespace-nowrap">
+    <div className="flex flex-col items-start">
+      <span className="font-handwriting text-lg text-white/90 whitespace-nowrap mb-1">
         {data.label}
       </span>
-    </RoughNotation>
+      <RoughNotation
+        type="underline"
+        show={true}
+        color="#ef4444"
+        strokeWidth={2}
+        padding={1}
+        iterations={3}
+        animate={true}
+      >
+        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20">Voted</span>
+      </RoughNotation>
+    </div>
     {data.email && (
       <p className="text-[7px] text-white/10 mt-1 tracking-wider font-mono truncate max-w-[120px]">{data.email}</p>
     )}
