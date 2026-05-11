@@ -8,7 +8,7 @@ import { Card } from "../../components/ui/Card.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import { getPollByCode } from "../../services/api.js";
 import { socket } from "../../socket/index.js";
-import { Loader2, Share2, BarChart3, Trophy, Globe, Lock, LayoutGrid, Network } from "lucide-react";
+import { Loader2, Share2, BarChart3, Trophy, Globe, Lock, LayoutGrid, Network, Users, Shield } from "lucide-react";
 import TacticalFlow from "../../components/analytics/TacticalFlow.jsx";
 import SocketStatus from "../../components/analytics/SocketStatus.jsx";
 
