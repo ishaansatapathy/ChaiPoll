@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import rough from "roughjs/bundled/rough.esm.js";
 
-export function CinematicLogo({ size = 48, showText = true, className = "" }) {
+export function CinematicLogo({ size = 56, showText = true, className = "" }) {
   const roughLayerRef = useRef(null);
   const ink = "rgba(255,255,255,0.9)";
 
@@ -29,16 +29,16 @@ export function CinematicLogo({ size = 48, showText = true, className = "" }) {
   }, [size]);
 
   return (
-    <div className={`flex items-center gap-5 ${className}`}>
+    <div className={`flex items-center gap-6 ${className}`}>
       <div style={{ width: size, height: size }} className="relative flex-shrink-0">
-        <div className="pointer-events-none absolute -inset-3 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.12),transparent_70%)] blur-lg" />
+        <div className="pointer-events-none absolute -inset-4 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.14),transparent_70%)] blur-xl" />
         
         <motion.svg
           viewBox="0 0 128 128"
           className="h-full w-full"
           aria-hidden
           style={{
-            filter: "drop-shadow(0 0 12px rgba(255,255,255,0.1))",
+            filter: "drop-shadow(0 0 16px rgba(255,255,255,0.12))",
           }}
         >
           <defs>
@@ -132,18 +132,18 @@ export function CinematicLogo({ size = 48, showText = true, className = "" }) {
       {showText && (
         <div className="flex flex-col">
           <motion.h2 
-            initial={{ opacity: 0, x: -12 }}
+            initial={{ opacity: 0, x: -15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="font-display text-2xl font-medium tracking-tight text-white leading-none flex items-center gap-1.5"
+            className="font-display text-3xl font-normal tracking-tight text-white leading-none flex items-center gap-2"
           >
-            Chai<span className="text-[#ef4444] italic">Poll</span>
+            Chai<span className="text-[#ef4444] italic font-medium">Poll</span>
           </motion.h2>
           <motion.div
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: "100%", opacity: 1 }}
             transition={{ duration: 1, delay: 1.6 }}
-            className="h-[1.5px] bg-gradient-to-r from-[#ef4444] to-transparent mt-1.5 shadow-[0_0_8px_rgba(239,68,68,0.4)]"
+            className="h-[2px] bg-gradient-to-r from-[#ef4444] to-transparent mt-2 shadow-[0_0_12px_rgba(239,68,68,0.5)]"
           />
         </div>
       )}

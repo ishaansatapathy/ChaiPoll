@@ -31,7 +31,7 @@ export function Navbar() {
       >
         {/* Left: Logo */}
         <Link to="/" className="pointer-events-auto transition-opacity hover:opacity-80">
-          <CinematicLogo size={40} />
+          <CinematicLogo size={48} />
         </Link>
 
         {/* Center: Floating Capsule */}
