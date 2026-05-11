@@ -41,7 +41,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: true, // Allow all origins for testing
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
@@ -49,7 +49,7 @@ app.use(cors({
 // Rate Limiting: Prevent spam
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 500, // Increased limit for production testing
   message: { message: 'Too many requests from this IP, please try again after 15 minutes' }
 });
 app.use('/api/', limiter);
