@@ -7,6 +7,7 @@ import { Button } from "../../components/ui/Button.jsx";
 import { Card } from "../../components/ui/Card.jsx";
 import { Input, Textarea } from "../../components/ui/Input.jsx";
 import { createPoll } from "../../services/api.js";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function Highlight({ children }) {
   return (
@@ -20,6 +21,7 @@ function Highlight({ children }) {
 }
 
 export default function CreatePoll() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -93,6 +95,12 @@ export default function CreatePoll() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
     setError("");
     setLoading(true);
 

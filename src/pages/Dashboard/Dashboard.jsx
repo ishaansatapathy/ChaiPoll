@@ -7,6 +7,7 @@ import { AnalyticsCard } from "../../components/dashboard/AnalyticsCard.jsx";
 import { PollCard } from "../../components/poll/PollCard.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import { getMyPolls } from "../../services/api.js";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function Highlight({ children }) {
   return (
@@ -19,18 +20,32 @@ function Highlight({ children }) {
   );
 }
 
+const SAMPLE_POLLS = [
+  { _id: "s1", title: "Global Coffee Preference 2026", totalVotes: 842, isActive: true, visibility: "public", code: "COFFEE", createdAt: new Date().toISOString() },
+  { _id: "s2", title: "Remote Work Neural Sync", totalVotes: 1240, isActive: true, visibility: "private", code: "REMOTE", createdAt: new Date().toISOString() },
+  { _id: "s3", title: "Product Feature Prioritization", totalVotes: 512, isActive: false, visibility: "public", code: "PROD", createdAt: new Date().toISOString() },
+];
+
 export default function Dashboard() {
+  const { user } = useAuth();
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showRough, setShowRough] = useState(false);
 
   useEffect(() => {
     const fetchPolls = async () => {
+      if (!user) {
+        setPolls(SAMPLE_POLLS);
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data } = await getMyPolls();
         setPolls(data);
       } catch (error) {
         console.error("Error fetching polls", error);
+        setPolls(SAMPLE_POLLS); // Fallback to sample on error
       } finally {
         setLoading(false);
       }
@@ -39,16 +54,16 @@ export default function Dashboard() {
     
     const timer = setTimeout(() => setShowRough(true), 800);
     return () => clearTimeout(timer);
-  }, []);
+  }, [user]);
 
   const totalVotes = Array.isArray(polls) ? polls.reduce((acc, poll) => acc + (poll.totalVotes || 0), 0) : 0;
   const activePolls = Array.isArray(polls) ? polls.filter(p => p.isActive).length : 0;
   const pollList = Array.isArray(polls) ? polls : [];
 
   const analyticsSummary = [
-    { label: "Total Polls", value: pollList.length.toString(), icon: BarChart2, trend: "Growth" },
-    { label: "Total Votes", value: totalVotes.toString(), icon: Users, trend: "Viral" },
-    { label: "Active Polls", value: activePolls.toString(), icon: Activity, trend: "Live" },
+    { label: "Total Polls", value: pollList.length.toString(), icon: BarChart2, trend: user ? "Growth" : "Sample" },
+    { label: "Total Votes", value: totalVotes.toLocaleString(), icon: Users, trend: user ? "Viral" : "Mock" },
+    { label: "Active Polls", value: activePolls.toString(), icon: Activity, trend: user ? "Live" : "Preview" },
   ];
 
   return (
@@ -123,6 +138,16 @@ export default function Dashboard() {
             <div className="h-[1px] flex-1 mx-6 bg-white/5" />
           </div>
           
+          {!user && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Preview Mode Active: Displaying Sample Intelligence</p>
+              </div>
+              <Link to="/auth" className="text-[10px] font-bold text-white underline underline-offset-4 uppercase tracking-widest hover:text-[#ef4444] transition-colors">Unlock Full Access</Link>
+            </motion.div>
+          )}
+
           {loading ? (
             <div className="flex flex-col items-center py-20 gap-4 opacity-20">
                <div className="w-12 h-12 border-2 border-white/20 border-t-white rounded-full animate-spin" />
