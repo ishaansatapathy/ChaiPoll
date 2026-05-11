@@ -46,13 +46,13 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 
-// Rate Limiting: Prevent spam
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // Increased limit for production testing
-  message: { message: 'Too many requests from this IP, please try again after 15 minutes' }
-});
-app.use('/api/', limiter);
+// Rate Limiting: Disabled for production testing stabilization
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 500, // Increased limit for production testing
+//   message: { message: 'Too many requests from this IP, please try again after 15 minutes' }
+// });
+// app.use('/api/', limiter);
 
 // Standard Middleware
 app.use(express.json());
