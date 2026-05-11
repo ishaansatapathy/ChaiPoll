@@ -34,25 +34,17 @@ const QuestionNode = React.memo(({ data }) => (
 ));
 
 // === CUSTOM NODE: Option ===
-const OptionNode = React.memo(({ data }) => {
-  const isWinner = data.isWinner;
-  return (
-    <div className={`px-5 py-3 rounded-xl border min-w-[140px] max-w-[180px] ${
-      isWinner 
-        ? 'border-[#ef4444]/30 bg-[#ef4444]/[0.06]' 
-        : 'border-white/5 bg-[#0a0a0a]'
-    }`}>
-      <Handle type="target" position={Position.Left} className="!bg-white/20 !w-2 !h-2 !border-none" />
-      <Handle type="source" position={Position.Right} className="!bg-white/20 !w-1.5 !h-1.5 !border-none" />
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <p className="text-[7px] font-black uppercase tracking-[0.3em] text-white/20">{data.percentage}% freq</p>
-        {isWinner && <span className="text-[7px] text-amber-400 font-black">🏆</span>}
-      </div>
-      <p className={`text-xs font-bold tracking-tight ${isWinner ? 'text-white' : 'text-white/60'}`}>{data.label}</p>
-      <p className="text-[8px] text-white/10 mt-1 font-bold">{data.voteCount} strikes</p>
+const OptionNode = React.memo(({ data }) => (
+  <div className="px-5 py-3 rounded-xl border border-white/5 bg-[#0a0a0a] min-w-[140px] max-w-[180px]">
+    <Handle type="target" position={Position.Left} className="!bg-white/20 !w-2 !h-2 !border-none" />
+    <Handle type="source" position={Position.Right} className="!bg-white/20 !w-1.5 !h-1.5 !border-none" />
+    <div className="flex items-center justify-between gap-2 mb-1">
+      <p className="text-[7px] font-black uppercase tracking-[0.3em] text-white/20">{data.percentage}% freq</p>
     </div>
-  );
-});
+    <p className="text-xs font-bold tracking-tight text-white/70">{data.label}</p>
+    <p className="text-[8px] text-white/10 mt-1 font-bold">{data.voteCount} responses</p>
+  </div>
+));
 
 // === CUSTOM NODE: Voter (with RoughNotation) ===
 const VoterNode = React.memo(({ data }) => (
@@ -157,15 +149,12 @@ export default function TacticalFlow({ poll, votes = [] }) {
         markerEnd: { type: MarkerType.ArrowClosed, color: '#ef4444', width: 16, height: 16 },
       });
 
-      // Sort options by vote count (winner first)
-      const sortedOptions = [...q.options].sort((a, b) => b.voteCount - a.voteCount);
+      const sortedOptions = [...q.options];
       const totalVotes = q.totalVotes || 0;
 
       sortedOptions.forEach((opt, oIdx) => {
         const oId = `o-${qIdx}-${oIdx}`;
         const percentage = totalVotes > 0 ? Math.round((opt.voteCount / totalVotes) * 100) : 0;
-        const isWinner = oIdx === 0 && opt.voteCount > 0;
-        
         // Center options around the question
         const optionGroupHeight = (sortedOptions.length - 1) * optionSpacing;
         const oY = qY - optionGroupHeight / 2 + oIdx * optionSpacing;
@@ -177,7 +166,6 @@ export default function TacticalFlow({ poll, votes = [] }) {
             label: opt.text,
             percentage,
             voteCount: opt.voteCount,
-            isWinner,
           },
           position: { x: xOption, y: oY },
         });
@@ -187,10 +175,10 @@ export default function TacticalFlow({ poll, votes = [] }) {
           source: qId,
           target: oId,
           style: { 
-            stroke: isWinner ? 'rgba(239, 68, 68, 0.4)' : 'rgba(255,255,255,0.06)', 
-            strokeWidth: isWinner ? 2.5 : 1,
+            stroke: 'rgba(239, 68, 68, 0.3)', 
+            strokeWidth: 1.5,
+            strokeDasharray: '6 4',
           },
-          animated: isWinner,
         });
 
         // === Voter Leaf Nodes ===
