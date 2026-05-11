@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import SocialButtons from './SocialButtons';
+import RecoveryFlow from './RecoveryFlow';
 
 import { RoughNotation } from 'react-rough-notation';
 
 const AuthCard = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isRecovery, setIsRecovery] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,6 +22,14 @@ const AuthCard = () => {
 
   const { login, signup } = useAuth();
   const navigate = useNavigate();
+
+  if (isRecovery) {
+    return (
+      <div className="relative w-full max-w-[360px] mx-auto bg-[#0c0c0c] border border-white/[0.04] rounded-[1.5rem] p-8 shadow-2xl overflow-visible min-h-[500px]">
+        <RecoveryFlow onBack={() => setIsRecovery(false)} />
+      </div>
+    );
+  }
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -134,6 +144,18 @@ const AuthCard = () => {
           placeholder="••••••••"
           required
         />
+
+        {isLogin && (
+          <div className="flex justify-end -mt-3">
+            <button 
+              type="button"
+              onClick={() => setIsRecovery(true)}
+              className="text-[10px] font-bold text-white/30 uppercase tracking-widest hover:text-[#ef4444] transition-colors"
+            >
+              Forgot Identity?
+            </button>
+          </div>
+        )}
 
         {!isLogin && (
           <Input
