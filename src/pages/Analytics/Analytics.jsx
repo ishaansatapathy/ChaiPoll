@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Activity, Zap, TrendingUp, Users, Target, BarChart2, ChevronLeft, ChevronRight, LayoutDashboard, Search } from "lucide-react";
+import { Activity, Zap, TrendingUp, Users, Target, BarChart2, ChevronLeft, ChevronRight, LayoutDashboard, Search, Plus } from "lucide-react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ChartContainer } from "../../components/analytics/ChartContainer.jsx";
 import { AnalyticsCard } from "../../components/dashboard/AnalyticsCard.jsx";
