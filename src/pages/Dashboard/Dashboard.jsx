@@ -8,6 +8,7 @@ import { PollCard } from "../../components/poll/PollCard.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import { getMyPolls } from "../../services/api.js";
 import { useAuth } from "../../context/AuthContext.jsx";
+import CaptainOnboarding from "../../components/auth/CaptainOnboarding.jsx";
 
 function Highlight({ children }) {
   return (
@@ -68,6 +69,7 @@ export default function Dashboard() {
 
   return (
     <section className="py-8 relative">
+      <CaptainOnboarding />
       {/* Decorative background mark */}
       <div className="absolute -top-10 -right-10 opacity-10 pointer-events-none scale-150">
         <svg width="400" height="400" viewBox="0 0 400 400">

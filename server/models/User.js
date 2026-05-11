@@ -41,7 +41,15 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordOTP: String,
-  resetPasswordExpire: Date
+  resetPasswordExpire: Date,
+  callsign: {
+    type: String,
+    trim: true
+  },
+  isOnboarded: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // Encrypt password using bcrypt

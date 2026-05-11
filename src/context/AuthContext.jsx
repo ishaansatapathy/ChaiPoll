@@ -66,8 +66,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const setTacticalCallsign = async (callsign) => {
+    const response = await axios.patch(`${AUTH_URL}/update-callsign`, { callsign });
+    setUser(response.data);
+    return response.data;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout, API_URL }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, logout, setTacticalCallsign, API_URL }}>
       {children}
     </AuthContext.Provider>
   );

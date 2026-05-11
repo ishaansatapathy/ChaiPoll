@@ -136,7 +136,14 @@ router.post('/logout', (req, res) => {
 });
 
 router.get('/me', protect, async (req, res) => {
-  res.status(200).json({ _id: req.user._id, name: req.user.name, email: req.user.email, avatar: req.user.avatar });
+  res.status(200).json({ 
+    _id: req.user._id, 
+    name: req.user.name, 
+    email: req.user.email, 
+    avatar: req.user.avatar,
+    callsign: req.user.callsign,
+    isOnboarded: req.user.isOnboarded
+  });
 });
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -146,6 +153,26 @@ router.get('/google/callback', passport.authenticate('google', {
 }), (req, res) => {
   generateToken(res, req.user._id);
   res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/dashboard`);
+});
+
+// @desc    Update Callsign/Onboarding
+// @route   PATCH /api/auth/update-callsign
+// @access  Private
+router.patch('/update-callsign', protect, async (req, res) => {
+  try {
+    const { callsign } = req.body;
+    const user = await User.findById(req.user._id);
+    
+    if (!user) return res.status(404).json({ message: 'Agent not found' });
+    
+    user.callsign = callsign;
+    user.isOnboarded = true;
+    await user.save();
+    
+    res.json({ _id: user._id, name: user.name, email: user.email, avatar: user.avatar, callsign: user.callsign, isOnboarded: user.isOnboarded });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update callsign' });
+  }
 });
 
 export default router;
