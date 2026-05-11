@@ -133,7 +133,10 @@ router.get('/me', protect, async (req, res) => {
 });
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login', session: false }), (req, res) => {
+router.get('/google/callback', passport.authenticate('google', { 
+  failureRedirect: `${process.env.CLIENT_URL || 'http://localhost:5173'}/login`, 
+  session: false 
+}), (req, res) => {
   generateToken(res, req.user._id);
   res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/dashboard`);
 });
