@@ -1,32 +1,36 @@
 const sendEmail = async (options) => {
-  const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_QRXxmMDi_6zBCqEcuMy9wK1M3ceowNCcj';
+  const BREVO_API_KEY = process.env.BREVO_API_KEY;
   
   try {
-    const response = await fetch('https://api.resend.com/emails', {
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'api-key': BREVO_API_KEY
       },
       body: JSON.stringify({
-        from: 'ChaiPoll <onboarding@resend.dev>',
-        to: options.email,
+        sender: {
+          name: 'ChaiPoll Intelligence',
+          email: 'ishaansatapathy09@gmail.com'
+        },
+        to: [{ email: options.email }],
         subject: options.subject,
-        html: options.html,
+        htmlContent: options.html,
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Resend API Error Detail:', data);
+      console.error('Brevo API Error Detail:', data);
       throw new Error(data.message || 'API rejected the request');
     }
 
-    console.log('Nexus Signal Dispatched Successfully:', data.id);
+    console.log('Nexus Signal Dispatched via Brevo:', data.messageId);
     return data;
   } catch (err) {
-    console.error('Critical Email System Failure:', err);
+    console.error('Brevo System Failure:', err);
     throw err;
   }
 };
