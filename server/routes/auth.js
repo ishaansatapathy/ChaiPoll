@@ -49,6 +49,7 @@ router.post('/forgot-password', async (req, res) => {
   const { email, method } = req.body;
   try {
     const user = await User.findOne({ email: email.toLowerCase() });
+    console.log(`[Discovery] Search for ${email}: ${user ? 'AGENT FOUND' : 'AGENT NOT FOUND'}`);
     if (!user) return res.status(404).json({ message: 'No agent found with that signal.' });
 
     const resetToken = crypto.randomBytes(20).toString('hex');
