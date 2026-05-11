@@ -124,7 +124,12 @@ router.post('/reset-password', async (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-  res.cookie('jwt', '', { httpOnly: true, expires: new Date(0) });
+  res.cookie('jwt', '', { 
+    httpOnly: true, 
+    expires: new Date(0),
+    sameSite: 'none',
+    secure: true
+  });
   res.status(200).json({ message: 'Logged out successfully' });
 });
 
