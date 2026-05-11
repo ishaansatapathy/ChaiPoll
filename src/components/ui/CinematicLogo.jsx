@@ -145,14 +145,6 @@ export function CinematicLogo({ size = 48, showText = true, className = "" }) {
             transition={{ duration: 1, delay: 1.6 }}
             className="h-[1.5px] bg-gradient-to-r from-[#ef4444] to-transparent mt-1.5 shadow-[0_0_8px_rgba(239,68,68,0.4)]"
           />
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
-            transition={{ delay: 1.9 }}
-            className="text-[10px] uppercase tracking-[0.4em] text-white font-bold mt-1.5"
-          >
-            Nexus Protocol
-          </motion.p>
         </div>
       )}
     </div>
