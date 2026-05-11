@@ -10,9 +10,10 @@ import 'reactflow/dist/style.css';
 import { motion } from 'framer-motion';
 
 // Custom Node Style for the "Warrior" theme
-const CustomNode = ({ data }) => {
+// Custom Node Style for the "Warrior" theme - Memoized for performance
+const CustomNode = React.memo(({ data }) => {
   return (
-    <div className={`px-4 py-3 rounded-2xl border backdrop-blur-xl shadow-2xl min-w-[150px] transition-all duration-500 ${
+    <div className={`px-4 py-3 rounded-2xl border backdrop-blur-xl shadow-2xl min-w-[150px] transition-all duration-300 ${
       data.type === 'root' 
       ? 'bg-[#ef4444]/10 border-[#ef4444]/40 shadow-[#ef4444]/10' 
       : data.type === 'question'
@@ -22,7 +23,12 @@ const CustomNode = ({ data }) => {
       <Handle type="target" position={Position.Left} className="!bg-[#ef4444] !w-2 !h-2 border-none" />
       
       <div className="flex flex-col gap-1">
-        <span className="text-[8px] uppercase tracking-[0.2em] font-bold text-white/30">{data.label_top}</span>
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-[8px] uppercase tracking-[0.2em] font-bold text-white/30">{data.label_top}</span>
+          {data.creator && (
+            <span className="text-[7px] font-bold text-[#ef4444] uppercase tracking-tighter opacity-80">BY: {data.creator}</span>
+          )}
+        </div>
         <span className={`text-xs font-bold tracking-tight leading-tight ${data.type === 'root' ? 'text-white text-sm' : 'text-white/80'}`}>
           {data.label}
         </span>
@@ -34,7 +40,7 @@ const CustomNode = ({ data }) => {
       <Handle type="source" position={Position.Right} className="!bg-[#ef4444] !w-2 !h-2 border-none" />
     </div>
   );
-};
+});
 
 const nodeTypes = {
   tactical: CustomNode,
@@ -53,7 +59,8 @@ export default function TacticalFlow({ poll }) {
         type: 'root',
         label_top: 'Central Intelligence', 
         label: poll.title,
-        subtext: 'Primary Nexus' 
+        subtext: 'Primary Nexus',
+        creator: poll.createdBy?.name || 'Unknown Agent'
       },
       position: { x: 0, y: 0 },
     });
