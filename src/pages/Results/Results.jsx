@@ -10,7 +10,7 @@ import { getPollByCode, getPollAnalytics } from "../../services/api.js";
 import { socket } from "../../socket/index.js";
 import { Loader2, Share2, BarChart3, Trophy, Globe, Lock, LayoutGrid, Network, Users, Shield } from "lucide-react";
 import TacticalFlow from "../../components/analytics/TacticalFlow.jsx";
-import SocketStatus from "../../components/analytics/SocketStatus.jsx";
+
 
 function Highlight({ children }) {
   return (
@@ -207,7 +207,7 @@ export default function Results() {
            </div>
         </div>
       </section>
-      <SocketStatus />
+
     </main>
   );
 }

@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
 import { getPollAnalytics, publishPoll, getMyPolls } from "../../services/api.js";
 import { socket } from "../../socket/index.js";
-import SocketStatus from "../../components/analytics/SocketStatus.jsx";
+
 import { AnalyticsSkeleton } from "../../components/ui/Skeleton.jsx";
 import ParticipantList from "../../components/analytics/ParticipantList.jsx";
 
@@ -372,7 +372,7 @@ export default function Analytics() {
           )}
         </div>
       </div>
-      <SocketStatus />
+
     </section>
   );
 }
