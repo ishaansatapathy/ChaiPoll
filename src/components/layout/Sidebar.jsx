@@ -1,7 +1,7 @@
 import React from "react";
 import { LayoutDashboard, PlusCircle, BarChart2, Settings, LogOut, User as UserIcon } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { LogoMark } from "../ui/LogoMark.jsx";
+import { CinematicLogo } from "../ui/CinematicLogo.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { motion } from "framer-motion";
 
@@ -27,13 +27,7 @@ export function Sidebar() {
   return (
     <aside className="hidden min-h-screen w-72 border-r border-white/5 bg-[#020202] lg:flex flex-col">
       <div className="p-8 border-b border-white/5">
-        <div className="flex items-center gap-4 px-2">
-          <LogoMark className="shadow-[0_0_20px_rgba(255,255,255,0.1)]" />
-          <div>
-            <h2 className="font-display text-xl font-medium tracking-tight text-white leading-none">ChaiPoll</h2>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-white/20 font-bold mt-1.5">Premium v2.0</p>
-          </div>
-        </div>
+        <CinematicLogo size={38} />
       </div>
 
       <nav className="flex-1 p-6 space-y-1.5">

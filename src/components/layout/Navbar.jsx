@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/Button.jsx";
-import { LogoMark } from "../ui/LogoMark.jsx";
+import { CinematicLogo } from "../ui/CinematicLogo.jsx";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,9 +30,8 @@ export function Navbar() {
         className="pointer-events-auto flex items-center justify-between px-6 py-3 max-w-7xl w-full"
       >
         {/* Left: Logo */}
-        <Link to="/" className="flex items-center gap-3 group transition-opacity hover:opacity-80">
-          <LogoMark className="scale-90" />
-          <span className="font-display text-xl tracking-tighter text-white font-medium">ChaiPoll</span>
+        <Link to="/" className="pointer-events-auto transition-opacity hover:opacity-80">
+          <CinematicLogo size={32} />
         </Link>
 
         {/* Center: Floating Capsule */}
