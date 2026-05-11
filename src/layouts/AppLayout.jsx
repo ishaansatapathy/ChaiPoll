@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Outlet, Navigate, useLocation, Link } from "react-router-dom";
 import { Sidebar } from "../components/layout/Sidebar.jsx";
 import { MobileNav } from "../components/layout/MobileNav.jsx";
@@ -5,9 +6,19 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { Loader2, ShieldAlert, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { RoughNotation } from "react-rough-notation";
+
 export function AppLayout() {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const [showNotation, setShowNotation] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      const timer = setTimeout(() => setShowNotation(true), 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   if (loading) {
     return (
@@ -28,37 +39,56 @@ export function AppLayout() {
     );
   }
 
-  // ALLOW GUEST ACCESS: We no longer redirect to /auth here.
-  // Instead, we let the user see the dashboard but with limited functionality.
-
   return (
     <div className="min-h-screen bg-ink-950">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.08),transparent_34%)]" />
       
-      {/* Cinematic Guest Mode Banner */}
+      {/* Cinematic Identity Reveal Banner */}
       <AnimatePresence>
         {!user && (
           <motion.div 
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            className="fixed top-0 left-0 right-0 z-[100] flex justify-center p-4 pointer-events-none"
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="fixed top-6 left-0 right-0 z-[100] flex justify-center px-4 pointer-events-none"
           >
-            <div className="pointer-events-auto flex items-center gap-6 px-6 py-3 rounded-full bg-red-500/10 border border-red-500/20 backdrop-blur-2xl shadow-[0_0_30px_rgba(239,68,68,0.15)]">
-               <div className="flex items-center gap-3">
-                  <ShieldAlert className="text-[#ef4444] animate-pulse" size={18} />
-                  <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Guardian Mode Active</span>
-               </div>
-               <div className="h-4 w-[1px] bg-white/10" />
-               <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest hidden sm:block">Sign in to deploy your own campaigns</p>
-               <Link to="/auth">
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-5 py-1.5 rounded-full bg-[#ef4444] text-white text-[9px] font-black uppercase tracking-widest shadow-[0_0_15px_rgba(239,68,68,0.4)]"
-                  >
-                    Authenticate Now
-                  </motion.button>
-               </Link>
+            <div className="pointer-events-auto flex flex-col items-center gap-2">
+              <div className="flex items-center gap-5 px-6 py-2.5 rounded-2xl bg-white/[0.03] border border-white/5 backdrop-blur-3xl shadow-2xl">
+                 <div className="flex items-center gap-3">
+                    <Zap className="text-[#ef4444]" size={14} />
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">Status: Unidentified</span>
+                 </div>
+                 
+                 <div className="h-4 w-[1px] bg-white/10" />
+                 
+                 <div className="flex items-center gap-4">
+                    <p className="text-[11px] text-white font-medium tracking-tight">
+                      <RoughNotation 
+                        type="underline" 
+                        show={showNotation} 
+                        color="#ef4444" 
+                        strokeWidth={2}
+                        padding={2}
+                      >
+                        Reveal your identity
+                      </RoughNotation>
+                      <span className="text-white/30 ml-2">to deploy campaigns</span>
+                    </p>
+                    
+                    <Link to="/auth">
+                       <button className="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-white text-black text-[9px] font-black uppercase tracking-widest hover:bg-[#ef4444] hover:text-white transition-all duration-500">
+                         AUTHENTICATE
+                       </button>
+                    </Link>
+                 </div>
+              </div>
+              <motion.span 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.2 }}
+                transition={{ delay: 2 }}
+                className="font-handwriting text-[#ef4444] text-sm italic"
+              >
+                The nexus is waiting for your signal.
+              </motion.span>
             </div>
           </motion.div>
         )}
