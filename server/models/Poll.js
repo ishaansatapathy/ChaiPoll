@@ -94,14 +94,15 @@ const pollSchema = new mongoose.Schema({
 });
 
 // Generate unique pollCode before validation if it doesn't exist
-pollSchema.pre('validate', async function(next) {
+pollSchema.pre('validate', async function() {
   if (!this.pollCode) {
     let isUnique = false;
     let generatedCode;
     
     while (!isUnique) {
       generatedCode = crypto.randomBytes(4).toString('hex').slice(0, 6).toUpperCase();
-      const existingPoll = await mongoose.models.Poll.findOne({ pollCode: generatedCode });
+      // Use this.constructor to reference the model before it's fully compiled
+      const existingPoll = await this.constructor.findOne({ pollCode: generatedCode });
       if (!existingPoll) {
         isUnique = true;
       }
@@ -109,7 +110,6 @@ pollSchema.pre('validate', async function(next) {
     
     this.pollCode = generatedCode;
   }
-  next();
 });
 
 export default mongoose.model('Poll', pollSchema);
