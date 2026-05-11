@@ -49,13 +49,15 @@ export const submitVote = async (req, res) => {
       });
 
       // Atomic Update Vote Counts in Poll Model
+      const mongoose = (await import('mongoose')).default;
+      
       for (const resp of responses) {
+        // Convert string IDs to ObjectIDs to ensure matching in updateOne
+        const qId = new mongoose.Types.ObjectId(resp.questionId);
+        const oId = new mongoose.Types.ObjectId(resp.selectedOptionId);
+
         await Poll.updateOne(
-          { 
-            _id: poll._id, 
-            "questions._id": resp.questionId,
-            "questions.options._id": resp.selectedOptionId 
-          },
+          { _id: poll._id },
           { 
             $inc: { 
               "questions.$[q].totalVotes": 1,
@@ -64,8 +66,8 @@ export const submitVote = async (req, res) => {
           },
           {
             arrayFilters: [
-              { "q._id": resp.questionId },
-              { "opt._id": resp.selectedOptionId }
+              { "q._id": qId },
+              { "opt._id": oId }
             ]
           }
         );
