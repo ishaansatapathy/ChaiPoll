@@ -4,7 +4,7 @@
 
 @layer utilities {
   .font-handwriting {
-    font-family: 'Caveat', cursive;
+    font-family: "Caveat", cursive;
   }
   .bg-radial-vignette {
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
@@ -20,7 +20,7 @@
 @layer base {
   body {
     @apply bg-ink-950 text-white selection:bg-[#ef4444] selection:text-white;
-    background-image: 
+    background-image:
       radial-gradient(circle at 50% -20%, #382c1e 0%, transparent 40%),
       radial-gradient(circle at 0% 0%, #020202 0%, transparent 20%);
     background-attachment: fixed;
@@ -55,7 +55,7 @@ body {
     @apply bg-white/[0.01] backdrop-blur-3xl border border-white/5 transition-all duration-500 hover:border-white/10;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
-  
+
   .surface-warm {
     @apply bg-chai-600/5 backdrop-blur-3xl border border-chai-300/10 transition-all duration-500;
   }

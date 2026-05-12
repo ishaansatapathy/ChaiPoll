@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
-import Poll from '../models/Poll.js';
-import Vote from '../models/Vote.js';
-import { buildPollVoteIncrement } from '../utils/pollVoteIncrement.js';
-import { isTransactionUnsupportedError } from '../utils/mongoErrors.js';
+import mongoose from "mongoose";
+import Poll from "../models/Poll.js";
+import Vote from "../models/Vote.js";
+import { buildPollVoteIncrement } from "../utils/pollVoteIncrement.js";
+import { isTransactionUnsupportedError } from "../utils/mongoErrors.js";
 
 export class TallyUpdateError extends Error {
   constructor() {
-    super('TALLY_UPDATE_FAILED');
-    this.name = 'TallyUpdateError';
+    super("TALLY_UPDATE_FAILED");
+    this.name = "TallyUpdateError";
   }
 }
 
@@ -17,7 +17,7 @@ async function persistVoteFallback({ pollId, responses, voterId, voterIp, $inc, 
     const finalPoll = await Poll.findOneAndUpdate(
       { _id: pollId },
       { $inc },
-      { returnDocument: 'after', arrayFilters }
+      { returnDocument: "after", arrayFilters }
     );
     if (!finalPoll) {
       await Vote.findByIdAndDelete(vote._id);
@@ -46,7 +46,7 @@ export async function persistVoteSubmission({ pollId, responses, voterId, voterI
       const fp = await Poll.findOneAndUpdate(
         { _id: pollId },
         { $inc },
-        { returnDocument: 'after', arrayFilters, session }
+        { returnDocument: "after", arrayFilters, session }
       );
       if (!fp) {
         throw new TallyUpdateError();

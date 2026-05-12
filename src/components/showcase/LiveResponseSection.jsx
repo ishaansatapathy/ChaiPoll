@@ -41,7 +41,8 @@ export function LiveResponseSection() {
               transition={{ delay: 0.4 }}
               className="text-lg text-white max-w-lg mx-auto"
             >
-              Every vote is a pulse. Watch your community engage in realtime with fluid, organic motion.
+              Every vote is a pulse. Watch your community engage in realtime with fluid, organic
+              motion.
             </motion.p>
           </div>
 

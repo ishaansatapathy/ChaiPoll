@@ -1,6 +1,6 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit from "express-rate-limit";
 
-const skipInTests = () => process.env.VITEST === 'true';
+const skipInTests = () => process.env.VITEST === "true";
 
 /** Login / signup brute-force protection */
 export const authCredentialLimiter = rateLimit({
@@ -9,7 +9,7 @@ export const authCredentialLimiter = rateLimit({
   skip: skipInTests,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: 'Too many login or signup attempts. Try again later.' },
+  message: { message: "Too many login or signup attempts. Try again later." },
 });
 
 /** Forgot password, OTP verify, reset — tight cap to slow enumeration and OTP guessing */
@@ -19,5 +19,5 @@ export const passwordResetLimiter = rateLimit({
   skip: skipInTests,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: 'Too many password reset attempts. Try again in an hour.' },
+  message: { message: "Too many password reset attempts. Try again in an hour." },
 });

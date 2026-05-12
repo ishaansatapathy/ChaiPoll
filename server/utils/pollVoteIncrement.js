@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 /**
  * Validates each response references a real question and option on the poll,
@@ -9,7 +9,7 @@ export function validateResponsesAgainstPoll(responses, poll) {
   for (const r of responses) {
     const qid = String(r.questionId);
     if (questionIds.has(qid)) {
-      return { ok: false, message: 'Each question can only be answered once' };
+      return { ok: false, message: "Each question can only be answered once" };
     }
     questionIds.add(qid);
   }
@@ -17,11 +17,11 @@ export function validateResponsesAgainstPoll(responses, poll) {
   for (const r of responses) {
     const q = poll.questions.find((x) => x._id.toString() === String(r.questionId));
     if (!q) {
-      return { ok: false, message: 'Invalid question for this poll' };
+      return { ok: false, message: "Invalid question for this poll" };
     }
     const opt = q.options.find((o) => o._id.toString() === String(r.selectedOptionId));
     if (!opt) {
-      return { ok: false, message: 'Invalid option for this question' };
+      return { ok: false, message: "Invalid option for this question" };
     }
   }
 

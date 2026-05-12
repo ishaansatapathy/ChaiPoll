@@ -29,7 +29,7 @@ export default {
         accent: {
           primary: "#ef4444",
           warm: "#f59e0b",
-        }
+        },
       },
       boxShadow: {
         soft: "0 24px 80px rgba(0, 0, 0, 0.42)",

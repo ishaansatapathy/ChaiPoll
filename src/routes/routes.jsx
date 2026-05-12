@@ -25,7 +25,11 @@ export const routes = [
     ],
   },
   {
-    element: <ProtectedRoute><AppLayout /></ProtectedRoute>,
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/create", element: <CreatePoll /> },

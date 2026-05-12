@@ -30,7 +30,11 @@ export function QuestionCard({ question, index, onChange, onRemove, onAddOption,
               }}
               placeholder={`Option ${optionIndex + 1}`}
             />
-            <Button variant="secondary" className="min-h-12 px-4" onClick={() => onRemoveOption(optionIndex)}>
+            <Button
+              variant="secondary"
+              className="min-h-12 px-4"
+              onClick={() => onRemoveOption(optionIndex)}
+            >
               Remove
             </Button>
           </div>
@@ -46,7 +50,9 @@ export function QuestionCard({ question, index, onChange, onRemove, onAddOption,
           />
           Required question
         </label>
-        <Button variant="secondary" onClick={onAddOption}>Add option</Button>
+        <Button variant="secondary" onClick={onAddOption}>
+          Add option
+        </Button>
       </div>
     </div>
   );

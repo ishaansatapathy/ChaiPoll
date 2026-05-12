@@ -24,7 +24,7 @@ Full-stack polling app with realtime updates (**Socket.io**), JWT + OAuth auth, 
 
 ## Tech stack
 
-- **Frontend**: React (Vite), Tailwind, Framer Motion, React Flow, Recharts, Socket.io client.
+- **Frontend**: React (Vite), Tailwind, Framer Motion, React Flow, Recharts, Socket.io client; **ESLint 9** (flat config) + **Prettier**; TypeScript used for `tsc` on shared types (`src/types`) until a full `.tsx` migration.
 - **Backend**: Node.js, Express, Socket.io, MongoDB, Mongoose, Passport.
 
 ## Scripts
@@ -37,17 +37,103 @@ npm run build
 # API (server/)
 cd server && npm run dev
 
-# All tests (server unit + in-memory MongoDB integration + client smoke tests)
+# Code quality (run from repo root; `lint` needs `server/node_modules` — use `npm ci` in `server/` first)
+npm run format          # Prettier write (root + server paths)
+npm run format:check    # CI / pre-commit
+npm run typecheck       # `tsc --noEmit` (strict; currently `src` TS + JSX via Vite)
+npm run lint:web        # ESLint: `src/`, `e2e/`, root configs only
+npm run lint:server     # ESLint: `server/` only
+npm run lint            # `lint:web` + `lint:server`
+npm run lint:fix        # ESLint --fix both
+
+# Unit + integration (server Vitest + client Vitest)
 npm test
+
+# Full suite including browser smoke E2E (Playwright)
+npm run test:all
 
 # Only server (includes MongoMemoryReplSet — first run downloads MongoDB binaries)
 npm run test:server
 
 # Only client (Vitest + Testing Library)
 npm run test:client
+
+# Only E2E (build + Vite preview + Playwright)
+npm run test:e2e
+
+# First time on a machine: install Playwright Chromium (~300MB)
+npm run playwright:install
 ```
 
-CI (GitHub Actions) runs `server` and `client` jobs in parallel (see `.github/workflows/ci.yml`).
+CI runs **server** (tests + Prettier + ESLint), **client** (format + `tsc` + ESLint web + Vitest), and **e2e** jobs in parallel (see `.github/workflows/ci.yml`).
+
+## ✨ Quality & Tooling
+
+ChaiPoll now includes production-ready tools for code quality, testing, and documentation:
+
+### Code Quality
+
+- **ESLint** + **Prettier**: Automated linting and formatting
+  ```bash
+  npm run lint:fix      # Fix linting issues
+  npm run format        # Format code
+  npm run lint          # Check for issues
+  ```
+
+### Testing
+
+- **Comprehensive E2E Tests**: Full user flow coverage
+  ```bash
+  npm run test:e2e      # Run all E2E tests
+  ```
+- New test files: poll creation, voting, analytics, results publishing
+
+### Error Handling
+
+- **Error Boundaries**: Graceful error recovery UI
+- **Toast Notifications**: User-friendly feedback
+- **Request Logging**: Structured Winston logs
+
+### API Documentation
+
+- **Swagger UI**: Interactive API docs at `/api-docs`
+  - Access: `http://localhost:5000/api-docs` (when server running)
+  - Try endpoints directly from browser
+  - Full request/response examples
+
+### TypeScript Ready
+
+- **Type Definitions**: Core types defined for frontend & backend
+- **Migration Guide**: Incremental TypeScript adoption path
+  ```bash
+  npm run type-check    # Check TypeScript errors
+  ```
+
+📖 **Read more:**
+
+- [IMPROVEMENTS.md](IMPROVEMENTS.md) - Detailed feature breakdown
+- [QUICK_START.md](QUICK_START.md) - Getting started guide
+- [TYPESCRIPT_MIGRATION_GUIDE.md](TYPESCRIPT_MIGRATION_GUIDE.md) - TypeScript migration steps
+
+## Deploy checklist (Render API + Vercel / static frontend)
+
+**Backend (Render)**
+
+- Root directory: `server` (or start command `cd server && npm start`).
+- `NODE_ENV=production`
+- `PORT` — Render sets automatically; code uses `process.env.PORT`.
+- `MONGODB_URI`, `JWT_SECRET` (long random)
+- `CLIENT_URL` = your frontend URL (e.g. `https://your-app.vercel.app`)
+- `ALLOWED_ORIGINS` = comma list of every origin that calls the API and opens Socket.io (frontend + `http://localhost:5173` if you dev against prod API).
+- Google: `GOOGLE_CALLBACK_URL` = `https://<your-service>.onrender.com/api/auth/google/callback` and match in Google Cloud console.
+- Email: `BREVO_API_KEY`, `BREVO_SENDER_EMAIL` (verified sender in Brevo).
+
+**Frontend (Vercel)**
+
+- `VITE_API_URL` = `https://<your-service>.onrender.com/api`
+- `VITE_SOCKET_URL` = `https://<your-service>.onrender.com` (no trailing slash)
+
+**Cookies** — Cross-site JWT cookies use `SameSite=None` + `Secure` in production. Frontend and API must both be **HTTPS**.
 
 ## Environment variables
 
@@ -66,8 +152,8 @@ VITE_SOCKET_URL=http://localhost:5000
 
 ## Roadmap ideas
 
-- Playwright/Cypress against a running stack.
-- Broader React component coverage and MSW for API mocking.
+- Deeper Playwright flows (logged-in poll create) against a disposable stack or preview URL.
+- MSW-backed component tests for dashboard data states.
 
 ---
 

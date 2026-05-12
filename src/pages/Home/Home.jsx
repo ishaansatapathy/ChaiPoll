@@ -28,7 +28,11 @@ export default function Home() {
   return (
     <main className="relative bg-ink-950">
       <div className="fixed inset-0 h-screen w-screen overflow-hidden">
-        <img src={heroImage} alt="" className="h-full w-full object-cover opacity-80 grayscale contrast-110 brightness-75" />
+        <img
+          src={heroImage}
+          alt=""
+          className="h-full w-full object-cover opacity-80 grayscale contrast-110 brightness-75"
+        />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_52%,rgba(255,255,255,0.08),rgba(0,0,0,0)_45%)]" />
         <div className="absolute inset-0 shadow-[inset_70px_0_120px_#020202,inset_-70px_0_120px_#020202,inset_0_100px_130px_#020202,inset_0_-120px_150px_#020202]" />
       </div>
@@ -37,11 +41,18 @@ export default function Home() {
         aria-hidden="true"
       />
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="relative z-20 grid min-h-screen place-items-center px-5 pt-20 text-center">
-        <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mx-auto max-w-5xl">
-          <p className="mb-8 text-xs font-semibold uppercase tracking-[0.16em] text-white/56">Realtime polling for teams</p>
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="mx-auto max-w-5xl"
+        >
+          <p className="mb-8 text-xs font-semibold uppercase tracking-[0.16em] text-white/56">
+            Realtime polling for teams
+          </p>
           <h1 className="mx-auto max-w-[920px] font-display text-[clamp(3.1rem,6.4vw,5.9rem)] font-normal leading-[0.93] tracking-[-0.045em] text-white">
             Create <Highlight>Polls</Highlight> That
             <br />
@@ -79,7 +90,7 @@ export default function Home() {
                         ChaiPoll
                       </span>
                     </RoughNotation>
-                    
+
                     {/* Curly Arrow */}
                     <svg
                       className="absolute -bottom-8 -left-10 h-12 w-12 -rotate-[15deg]"
@@ -108,11 +119,16 @@ export default function Home() {
                   </div>
                 </motion.div>
               )}
-            </span>.
+            </span>
+            .
           </p>
           <div className="mt-12 flex flex-wrap justify-center gap-4">
-            <Button to="/create" className="gap-2">Create a poll <ArrowRight size={16} /></Button>
-            <Button to="/dashboard" variant="secondary">View dashboard</Button>
+            <Button to="/create" className="gap-2">
+              Create a poll <ArrowRight size={16} />
+            </Button>
+            <Button to="/dashboard" variant="secondary">
+              View dashboard
+            </Button>
           </div>
         </motion.div>
       </section>
@@ -130,14 +146,16 @@ export default function Home() {
             <CinematicLogo size={32} />
             <div className="hidden md:block h-8 w-[1px] bg-white/5" />
             <div className="flex gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-white/30">
-              <span className="text-white/10 italic font-handwriting text-xl normal-case tracking-normal">"Build for the builders"</span>
+              <span className="text-white/10 italic font-handwriting text-xl normal-case tracking-normal">
+                "Build for the builders"
+              </span>
             </div>
           </div>
           <div className="flex flex-col items-center md:items-end gap-3">
-             <p className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold">
-               © 2026 ChaiPoll — Production Ready
-             </p>
-             <div className="h-[1px] w-12 bg-[#ef4444]/20" />
+            <p className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold">
+              © 2026 ChaiPoll — Production Ready
+            </p>
+            <div className="h-[1px] w-12 bg-[#ef4444]/20" />
           </div>
         </div>
       </footer>

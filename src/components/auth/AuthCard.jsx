@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import SocialButtons from './SocialButtons';
-import RecoveryFlow from './RecoveryFlow';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import SocialButtons from "./SocialButtons";
+import RecoveryFlow from "./RecoveryFlow";
 
-import { RoughNotation } from 'react-rough-notation';
+import { RoughNotation } from "react-rough-notation";
 
-const AuthCard = () => {
-  const [isLogin, setIsLogin] = useState(true);
+const AuthCard = ({ initialSignup = false }) => {
+  const [isLogin, setIsLogin] = useState(!initialSignup);
   const [isRecovery, setIsRecovery] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showErrorNotation, setShowErrorNotation] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -33,14 +33,14 @@ const AuthCard = () => {
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    setError("");
     setShowErrorNotation(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
     setShowErrorNotation(false);
 
     try {
@@ -48,18 +48,21 @@ const AuthCard = () => {
         await login({ email: formData.email, password: formData.password });
       } else {
         if (formData.password.length < 8) {
-          throw new Error('Password must be at least 8 characters');
+          throw new Error("Password must be at least 8 characters");
         }
         if (formData.password !== formData.confirmPassword) {
-          throw new Error('Passwords do not match');
+          throw new Error("Passwords do not match");
         }
         await signup({ name: formData.name, email: formData.email, password: formData.password });
       }
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      const msg = err.response?.data?.message || err.message || 'Something went wrong';
+      const msg = err.response?.data?.message || err.message || "Something went wrong";
       setError(msg);
-      if (msg.toLowerCase().includes('already exists') || msg.toLowerCase().includes('compromised')) {
+      if (
+        msg.toLowerCase().includes("already exists") ||
+        msg.toLowerCase().includes("compromised")
+      ) {
         setTimeout(() => setShowErrorNotation(true), 100);
       }
     } finally {
@@ -72,31 +75,43 @@ const AuthCard = () => {
       <div className="flex items-start justify-between mb-8">
         <h2 className="text-[32px] font-bold text-white tracking-tight leading-[1.1]">
           {isLogin ? (
-            <>Welcome<br />back.</>
+            <>
+              Welcome
+              <br />
+              back.
+            </>
           ) : (
-            <>Create<br />account.</>
+            <>
+              Create
+              <br />
+              account.
+            </>
           )}
         </h2>
-        
+
         <div className="flex bg-[#1a1a1a] rounded-[1.2rem] p-1 border border-white/[0.04] mt-1">
           <button
             type="button"
             onClick={() => setIsLogin(true)}
             className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
-              isLogin ? 'bg-[#2a2a2a] text-white shadow-md' : 'text-white/40 hover:text-white/60'
+              isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
             }`}
           >
-            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">Sign</span>
+            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">
+              Sign
+            </span>
             <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">In</span>
           </button>
           <button
             type="button"
             onClick={() => setIsLogin(false)}
             className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
-              !isLogin ? 'bg-[#2a2a2a] text-white shadow-md' : 'text-white/40 hover:text-white/60'
+              !isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
             }`}
           >
-            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">Sign</span>
+            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">
+              Sign
+            </span>
             <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">Up</span>
           </button>
         </div>
@@ -111,7 +126,7 @@ const AuthCard = () => {
           {!isLogin && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
+              animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               className="space-y-5 overflow-hidden"
             >
@@ -150,7 +165,7 @@ const AuthCard = () => {
 
         {isLogin && (
           <div className="flex justify-end -mt-3">
-            <button 
+            <button
               type="button"
               onClick={() => setIsRecovery(true)}
               className="text-[10px] font-bold text-white/30 uppercase tracking-widest hover:text-[#ef4444] transition-colors"
@@ -188,7 +203,7 @@ const AuthCard = () => {
               >
                 <p className="text-[11px] text-red-500 font-bold uppercase tracking-widest italic flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                  {error.includes('already exists') ? 'Account already exists.' : error}
+                  {error.includes("already exists") ? "Account already exists." : error}
                 </p>
               </RoughNotation>
             </motion.div>
@@ -199,7 +214,7 @@ const AuthCard = () => {
           disabled={loading}
           className="w-full rounded-xl bg-[#d4d4d8] py-3.5 text-sm font-bold text-black transition-all hover:bg-white active:scale-[0.98] mt-2"
         >
-          {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
+          {loading ? "Processing..." : isLogin ? "Sign In" : "Sign Up"}
         </button>
       </form>
     </div>

@@ -23,20 +23,14 @@ export function WorkflowSection() {
             className="relative"
           >
             <div className="inline-block">
-              <RoughNotation 
-                type="box" 
-                color="white" 
-                strokeWidth={1} 
-                padding={24}
-                multiline={true}
-              >
+              <RoughNotation type="box" color="white" strokeWidth={1} padding={24} multiline={true}>
                 <h2 className="font-display text-5xl md:text-7xl font-normal tracking-tight text-white leading-[1.2] py-2">
                   A workflow <br />
                   that feels like <br />
-                  <RoughNotation 
-                    type="underline" 
-                    color="#ef4444" 
-                    strokeWidth={3} 
+                  <RoughNotation
+                    type="underline"
+                    color="#ef4444"
+                    strokeWidth={3}
                     animationDelay={1000}
                   >
                     magic.
@@ -47,11 +41,11 @@ export function WorkflowSection() {
             <p className="mt-16 text-lg text-white/50 max-w-md leading-relaxed">
               From the first question to the final report, every step is{" "}
               <span className="relative inline-block">
-                <RoughNotation 
-                  type="box" 
-                  color="white" 
-                  strokeWidth={1} 
-                  padding={4} 
+                <RoughNotation
+                  type="box"
+                  color="white"
+                  strokeWidth={1}
+                  padding={4}
                   animationDelay={2000}
                 >
                   crafted for speed
@@ -89,11 +83,7 @@ export function WorkflowSection() {
                 </div>
 
                 {index < workflowSteps.length - 1 && (
-                  <svg
-                    className="absolute left-6 top-12 h-16 w-px"
-                    viewBox="0 0 1 64"
-                    fill="none"
-                  >
+                  <svg className="absolute left-6 top-12 h-16 w-px" viewBox="0 0 1 64" fill="none">
                     <motion.line
                       x1="0.5"
                       y1="0"

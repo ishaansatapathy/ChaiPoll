@@ -9,7 +9,12 @@ export function Modal({ open, title, children, onClose }) {
       <div className="surface w-full max-w-lg rounded-xl p-5">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-display text-xl text-white">{title}</h2>
-          <Button variant="ghost" className="min-h-9 px-3" onClick={onClose} aria-label="Close modal">
+          <Button
+            variant="ghost"
+            className="min-h-9 px-3"
+            onClick={onClose}
+            aria-label="Close modal"
+          >
             <X size={16} />
           </Button>
         </div>
