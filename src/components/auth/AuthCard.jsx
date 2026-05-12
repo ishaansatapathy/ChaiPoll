@@ -47,6 +47,9 @@ const AuthCard = () => {
       if (isLogin) {
         await login({ email: formData.email, password: formData.password });
       } else {
+        if (formData.password.length < 8) {
+          throw new Error('Password must be at least 8 characters');
+        }
         if (formData.password !== formData.confirmPassword) {
           throw new Error('Passwords do not match');
         }
@@ -152,7 +155,7 @@ const AuthCard = () => {
               onClick={() => setIsRecovery(true)}
               className="text-[10px] font-bold text-white/30 uppercase tracking-widest hover:text-[#ef4444] transition-colors"
             >
-              Forgot Identity?
+              Forgot password?
             </button>
           </div>
         )}
@@ -185,7 +188,7 @@ const AuthCard = () => {
               >
                 <p className="text-[11px] text-red-500 font-bold uppercase tracking-widest italic flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                  {error.includes('already exists') ? 'Identity already compromised.' : error}
+                  {error.includes('already exists') ? 'Account already exists.' : error}
                 </p>
               </RoughNotation>
             </motion.div>

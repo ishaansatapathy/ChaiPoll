@@ -58,7 +58,7 @@ export default function ResponseFlow({ poll, votes = [] }) {
       vote.responses.forEach(resp => {
         const key = `${resp.questionId}-${resp.selectedOptionId}`;
         if (!voterMap[key]) voterMap[key] = [];
-        voterMap[key].push({ name: vote.voterId?.name || vote.voterId?.callsign || 'Anonymous', email: vote.voterId?.email || '' });
+        voterMap[key].push({ name: vote.voterId?.name || vote.voterId?.displayName || 'Anonymous', email: vote.voterId?.email || '' });
       });
     });
     const qSpacing = 400, oSpacing = 140, vSpacing = 55, xQ = 350, xO = 700, xV = 1050;

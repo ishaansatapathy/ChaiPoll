@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     required: function() {
       return this.authProvider === 'local';
     },
-    minlength: 6,
+    minlength: 8,
     select: false
   },
   avatar: {
@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordOTP: String,
   resetPasswordExpire: Date,
-  callsign: {
+  displayName: {
     type: String,
     trim: true
   },

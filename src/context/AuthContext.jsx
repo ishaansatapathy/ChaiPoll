@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const setDisplayName = async (displayName) => {
-    const response = await API.patch('/auth/update-callsign', { callsign: displayName });
+    const response = await API.patch('/auth/update-display-name', { displayName });
     setUser(response.data);
     return response.data;
   };

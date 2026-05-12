@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Plus, BarChart2, Users, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,6 +6,7 @@ import { RoughNotation } from "react-rough-notation";
 import { Highlight } from "../../components/ui/Highlight.jsx";
 import { PollCard } from "../../components/poll/PollCard.jsx";
 import { Button } from "../../components/ui/Button.jsx";
+import { Skeleton, CardSkeleton } from "../../components/ui/Skeleton.jsx";
 import { getMyPolls } from "../../services/api.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 import Onboarding from "../../components/auth/Onboarding.jsx";
@@ -20,7 +21,8 @@ export default function Dashboard() {
     const fetchPolls = async () => {
       try {
         const { data } = await getMyPolls();
-        setPolls(data);
+        // Support both old array format and new paginated object format
+        setPolls(Array.isArray(data) ? data : data.data || []);
       } catch (error) {
         console.error("Error fetching polls", error);
       } finally {
@@ -33,12 +35,15 @@ export default function Dashboard() {
     return () => clearTimeout(timer);
   }, [user]);
 
-  const totalVotes = Array.isArray(polls) ? polls.reduce((acc, poll) => acc + (poll.totalParticipants || 0), 0) : 0;
-  const activePolls = Array.isArray(polls) ? polls.filter(p => p.isActive).length : 0;
-  const pollList = Array.isArray(polls) ? polls : [];
+  const handleDeleteSuccess = useCallback((pollCode) => {
+    setPolls(prev => prev.filter(p => p.pollCode !== pollCode));
+  }, []);
+
+  const totalVotes = polls.reduce((acc, poll) => acc + (poll.totalParticipants || 0), 0);
+  const activePolls = polls.filter(p => p.isActive).length;
 
   const analyticsSummary = [
-    { label: "Total Polls", value: pollList.length.toString(), icon: BarChart2, trend: "All time" },
+    { label: "Total Polls", value: polls.length.toString(), icon: BarChart2, trend: "All time" },
     { label: "Total Votes", value: totalVotes.toLocaleString(), icon: Users, trend: "Growing" },
     { label: "Active Polls", value: activePolls.toString(), icon: Activity, trend: "Live" },
   ];
@@ -120,9 +125,8 @@ export default function Dashboard() {
           </div>
 
           {loading ? (
-            <div className="flex flex-col items-center py-20 gap-4 opacity-20">
-               <div className="w-12 h-12 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-               <p className="font-handwriting text-2xl tracking-widest">Loading polls...</p>
+            <div className="grid gap-6">
+              {[1, 2, 3, 4].map(i => <CardSkeleton key={i} />)}
             </div>
           ) : polls.length === 0 ? (
             <div className="border border-dashed border-white/10 rounded-3xl p-16 text-center bg-white/[0.01]">
@@ -135,7 +139,13 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid gap-6">
-              {pollList.map((poll) => <PollCard key={poll._id} poll={poll} />)}
+              {polls.map((poll) => (
+                <PollCard 
+                  key={poll._id} 
+                  poll={poll} 
+                  onDeleteSuccess={handleDeleteSuccess} 
+                />
+              ))}
             </div>
           )}
         </motion.div>
@@ -163,8 +173,8 @@ export default function Dashboard() {
               </div>
 
               <div className="space-y-8">
-                {pollList.length > 0 ? pollList.slice(0, 5).map((poll, idx) => {
-                  const maxVotes = Math.max(...pollList.map(p => p.totalParticipants || 0), 1);
+                {polls.length > 0 ? polls.slice(0, 5).map((poll, idx) => {
+                  const maxVotes = Math.max(...polls.map(p => p.totalParticipants || 0), 1);
                   const percentage = Math.round(((poll.totalParticipants || 0) / maxVotes) * 100) || 0;
                   return (
                     <div key={poll._id} className="relative group">

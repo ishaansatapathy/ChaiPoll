@@ -40,7 +40,12 @@ export default function PollView() {
       finally { if (isMounted) setLoading(false); }
     };
     fetchPoll();
-    return () => { isMounted = false; socket.emit("leavePollRoom", id); socket.off("participantJoined"); socket.off("participantLeft"); };
+    return () => {
+      isMounted = false;
+      socket.emit("leavePollRoom", id);
+      socket.off("participantJoined");
+      socket.off("participantLeft");
+    };
   }, [id, navigate]);
 
   const handleOptionSelect = (questionId, optionId) => { if (isExpired || needsAuth) return; setResponses(prev => ({ ...prev, [questionId]: optionId })); };

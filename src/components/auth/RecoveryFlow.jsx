@@ -66,7 +66,15 @@ const RecoveryFlow = ({ onBack }) => {
             <h2 className="text-2xl font-bold text-white mb-2">Enter<br />Code.</h2>
             <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-8">6-digit code sent to your email</p>
             <div className="space-y-6">
-              <input type="text" maxLength="6" value={otp} onChange={(e) => setOtp(e.target.value.toUpperCase())} placeholder="000000" className="w-full bg-transparent border-b-2 border-white/10 py-4 text-center text-5xl font-display tracking-[0.4em] text-white focus:outline-none focus:border-[#ef4444] transition-all" />
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="000000"
+                className="w-full bg-transparent border-b-2 border-white/10 py-4 text-center text-5xl font-display tracking-[0.4em] text-white focus:outline-none focus:border-[#ef4444] transition-all"
+              />
               <button disabled={otp.length !== 6 || loading} onClick={handleVerifyOTP} className="w-full rounded-xl bg-white py-3.5 text-xs font-black text-black uppercase tracking-widest hover:bg-[#ef4444] hover:text-white transition-all">Verify Code</button>
             </div>
           </motion.div>
@@ -77,7 +85,7 @@ const RecoveryFlow = ({ onBack }) => {
             <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold mb-8">Set your new password</p>
             <div className="space-y-6">
               <div className="space-y-2"><label className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/40 ml-1">New Password</label><input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" className="w-full rounded-[14px] border border-white/[0.04] bg-[#141414] px-4 py-3 text-sm text-white focus:outline-none focus:border-[#ef4444]/40 transition-all" /></div>
-              <button disabled={newPassword.length < 6 || loading} onClick={handleResetPassword} className="w-full rounded-xl bg-white py-3.5 text-xs font-black text-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">Reset Password</button>
+              <button disabled={newPassword.length < 8 || loading} onClick={handleResetPassword} className="w-full rounded-xl bg-white py-3.5 text-xs font-black text-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all">Reset Password</button>
             </div>
           </motion.div>
         )}
