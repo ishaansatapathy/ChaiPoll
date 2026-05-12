@@ -2,7 +2,30 @@ import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
+import logger from "../utils/logger.js";
 import { getClearJwtCookieOptions } from "../utils/jwtCookieOptions.js";
+
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Exact lowercase match first (indexed), then case-insensitive (legacy DB rows). */
+async function findUserByEmailForRecovery(emailValue) {
+  const trimmed = String(emailValue ?? "").trim();
+  if (!trimmed) return null;
+  const byLower = await User.findOne({ email: trimmed.toLowerCase() });
+  if (byLower) return byLower;
+  return User.findOne({
+    email: { $regex: new RegExp(`^${escapeRegex(trimmed)}$`, "i") },
+  });
+}
+
+function emailMatchClause(emailValue) {
+  const trimmed = String(emailValue ?? "").trim();
+  if (!trimmed) return null;
+  const lower = trimmed.toLowerCase();
+  return {
+    $or: [{ email: lower }, { email: { $regex: new RegExp(`^${escapeRegex(trimmed)}$`, "i") } }],
+  };
+}
 
 const GENERIC_RECOVERY_MESSAGE = "If an account exists for that email, we sent reset instructions.";
 
@@ -67,7 +90,7 @@ export const login = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   const { email, method } = req.body;
   try {
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const user = await findUserByEmailForRecovery(email);
     if (!user) {
       return res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });
     }
@@ -111,8 +134,12 @@ export const forgotPassword = async (req, res) => {
       });
     }
     res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });
+    logger.info("Password reset email handed off to provider", {
+      method,
+      toDomain: user.email.includes("@") ? user.email.split("@")[1] : "unknown",
+    });
   } catch (error) {
-    console.error("Email error:", error);
+    logger.error("Email error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Unable to send recovery email. Please try again later." });
   }
 };
@@ -122,8 +149,12 @@ export const forgotPassword = async (req, res) => {
 export const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
   try {
+    const emailClause = emailMatchClause(email);
+    if (!emailClause) {
+      return res.status(400).json({ message: "Invalid or expired code." });
+    }
     const user = await User.findOne({
-      email: email.toLowerCase().trim(),
+      ...emailClause,
       resetPasswordOTP: otp,
       resetPasswordExpire: { $gt: Date.now() },
     });
@@ -140,10 +171,13 @@ export const verifyOtp = async (req, res) => {
 export const resetPassword = async (req, res) => {
   const { email, otp, newPassword, token } = req.body;
   try {
-    let query = { email: email.toLowerCase().trim() };
+    const emailClause = emailMatchClause(email);
+    if (!emailClause) {
+      return res.status(400).json({ message: "Invalid or expired reset request." });
+    }
+    let query = { ...emailClause, resetPasswordExpire: { $gt: Date.now() } };
     if (otp) query.resetPasswordOTP = otp;
     else if (token) query.resetPasswordToken = token;
-    query.resetPasswordExpire = { $gt: Date.now() };
 
     const user = await User.findOne(query);
     if (!user) return res.status(400).json({ message: "Invalid or expired reset request." });
