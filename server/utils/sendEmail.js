@@ -70,10 +70,19 @@ const sendEmail = async (options) => {
     }
 
     const messageId = data.messageId ?? data.message_id;
+    const recipientDomain = options.email.split("@")[1] || "unknown";
     if (messageId) {
-      logger.info("Transactional email accepted by Brevo", { messageId });
+      logger.info("Transactional email accepted by Brevo", { 
+        messageId, 
+        sender: senderEmail, 
+        toDomain: recipientDomain 
+      });
+      console.log(`[EMAIL] Accepted by Brevo. From: ${senderEmail} To: ...@${recipientDomain}`);
     } else {
-      logger.info("Transactional email accepted by Brevo", { status: response.status });
+      logger.info("Transactional email accepted by Brevo", { 
+        status: response.status,
+        sender: senderEmail
+      });
     }
     return data;
   } catch (err) {

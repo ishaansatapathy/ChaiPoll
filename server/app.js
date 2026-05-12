@@ -19,6 +19,8 @@ export function createApp() {
   const app = express();
   const allowedOrigins = getAllowedOrigins();
 
+  app.set("trust proxy", 1);
+
   app.use(
     cors({
       origin: allowedOrigins,

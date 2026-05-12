@@ -29,15 +29,13 @@ router.post("/signup", authCredentialLimiter, signupValidationRules, validate, s
 router.post("/login", authCredentialLimiter, loginValidationRules, validate, login);
 router.post(
   "/forgot-password",
-  passwordResetLimiter,
   forgotPasswordValidationRules,
   validate,
   forgotPassword
 );
-router.post("/verify-otp", passwordResetLimiter, verifyOtpValidationRules, validate, verifyOtp);
+router.post("/verify-otp", verifyOtpValidationRules, validate, verifyOtp);
 router.post(
   "/reset-password",
-  passwordResetLimiter,
   resetPasswordValidationRules,
   validate,
   resetPassword
