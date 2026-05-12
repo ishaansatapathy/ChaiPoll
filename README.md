@@ -1,54 +1,71 @@
-# ChaiPoll v2.0: Cinematic Realtime Intelligence Engine
+# ChaiPoll v2.0
 
-ChaiPoll is a production-grade, high-fidelity polling and tactical analysis platform designed for high-stakes data collection. Built with a "Warrior" aesthetic, it combines real-time synchronization with advanced visual intelligence mapping.
+Full-stack polling app with realtime updates (**Socket.io**), JWT + OAuth auth, and analytics UI (**React Flow**, **Recharts**). Styled as a dark “mission control” dashboard.
 
-![Cinematic Banner](https://via.placeholder.com/1200x400/020202/ef4444?text=CHAI+POLL+v2.0+MISSION+CONTROL)
+## Realtime
 
-## ⚡ Realtime Architecture
-ChaiPoll is engineered for sub-millisecond synchronization using a robust **Socket.io** infrastructure:
-- **Neural Link Sync**: Atomic vote broadcasting across all connected clients.
-- **Participation Telemetry**: Live activity streams with geo-location placeholders.
-- **Session Persistence**: Production-hardened JWT authentication with auto-reconnect protocols.
+- Live poll updates pushed to everyone in a poll room.
+- JWT sessions with HTTP-only cookies; optional Google OAuth.
 
-## 🗺️ Tactical Decision Mapping
-The signature feature of ChaiPoll is the **React Flow** based decision-tree visualization:
-- **Nexus Visualization**: Maps the flow from root campaigns to questions and individual options.
-- **Accuracy Tracking**: Identifies 'Target Objectives' (correct answers) with emerald-glowing 'Correct Paths'.
-- **Divergence Analysis**: Highlights majority and minority trends using visual stroke weights and animated edges.
+## Data integrity
 
-## 🛡️ Production Hardening
-- **Security Fortress**: Integrated **Helmet**, **CORS**, and **Express-Rate-Limit** for enterprise-grade protection.
-- **Data Integrity**: Centralized validation using **Express-Validator** for all mission-critical payloads.
-- **Atomic Operations**: MongoDB `$inc` and `arrayFilters` used to prevent race conditions during high-concurrency voting events.
-- **Responsive Command**: Fully optimized for mobile 'Warriors' with a dedicated cinematic MobileNav system.
+- **Vote + tallies**: On a **replica set** (e.g. MongoDB Atlas), vote insert and poll tally update run in a **single transaction**. On a standalone `mongod`, the code detects unsupported transactions and falls back to insert + one atomic `$inc` update, rolling back the vote document if the update fails.
+- **Per-document tallies**: All question/option increments plus `totalParticipants` still use **one** `findOneAndUpdate` with `arrayFilters` so partial per-field corruption cannot happen mid-request.
+- **Validation**: Express-validator on API payloads; responses are checked against real question/option ids (no duplicate questions, no mismatched options).
+- **Duplicate votes**: Unique partial indexes on `(pollId, voterId)` and `(pollId, voterIp)` for anonymous flows.
 
-## 🛠️ Tech Stack
-- **Frontend**: React, Framer Motion, Tailwind CSS (Vanilla CSS focus), React Flow, Recharts, Lenis Scroll.
-- **Backend**: Node.js, Express, Socket.io, MongoDB, Mongoose.
-- **Auth**: Passport.js (Google/GitHub OAuth), JWT, bcrypt.
-- **Icons/UI**: Lucide React, RoughNotation (Handwritten annotations).
+## Security & ops
 
-## 🚀 Deployment Deployment Readiness
-### Environment Variables
+- Helmet, CORS, and rate limiting on `/api/*`.
+- **CORS + Socket.io origins** come from `ALLOWED_ORIGINS` (comma-separated) or, if unset, `CLIENT_URL` plus `http://localhost:5173`. Set `ALLOWED_ORIGINS` in production for every frontend URL you use.
+
+## Tech stack
+
+- **Frontend**: React (Vite), Tailwind, Framer Motion, React Flow, Recharts, Socket.io client.
+- **Backend**: Node.js, Express, Socket.io, MongoDB, Mongoose, Passport.
+
+## Scripts
+
+```bash
+# Frontend (repo root)
+npm run dev
+npm run build
+
+# API (server/)
+cd server && npm run dev
+
+# All tests (server unit + in-memory MongoDB integration + client smoke tests)
+npm test
+
+# Only server (includes MongoMemoryReplSet — first run downloads MongoDB binaries)
+npm run test:server
+
+# Only client (Vitest + Testing Library)
+npm run test:client
+```
+
+CI (GitHub Actions) runs `server` and `client` jobs in parallel (see `.github/workflows/ci.yml`).
+
+## Environment variables
+
 ```env
-# Server
+# Server — see server/.env.example
 PORT=5000
-MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_secret
+MONGODB_URI=...
+JWT_SECRET=...
 CLIENT_URL=http://localhost:5173
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
+ALLOWED_ORIGINS=http://localhost:5173,https://your-app.vercel.app
 
 # Client
 VITE_API_URL=http://localhost:5000/api
 VITE_SOCKET_URL=http://localhost:5000
 ```
 
-## 📜 Mission Log
-- **Phase 1**: Core Auth & Prototype Stabilization.
-- **Phase 2**: Multi-Question Engine & Quiz Logic Deployment.
-- **Phase 3**: Realtime Socket.io Cleanup & Reliability Hardening.
-- **Phase 4**: Tactical Flow Visualization & Final UI Polish.
+## Roadmap ideas
+
+- Playwright/Cypress against a running stack.
+- Broader React component coverage and MSW for API mocking.
 
 ---
-Built by **Warriors** for **Architects**. 🏿🔥
+
+Built for builders who like polls and sharp UIs.

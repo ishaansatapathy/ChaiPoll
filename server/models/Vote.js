@@ -34,8 +34,7 @@ const voteSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Prevent duplicate voting logic needs careful rethink for multi-question
-// We still want to prevent the same voter from submitting the WHOLE vote object twice
+// One submission per authenticated voter; one per IP when anonymous (voterId null)
 voteSchema.index({ pollId: 1, voterId: 1 }, { unique: true, partialFilterExpression: { voterId: { $type: "objectId" } } });
 voteSchema.index({ pollId: 1, voterIp: 1 }, { unique: true, partialFilterExpression: { voterId: null, voterIp: { $type: "string" } } });
 

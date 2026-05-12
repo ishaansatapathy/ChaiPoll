@@ -1,84 +1,29 @@
-import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
-import cookieParser from 'cookie-parser';
-import passport from 'passport';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import connectDB from './config/db.js';
-import passportConfig from './config/passport.js';
-import authRoutes from './routes/auth.js';
-import pollRoutes from './routes/polls.js';
-import voteRoutes from './routes/votes.js';
+import { createApp } from './app.js';
 import initializeSockets from './sockets/index.js';
+import { getAllowedOrigins } from './utils/allowedOrigins.js';
 
-// Connect to Database
 connectDB();
 
-const app = express();
+const app = createApp();
 const httpServer = createServer(app);
+const allowedOrigins = getAllowedOrigins();
 
-// Socket.io Setup
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:5173', 'https://chai-poll.vercel.app'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 
-// Attach io to app so routes can access it
 app.set('io', io);
 initializeSockets(io);
-
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://chai-poll.vercel.app'
-];
-
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
-}));
-
-// Security Headers
-app.use(helmet());
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message: { message: 'Too many requests from this IP, please try again after 15 minutes' }
-});
-app.use('/api/', limiter);
-
-// Standard Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-// Passport Middleware
-app.use(passport.initialize());
-passportConfig(passport);
-
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/polls', pollRoutes);
-app.use('/api/votes', voteRoutes);
-
-app.get('/', (req, res) => {
-  res.send('ChaiPoll Nexus API is running...');
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal Server Error', error: process.env.NODE_ENV === 'development' ? err.message : undefined });
-});
 
 const PORT = process.env.PORT || 5000;
 
