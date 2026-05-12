@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import AuthCard from '../../components/auth/AuthCard';
 import { RoughNotation } from 'react-rough-notation';
-import heroImage from '../../../bg-image/ChatGPT Image May 10, 2026, 01_12_17 AM.png';
+import heroImage from '../../../bg-image/hero-bg.png';
 import RoughChaiCodeMark from '../../components/auth/RoughChaiCodeMark';
 
 const Auth = () => {

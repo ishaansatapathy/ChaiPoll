@@ -22,7 +22,21 @@ export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const [pollListLoading, setPollListLoading] = useState(true);
   const [showRough, setShowRough] = useState(false);
-  const [activeTab, setActiveTab] = useState('charts'); // 'charts' or 'participants'
+  const [activeTab, setActiveTab] = useState('charts');
+  const [publishing, setPublishing] = useState(false);
+
+  // Compute real metrics instead of hardcoded fakes
+  const recentCount = recentVotes.filter(
+    (v) => new Date(v.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+  ).length;
+  const olderCount = recentVotes.filter(
+    (v) => {
+      const t = new Date(v.createdAt).getTime();
+      return t <= Date.now() - 24 * 60 * 60 * 1000 && t > Date.now() - 48 * 60 * 60 * 1000;
+    }
+  ).length;
+  const velocityPct = olderCount > 0 ? Math.round(((recentCount - olderCount) / olderCount) * 100) : recentCount > 0 ? 100 : 0;
+  const pollAge = poll?.createdAt ? Math.max(1, Math.floor((Date.now() - new Date(poll.createdAt).getTime()) / (1000 * 60 * 60 * 24))) : 0;
 
   useEffect(() => {
     const timer = setTimeout(() => setShowRough(true), 800);
@@ -207,12 +221,14 @@ export default function Analytics() {
 
                       <div className="pt-8 space-y-4">
                         <div className="flex items-center gap-2">
-                           <TrendingUp size={14} className="text-emerald-500" />
-                           <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">+14% Velocity</span>
+                           <TrendingUp size={14} className={velocityPct >= 0 ? "text-emerald-500" : "text-red-400"} />
+                           <span className={`text-[10px] font-black uppercase tracking-widest ${velocityPct >= 0 ? "text-emerald-500" : "text-red-400"}`}>
+                             {velocityPct >= 0 ? "+" : ""}{velocityPct}% 24h
+                           </span>
                         </div>
                         <div className="h-[1px] w-12 bg-white/10" />
                         <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest leading-relaxed max-w-[140px]">
-                          Response flow stable for poll {poll?.pollCode}
+                          {recentCount} responses in the last 24 hours
                         </p>
                       </div>
                     </div>
@@ -224,20 +240,16 @@ export default function Analytics() {
                           <Zap size={16} className="text-[#ef4444]/60" />
                           <RoughNotation type="underline" show={showRough} color="#ef4444" strokeWidth={2} padding={2}>
                               <span className="text-sm font-mono text-white uppercase tracking-wider">
-                                {new Date(poll?.expiresAt) > new Date() ? "ACTIVE" : "EXPIRED"}
+                                {poll?.expiresAt && new Date(poll.expiresAt) < new Date() ? "EXPIRED" : poll?.isActive ? "ACTIVE" : "CLOSED"}
                              </span>
                           </RoughNotation>
                         </div>
                       </div>
                       <div className="relative">
-                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/10 mb-3">Uptime</p>
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/10 mb-3">Age</p>
                         <div className="flex items-center gap-3">
                           <Activity size={16} className="text-emerald-500/60" />
-                          <span className="text-sm font-mono text-white uppercase tracking-wider italic">99.99%</span>
-                          {/* Small scribble */}
-                          <div className="absolute -right-8 top-0">
-                             <span className="font-handwriting text-[#ef4444]/40 text-xs italic">Lossless</span>
-                          </div>
+                          <span className="text-sm font-mono text-white uppercase tracking-wider">{pollAge}d live</span>
                         </div>
                       </div>
                     </div>
@@ -274,19 +286,21 @@ export default function Analytics() {
 
                     <button 
                         onClick={async () => {
+                          setPublishing(true);
                           try {
-                            await publishPoll(id);
-                            window.location.reload();
+                            const { data } = await publishPoll(id);
+                            setPoll(data.poll);
                           } catch (err) { alert("Failed to publish"); }
+                          finally { setPublishing(false); }
                         }}
-                        disabled={poll?.settings?.isPublished}
+                        disabled={poll?.settings?.isPublished || publishing}
                         className={`w-full py-4 rounded-2xl text-[9px] font-black tracking-[0.4em] transition-all duration-500 ${
                           poll?.settings?.isPublished 
                           ? "bg-emerald-500/5 text-emerald-500/40 border border-emerald-500/10 cursor-not-allowed" 
                           : "bg-[#ef4444] text-white hover:bg-[#ff4444] shadow-xl active:scale-[0.98]"
                         }`}
                       >
-                        {poll?.settings?.isPublished ? "RESULTS PUBLISHED" : "PUBLISH RESULTS"}
+                        {publishing ? "PUBLISHING..." : poll?.settings?.isPublished ? "RESULTS PUBLISHED" : "PUBLISH RESULTS"}
                     </button>
                   </div>
                 </div>

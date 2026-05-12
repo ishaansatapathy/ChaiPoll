@@ -17,6 +17,9 @@ Full-stack polling app with realtime updates (**Socket.io**), JWT + OAuth auth, 
 ## Security & ops
 
 - Helmet, CORS, and rate limiting on `/api/*`.
+- **Auth**: Stricter rate limits on login/signup and on password-reset endpoints; signup/login/reset inputs validated with express-validator; minimum password length **8**.
+- **JWT cookies**: `SameSite` / `Secure` follow environment (lax + non-secure on local HTTP; `none` + `Secure` in production for cross-site). Override with `JWT_COOKIE_SAMESITE` and `JWT_COOKIE_SECURE` if needed.
+- **Password reset**: Same response whether or not the email exists (no account enumeration); Brevo sender address comes from env, not the repo.
 - **CORS + Socket.io origins** come from `ALLOWED_ORIGINS` (comma-separated) or, if unset, `CLIENT_URL` plus `http://localhost:5173`. Set `ALLOWED_ORIGINS` in production for every frontend URL you use.
 
 ## Tech stack

@@ -6,7 +6,10 @@ import {
   getMyPolls, 
   getPollByCode, 
   getPollAnalytics,
-  publishPoll
+  publishPoll,
+  deletePoll,
+  updatePoll,
+  closePoll
 } from '../controllers/pollController.js';
 import { pollValidationRules, validate } from '../middleware/validator.js';
 
@@ -20,12 +23,17 @@ router.route('/my-polls')
   .get(protect, getMyPolls);
 
 router.route('/:code')
-  .get(getPollByCode);
+  .get(getPollByCode)
+  .put(protect, updatePoll)
+  .delete(protect, deletePoll);
 
 router.route('/:code/analytics')
   .get(protect, getPollAnalytics);
 
 router.route('/:code/publish')
   .patch(protect, publishPoll);
+
+router.route('/:code/close')
+  .patch(protect, closePoll);
 
 export default router;

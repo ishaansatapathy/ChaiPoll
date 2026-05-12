@@ -29,6 +29,11 @@ export const getPollAnalytics = (code) => API.get(`/polls/${code}/analytics`);
 export const submitVote = (voteData) => API.post('/votes', voteData);
 
 // Auth APIs
-export const updateDisplayName = (callsign) => API.patch('/auth/update-callsign', { callsign });
+export const updateDisplayName = (displayName) => API.patch('/auth/update-display-name', { displayName });
+
+// New Poll CRUD
+export const deletePoll = (code) => API.delete(`/polls/${code}`);
+export const updatePoll = (code, data) => API.put(`/polls/${code}`, data);
+export const closePoll = (code) => API.patch(`/polls/${code}/close`);
 
 export default API;

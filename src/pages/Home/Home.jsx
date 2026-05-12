@@ -6,7 +6,7 @@ import { Navbar } from "../../components/layout/Navbar.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import { Highlight } from "../../components/ui/Highlight.jsx";
 import { useSpotlight } from "../../hooks/useSpotlight.js";
-import heroImage from "../../../bg-image/ChatGPT Image May 10, 2026, 01_12_17 AM.png";
+import heroImage from "../../../bg-image/hero-bg.png";
 
 import { WorkflowSection } from "../../components/showcase/WorkflowSection.jsx";
 import { StickyScrollSection } from "../../components/showcase/StickyScrollSection.jsx";
@@ -124,19 +124,21 @@ export default function Home() {
       <TypographySection />
 
       {/* Footer */}
-      <footer className="relative z-20 py-20 px-5 md:px-20 border-t border-white/5">
-        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="flex items-center gap-8">
-            <CinematicLogo size={28} />
-            <div className="flex gap-6 text-xs uppercase tracking-widest text-white/30">
-              <a href="#" className="hover:text-white transition-colors">Twitter</a>
-              <a href="#" className="hover:text-white transition-colors">Github</a>
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
+      <footer className="relative z-20 py-32 px-5 md:px-20 border-t border-white/5 bg-[#020202]">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            <CinematicLogo size={32} />
+            <div className="hidden md:block h-8 w-[1px] bg-white/5" />
+            <div className="flex gap-8 text-[10px] font-black uppercase tracking-[0.3em] text-white/30">
+              <span className="text-white/10 italic font-handwriting text-xl normal-case tracking-normal">"Build for the builders"</span>
             </div>
           </div>
-          <p className="text-[10px] uppercase tracking-widest text-white/20">
-            © 2026 ChaiPoll. All rights reserved.
-          </p>
+          <div className="flex flex-col items-center md:items-end gap-3">
+             <p className="text-[10px] uppercase tracking-[0.4em] text-white/20 font-bold">
+               © 2026 ChaiPoll — Production Ready
+             </p>
+             <div className="h-[1px] w-12 bg-[#ef4444]/20" />
+          </div>
         </div>
       </footer>
     </main>

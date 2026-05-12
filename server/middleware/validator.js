@@ -16,6 +16,12 @@ export const pollValidationRules = [
   body('questions').isArray({ min: 1 }).withMessage('At least one question is required'),
   body('questions.*.text').notEmpty().withMessage('Question text is required'),
   body('questions.*.options').isArray({ min: 2 }).withMessage('Each question must have at least 2 options'),
+  body('questions.*.options.*')
+    .isString()
+    .trim()
+    .notEmpty()
+    .isLength({ max: 200 })
+    .withMessage('Each option must be a non-empty string'),
 ];
 
 export const voteValidationRules = [
@@ -23,4 +29,46 @@ export const voteValidationRules = [
   body('responses').isArray({ min: 1 }).withMessage('At least one response is required'),
   body('responses.*.questionId').notEmpty().withMessage('Question ID is required'),
   body('responses.*.selectedOptionId').notEmpty().withMessage('Selected option ID is required'),
+];
+
+export const signupValidationRules = [
+  body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 80 }),
+  body('email').isEmail().withMessage('Valid email is required').normalizeEmail(),
+  body('password')
+    .isLength({ min: 8, max: 128 })
+    .withMessage('Password must be 8–128 characters'),
+];
+
+export const loginValidationRules = [
+  body('email').isEmail().withMessage('Valid email is required').normalizeEmail(),
+  body('password').notEmpty().withMessage('Password is required'),
+];
+
+export const forgotPasswordValidationRules = [
+  body('email').isEmail().withMessage('Valid email is required').normalizeEmail(),
+  body('method').optional().isIn(['otp', 'link']).withMessage('method must be otp or link'),
+];
+
+export const verifyOtpValidationRules = [
+  body('email').isEmail().withMessage('Valid email is required').normalizeEmail(),
+  body('otp').isLength({ min: 6, max: 6 }).isNumeric().withMessage('OTP must be 6 digits'),
+];
+
+export const resetPasswordValidationRules = [
+  body('email').isEmail().withMessage('Valid email is required').normalizeEmail(),
+  body('newPassword')
+    .isLength({ min: 8, max: 128 })
+    .withMessage('Password must be 8–128 characters'),
+  body('otp').optional().isLength({ min: 6, max: 6 }).isNumeric(),
+  body('token').optional().isString().isLength({ min: 20, max: 64 }),
+  body().custom((_, { req }) => {
+    if (!req.body.otp && !req.body.token) {
+      throw new Error('Either otp or token is required');
+    }
+    return true;
+  }),
+];
+
+export const updateDisplayNameValidationRules = [
+  body('displayName').trim().notEmpty().withMessage('Display name is required').isLength({ max: 80 }),
 ];

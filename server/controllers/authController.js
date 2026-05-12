@@ -1,0 +1,212 @@
+import User from '../models/User.js';
+import generateToken from '../utils/generateToken.js';
+import crypto from 'crypto';
+import sendEmail from '../utils/sendEmail.js';
+import { getClearJwtCookieOptions } from '../utils/jwtCookieOptions.js';
+
+const GENERIC_RECOVERY_MESSAGE =
+  'If an account exists for that email, we sent reset instructions.';
+
+// @desc    Sign up
+// @route   POST /api/auth/signup
+export const signup = async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    const sanitizedEmail = email.toLowerCase().trim();
+    const userExists = await User.findOne({ email: sanitizedEmail });
+    if (userExists) return res.status(400).json({ message: 'User already exists' });
+
+    const user = await User.create({
+      name: name.trim(),
+      email: sanitizedEmail,
+      password,
+    });
+
+    if (user) {
+      generateToken(res, user._id);
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      });
+    } else {
+      res.status(400).json({ message: 'Invalid user data' });
+    }
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ message: 'Unable to create account. Please try again.' });
+  }
+};
+
+// @desc    Login
+// @route   POST /api/auth/login
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const sanitizedEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: sanitizedEmail }).select('+password');
+    if (user && (await user.matchPassword(password))) {
+      generateToken(res, user._id);
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      });
+    } else {
+      res.status(401).json({ message: 'Invalid email or password' });
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Unable to sign in. Please try again.' });
+  }
+};
+
+// @desc    Forgot Password
+// @route   POST /api/auth/forgot-password
+export const forgotPassword = async (req, res) => {
+  const { email, method } = req.body;
+  try {
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) {
+      return res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordOTP = otp;
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+    await user.save();
+
+    if (method === 'otp') {
+      await sendEmail({
+        email: user.email,
+        subject: 'Your Password Reset Code — ChaiPoll',
+        html: `<div style="font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+          <h1 style="color: #ef4444; font-size: 24px;">Password Reset</h1>
+          <p style="color: #a1a1a1;">Your 6-digit verification code is:</p>
+          <div style="font-size: 40px; font-weight: bold; letter-spacing: 10px; margin: 20px 0;">${otp}</div>
+          <p style="color: #666; font-size: 12px;">This code expires in 10 minutes.</p>
+        </div>`,
+      });
+    } else {
+      const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+      await sendEmail({
+        email: user.email,
+        subject: 'Reset Your Password — ChaiPoll',
+        html: `<div style="font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+          <h1 style="color: #ef4444; font-size: 24px;">Password Reset</h1>
+          <p style="color: #a1a1a1; margin-bottom: 24px;">Click the button below to reset your password.</p>
+          <a href="${resetUrl}" style="background: #fff; color: #000; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold;">Reset Password</a>
+          <p style="color: #666; font-size: 12px; margin-top: 20px;">This link expires in 10 minutes.</p>
+        </div>`,
+      });
+    }
+    res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });
+  } catch (error) {
+    console.error('Email error:', error);
+    res.status(500).json({ message: 'Unable to send recovery email. Please try again later.' });
+  }
+};
+
+// @desc    Verify OTP
+// @route   POST /api/auth/verify-otp
+export const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+  try {
+    const user = await User.findOne({
+      email: email.toLowerCase().trim(),
+      resetPasswordOTP: otp,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+    if (!user) return res.status(400).json({ message: 'Invalid or expired code.' });
+    res.status(200).json({ message: 'Code verified successfully.' });
+  } catch (error) {
+    console.error('Verify OTP error:', error);
+    res.status(500).json({ message: 'Verification failed. Please try again.' });
+  }
+};
+
+// @desc    Reset Password
+// @route   POST /api/auth/reset-password
+export const resetPassword = async (req, res) => {
+  const { email, otp, newPassword, token } = req.body;
+  try {
+    let query = { email: email.toLowerCase().trim() };
+    if (otp) query.resetPasswordOTP = otp;
+    else if (token) query.resetPasswordToken = token;
+    query.resetPasswordExpire = { $gt: Date.now() };
+
+    const user = await User.findOne(query);
+    if (!user) return res.status(400).json({ message: 'Invalid or expired reset request.' });
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordOTP = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successfully.' });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ message: 'Password reset failed. Please try again.' });
+  }
+};
+
+// @desc    Logout
+// @route   POST /api/auth/logout
+export const logout = (req, res) => {
+  res.cookie('jwt', '', getClearJwtCookieOptions());
+  res.status(200).json({ message: 'Logged out successfully' });
+};
+
+// @desc    Get current user
+// @route   GET /api/auth/me
+export const getMe = async (req, res) => {
+  res.status(200).json({
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+    avatar: req.user.avatar,
+    displayName: req.user.displayName,
+    isOnboarded: req.user.isOnboarded,
+  });
+};
+
+// @desc    Update Display Name / Onboarding
+// @route   PATCH /api/auth/update-display-name
+export const updateDisplayName = async (req, res) => {
+  try {
+    const { displayName } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    user.displayName = displayName;
+    user.isOnboarded = true;
+    await user.save();
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+      displayName: user.displayName,
+      isOnboarded: user.isOnboarded,
+    });
+  } catch (error) {
+    console.error('Update display name error:', error);
+    res.status(500).json({ message: 'Failed to update display name' });
+  }
+};
+
+// @desc    Google OAuth callback handler
+// @route   Used internally after passport.authenticate
+export const googleCallback = (req, res) => {
+  generateToken(res, req.user._id);
+  res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/dashboard`);
+};
