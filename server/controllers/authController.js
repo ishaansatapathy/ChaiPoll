@@ -48,12 +48,31 @@ export const signup = async (req, res) => {
     });
 
     if (user) {
+      const verificationToken = crypto.randomBytes(32).toString("hex");
+      user.verificationToken = verificationToken;
+      await user.save();
+
+      const verifyUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}/verify-email/${verificationToken}`;
+      
+      await sendEmail({
+        email: user.email,
+        subject: "Verify Your ChaiPoll Account",
+        html: `<div style="font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+          <h1 style="color: #ef4444; font-size: 22px;">Welcome to ChaiPoll!</h1>
+          <p style="color: #a1a1a1; margin-bottom: 24px;">Please verify your email address to unlock full features:</p>
+          <a href="${verifyUrl}" style="display: inline-block; background: #ef4444; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 12px; font-weight: bold;">Verify Email Address</a>
+          <p style="color: #666; font-size: 12px; margin-top: 24px;">Or copy this link: ${verifyUrl}</p>
+        </div>`,
+        text: `Verify your account: ${verifyUrl}`
+      });
+
       generateToken(res, user._id);
       res.status(201).json({
         _id: user._id,
         name: user.name,
         email: user.email,
         avatar: user.avatar,
+        isVerified: user.isVerified,
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
@@ -78,6 +97,7 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
+        isVerified: user.isVerified,
       });
     } else {
       res.status(401).json({ message: "Invalid email or password" });
@@ -198,6 +218,27 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+// @desc    Verify Email
+// @route   GET /api/auth/verify-email/:token
+export const verifyEmail = async (req, res) => {
+  try {
+    const user = await User.findOne({ verificationToken: req.params.token });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired verification link." });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully!" });
+  } catch (error) {
+    console.error("Email verification error:", error);
+    res.status(500).json({ message: "Verification failed. Please try again." });
+  }
+};
+
 // @desc    Logout
 // @route   POST /api/auth/logout
 export const logout = (req, res) => {
@@ -216,6 +257,40 @@ export const getMe = async (req, res) => {
     displayName: req.user.displayName,
     isOnboarded: req.user.isOnboarded,
   });
+};
+
+// @desc    Resend Verification Email
+// @route   POST /api/auth/resend-verification
+// @access  Private
+export const resendVerification = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.isVerified) return res.status(400).json({ message: "User already verified" });
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    user.verificationToken = verificationToken;
+    await user.save();
+
+    const verifyUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}/verify-email/${verificationToken}`;
+    
+    await sendEmail({
+      email: user.email,
+      subject: "Verify Your ChaiPoll Account",
+      html: `<div style="font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+        <h1 style="color: #ef4444; font-size: 22px;">Verification Link Resent</h1>
+        <p style="color: #a1a1a1; margin-bottom: 24px;">Please verify your email address to unlock full features:</p>
+        <a href="${verifyUrl}" style="display: inline-block; background: #ef4444; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 12px; font-weight: bold;">Verify Email Address</a>
+        <p style="color: #666; font-size: 12px; margin-top: 24px;">Or copy this link: ${verifyUrl}</p>
+      </div>`,
+      text: `Verify your account: ${verifyUrl}`
+    });
+
+    res.status(200).json({ message: "Verification email resent successfully!" });
+  } catch (error) {
+    console.error("Resend verification error:", error);
+    res.status(500).json({ message: "Failed to resend email. Please try again." });
+  }
 };
 
 // @desc    Update Display Name / Onboarding

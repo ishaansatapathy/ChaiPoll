@@ -17,9 +17,11 @@ import {
   forgotPassword,
   verifyOtp,
   resetPassword,
+  verifyEmail,
   logout,
   getMe,
   updateDisplayName,
+  resendVerification,
   googleCallback,
 } from "../controllers/authController.js";
 
@@ -42,6 +44,8 @@ router.post(
   validate,
   resetPassword
 );
+router.get("/verify-email/:token", verifyEmail);
+router.post("/resend-verification", protect, resendVerification);
 router.post("/logout", logout);
 
 router.get("/me", protect, getMe);

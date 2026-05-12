@@ -22,7 +22,7 @@ export default function CreatePoll() {
   });
 
   const [questions, setQuestions] = useState([
-    { id: genId(), text: "", options: ["", ""], isMandatory: true, correctOptionIndex: null },
+    { id: genId(), text: "", options: ["", ""], isMandatory: true, correctOptionIndex: null, type: "single" },
   ]);
 
   const addQuestion = useCallback(() => {
@@ -34,6 +34,7 @@ export default function CreatePoll() {
         options: ["", ""],
         isMandatory: true,
         correctOptionIndex: null,
+        type: "single",
       },
     ]);
   }, []);
@@ -327,6 +328,23 @@ function QuestionEditor({ index, question, onUpdate, onRemove, canRemove }) {
           <X size={20} />
         </button>
       )}
+
+      <div className="flex gap-2 mb-8">
+        {["single", "multiple"].map((type) => (
+          <button
+            key={type}
+            type="button"
+            onClick={() => onUpdate({ type })}
+            className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+              question.type === type 
+                ? "bg-[#ef4444] text-white shadow-[0_0_15px_rgba(239,68,68,0.3)]" 
+                : "bg-white/5 text-white/20 hover:bg-white/10"
+            }`}
+          >
+            {type} Choice
+          </button>
+        ))}
+      </div>
 
       <div className="space-y-8">
         <div>
