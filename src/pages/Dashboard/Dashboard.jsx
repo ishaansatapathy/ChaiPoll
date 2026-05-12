@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Plus, BarChart2, Users, Activity } from "lucide-react";
+import { Plus, BarChart2, Users, Activity, Mail, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
@@ -16,6 +16,8 @@ export default function Dashboard() {
   const [polls, setPolls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showRough, setShowRough] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   useEffect(() => {
     const fetchPolls = async () => {
@@ -39,6 +41,20 @@ export default function Dashboard() {
     setPolls((prev) => prev.filter((p) => p.pollCode !== pollCode));
   }, []);
 
+  const handleResend = async () => {
+    if (resending) return;
+    setResending(true);
+    try {
+      await API.post("/auth/resend-verification");
+      setResendSuccess(true);
+      setTimeout(() => setResendSuccess(false), 5000);
+    } catch (err) {
+      console.error("Resend failed", err);
+    } finally {
+      setResending(false);
+    }
+  };
+
   const totalVotes = polls.reduce((acc, poll) => acc + (poll.totalParticipants || 0), 0);
   const activePolls = polls.filter((p) => p.isActive).length;
 
@@ -51,6 +67,41 @@ export default function Dashboard() {
   return (
     <section className="py-8 relative">
       <Onboarding />
+      
+      {/* Verification Banner */}
+      {user && !user.isVerified && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 p-6 rounded-[32px] bg-[#ef4444]/5 border border-[#ef4444]/20 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden"
+        >
+          <div className="absolute top-0 left-0 w-1 h-full bg-[#ef4444]" />
+          <div className="flex items-center gap-6">
+            <div className="h-14 w-14 rounded-2xl bg-[#ef4444]/10 flex items-center justify-center text-[#ef4444]">
+              <Mail size={24} />
+            </div>
+            <div>
+              <h3 className="text-xl font-display text-white mb-1 tracking-tight">Verify your email</h3>
+              <p className="text-sm text-white/40 italic font-handwriting text-2xl">Check your inbox to unlock all features.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+             {resendSuccess ? (
+               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-4 py-2 rounded-xl border border-emerald-500/20">Email Sent!</span>
+             ) : (
+               <button 
+                 onClick={handleResend}
+                 disabled={resending}
+                 className="px-6 py-2.5 rounded-xl bg-white text-black text-[10px] font-black uppercase tracking-widest hover:bg-[#ef4444] hover:text-white transition-all disabled:opacity-50"
+               >
+                 {resending ? "Sending..." : "Resend Link"}
+               </button>
+             )}
+             <span className="text-[9px] font-black uppercase tracking-widest text-[#ef4444] px-3 py-1.5 rounded-lg border border-[#ef4444]/20">Pending</span>
+          </div>
+        </motion.div>
+      )}
+
       {/* Decorative background */}
       <div className="absolute -top-10 -right-10 opacity-10 pointer-events-none scale-150">
         <svg width="400" height="400" viewBox="0 0 400 400">

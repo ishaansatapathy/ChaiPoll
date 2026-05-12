@@ -6,6 +6,11 @@ import Vote from "../models/Vote.js";
 // @access  Private
 export const createPoll = async (req, res) => {
   try {
+    // Check if user is banned
+    if (req.user.isBanned) {
+      return res.status(403).json({ message: "Your account has been banned" });
+    }
+
     const { title, description, questions, visibility, expiresAt, settings } = req.body;
 
     // Format questions and options
@@ -151,9 +156,6 @@ export const publishPoll = async (req, res) => {
   }
 };
 
-// @desc    Get poll analytics
-// @route   GET /api/polls/:code/analytics
-// @access  Private
 export const getPollAnalytics = async (req, res) => {
   try {
     const poll = await Poll.findOne({ pollCode: req.params.code.toUpperCase() });
@@ -166,12 +168,79 @@ export const getPollAnalytics = async (req, res) => {
       return res.status(403).json({ message: "Not authorized" });
     }
 
-    const votes = await Vote.find({ pollId: poll._id })
-      .populate("voterId", "name email displayName avatar")
-      .sort("-createdAt")
-      .limit(200);
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 50, 200);
+    const skip = (page - 1) * limit;
 
-    res.json({ poll, recentVotes: votes });
+    const [votes, totalVotes] = await Promise.all([
+      Vote.find({ pollId: poll._id })
+        .populate("voterId", "name email displayName avatar")
+        .sort("-createdAt")
+        .skip(skip)
+        .limit(limit),
+      Vote.countDocuments({ pollId: poll._id }),
+    ]);
+
+    res.json({
+      poll,
+      recentVotes: votes,
+      pagination: {
+        page,
+        limit,
+        total: totalVotes,
+        hasMore: skip + votes.length < totalVotes,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error fetching analytics" });
+  }
+};
+
+// @desc    Export poll data as CSV
+// @route   GET /api/polls/:code/export
+// @access  Private
+export const exportPollData = async (req, res) => {
+  try {
+    const poll = await Poll.findOne({ pollCode: req.params.code.toUpperCase() });
+
+    if (!poll) {
+      return res.status(404).json({ message: "Poll not found" });
+    }
+
+    if (poll.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    const votes = await Vote.find({ pollId: poll._id }).populate("voterId", "name email");
+
+    // Create CSV Header
+    let csv = "Timestamp,Voter Name,Voter Email,Voter IP\n";
+    poll.questions.forEach((q, i) => {
+      csv += `,Question ${i + 1}: ${q.text.replace(/,/g, "")}`;
+    });
+    csv += "\n";
+
+    // Create CSV Rows
+    votes.forEach((v) => {
+      csv += `${v.createdAt.toISOString()},${v.voterId?.name || "Anonymous"},${v.voterId?.email || "N/A"},${v.voterIp || "Unknown"}`;
+      
+      const responseMap = new Map(v.responses.map(r => [r.questionId.toString(), r.optionIds]));
+      
+      poll.questions.forEach(q => {
+        const selectedOptionIds = responseMap.get(q._id.toString()) || [];
+        const selectedTexts = q.options
+          .filter(opt => selectedOptionIds.includes(opt._id.toString()))
+          .map(opt => opt.text.replace(/,/g, ""));
+        
+        csv += `,${selectedTexts.join(" | ")}`;
+      });
+      csv += "\n";
+    });
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", `attachment; filename=poll-export-${poll.pollCode}.csv`);
+    res.status(200).send(csv);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error fetching analytics" });

@@ -10,6 +10,7 @@ import {
   deletePoll,
   updatePoll,
   closePoll,
+  exportPollData,
 } from "../controllers/pollController.js";
 import { pollValidationRules, validate } from "../middleware/validator.js";
 
@@ -22,6 +23,7 @@ router.route("/my-polls").get(protect, getMyPolls);
 router.route("/:code").get(getPollByCode).put(protect, updatePoll).delete(protect, deletePoll);
 
 router.route("/:code/analytics").get(protect, getPollAnalytics);
+router.route("/:code/export").get(protect, exportPollData);
 
 router.route("/:code/publish").patch(protect, publishPoll);
 

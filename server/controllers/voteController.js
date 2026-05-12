@@ -7,6 +7,11 @@ import { persistVoteSubmission, TallyUpdateError } from "../services/persistVote
 // @access  Public/Private
 export const submitVote = async (req, res) => {
   try {
+    // Check if user is authenticated and banned
+    if (req.user && req.user.isBanned) {
+      return res.status(403).json({ message: "Your account has been banned" });
+    }
+
     const { pollCode, responses } = req.body;
 
     const poll = await Poll.findOne({ pollCode: pollCode.toUpperCase() });
@@ -27,9 +32,10 @@ export const submitVote = async (req, res) => {
       return res.status(401).json({ message: "Authentication required for this poll" });
     }
 
-    const responseMap = new Map(responses.map((r) => [r.questionId, r.selectedOptionId]));
     for (const q of poll.questions) {
-      if (q.isMandatory && !responseMap.has(q._id.toString())) {
+      const resp = responses.find(r => r.questionId === q._id.toString());
+      const oIds = resp?.optionIds || (resp?.selectedOptionId ? [resp.selectedOptionId] : []);
+      if (q.isMandatory && oIds.length === 0) {
         return res.status(400).json({ message: `Question "${q.text}" is mandatory` });
       }
     }

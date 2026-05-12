@@ -13,6 +13,9 @@ import {
   Share2,
   Copy,
   Check,
+  Download,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   Bar,
@@ -43,6 +46,9 @@ export default function Analytics() {
   const [activeTab, setActiveTab] = useState("charts");
   const [publishing, setPublishing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ total: 0, hasMore: false });
 
   const pollUrl = `${window.location.origin}/poll/${id}`;
 
@@ -50,6 +56,25 @@ export default function Analytics() {
     navigator.clipboard.writeText(pollUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleExport = async () => {
+    if (!id || exporting) return;
+    setExporting(true);
+    try {
+      const response = await exportPollData(id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `poll-export-${id}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Export failed", err);
+    } finally {
+      setExporting(false);
+    }
   };
 
   // Compute real metrics instead of hardcoded fakes
@@ -101,12 +126,13 @@ export default function Analytics() {
       return;
     }
 
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchData = async (pageNum = 1) => {
+      setLoading(pageNum === 1);
       try {
-        const { data } = await getPollAnalytics(id);
+        const { data } = await getPollAnalytics(id, pageNum);
         setPoll(data.poll);
         setRecentVotes(data.recentVotes || []);
+        setPagination(data.pagination);
 
         if (!socket.connected) socket.connect();
         socket.emit("joinPollRoom", id);
@@ -121,13 +147,13 @@ export default function Analytics() {
       }
     };
 
-    fetchData();
+    fetchData(page);
 
     return () => {
       socket.emit("leavePollRoom", id);
       socket.off("pollUpdated");
     };
-  }, [id]);
+  }, [id, page]);
 
   if (loading && !poll) return <AnalyticsSkeleton />;
 
@@ -291,7 +317,16 @@ export default function Analytics() {
                   </div>
                 </motion.div>
 
-                <div className="flex p-1.5 rounded-[22px] bg-[#050505] border border-white/10 backdrop-blur-2xl shadow-2xl">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={handleExport}
+                    disabled={exporting}
+                    className="flex items-center gap-3 px-6 py-4 rounded-[22px] bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all shadow-xl disabled:opacity-50"
+                  >
+                    <Download size={14} /> {exporting ? "Exporting..." : "Export CSV"}
+                  </button>
+
+                  <div className="flex p-1.5 rounded-[22px] bg-[#050505] border border-white/10 backdrop-blur-2xl shadow-2xl">
                   <button
                     onClick={() => setActiveTab("charts")}
                     className={`px-8 py-3 rounded-[18px] text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-500 flex items-center gap-2 ${activeTab === "charts" ? "bg-[#ef4444] text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]" : "text-white/30 hover:text-white/60"}`}
@@ -304,6 +339,7 @@ export default function Analytics() {
                   >
                     <Users size={14} /> Participants
                   </button>
+                  </div>
                 </div>
               </div>
 
@@ -566,19 +602,42 @@ export default function Analytics() {
                         </div>
                       </ChartContainer>
                     ))}
+                    </div>
                   </div>
-                </div>
-              ) : (
+                ) : (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="flex items-center justify-between">
                     <h2 className="font-display text-3xl text-white border-l-4 border-[#ef4444] pl-6">
                       Participants
                     </h2>
                     <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold">
-                      Total Responses: {recentVotes.length}
+                      Total Responses: {pagination.total}
                     </p>
                   </div>
                   <ParticipantList votes={recentVotes} />
+                  
+                  {/* Pagination Controls */}
+                  {pagination.total > pagination.limit && (
+                    <div className="flex items-center justify-center gap-6 pt-8 border-t border-white/5">
+                      <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="p-4 rounded-2xl bg-white/5 border border-white/5 text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                      <span className="text-xs font-mono text-white/60">
+                        Page <span className="text-white">{page}</span> of {Math.ceil(pagination.total / pagination.limit)}
+                      </span>
+                      <button
+                        onClick={() => setPage(p => p + 1)}
+                        disabled={!pagination.hasMore}
+                        className="p-4 rounded-2xl bg-white/5 border border-white/5 text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </>

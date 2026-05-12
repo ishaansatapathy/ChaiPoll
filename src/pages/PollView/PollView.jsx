@@ -51,9 +51,26 @@ export default function PollView() {
     };
   }, [id, navigate]);
 
-  const handleOptionSelect = (questionId, optionId) => {
+  const handleOptionSelect = (question, optionId) => {
     if (isExpired || needsAuth) return;
-    setResponses((prev) => ({ ...prev, [questionId]: optionId }));
+    
+    const questionId = question._id;
+    const isMultiple = question.type === "multiple";
+
+    setResponses((prev) => {
+      const current = prev[questionId] || [];
+      const currentArray = Array.isArray(current) ? current : [current];
+
+      if (isMultiple) {
+        if (currentArray.includes(optionId)) {
+          return { ...prev, [questionId]: currentArray.filter(id => id !== optionId) };
+        } else {
+          return { ...prev, [questionId]: [...currentArray, optionId] };
+        }
+      } else {
+        return { ...prev, [questionId]: [optionId] };
+      }
+    });
   };
 
   const handleSubmit = async () => {
@@ -69,9 +86,9 @@ export default function PollView() {
     setSubmitting(true);
     setError("");
     try {
-      const formatted = Object.entries(responses).map(([qId, oId]) => ({
+      const formatted = Object.entries(responses).map(([qId, oIds]) => ({
         questionId: qId,
-        selectedOptionId: oId,
+        optionIds: Array.isArray(oIds) ? oIds : [oIds],
       }));
       await submitVote({ pollCode: id, responses: formatted });
       navigate(`/results/${id}`);
@@ -170,21 +187,35 @@ export default function PollView() {
                   {q.options.map((opt) => (
                     <div
                       key={opt._id}
-                      onClick={() => handleOptionSelect(q._id, opt._id)}
-                      className={`group relative flex items-center gap-4 rounded-[24px] border p-6 cursor-pointer transition-all duration-500 ${responses[q._id] === opt._id ? "border-[#ef4444] bg-[#ef4444]/5 shadow-[inset_0_0_30px_rgba(239,68,68,0.05)]" : "border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10"}`}
+                      onClick={() => handleOptionSelect(q, opt._id)}
+                      className={`group relative flex items-center gap-4 rounded-[24px] border p-6 cursor-pointer transition-all duration-500 ${
+                        (Array.isArray(responses[q._id]) ? responses[q._id].includes(opt._id) : responses[q._id] === opt._id)
+                          ? "border-[#ef4444] bg-[#ef4444]/5 shadow-[inset_0_0_30px_rgba(239,68,68,0.05)]"
+                          : "border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10"
+                      }`}
                     >
                       <div
-                        className={`h-6 w-6 rounded-full border-2 transition-all flex items-center justify-center ${responses[q._id] === opt._id ? "border-[#ef4444]" : "border-white/10"}`}
+                        className={`h-6 w-6 rounded-${q.type === "multiple" ? "lg" : "full"} border-2 transition-all flex items-center justify-center ${
+                          (Array.isArray(responses[q._id]) ? responses[q._id].includes(opt._id) : responses[q._id] === opt._id)
+                            ? "border-[#ef4444] bg-[#ef4444]"
+                            : "border-white/10"
+                        }`}
                       >
-                        {responses[q._id] === opt._id && (
+                        {(Array.isArray(responses[q._id]) ? responses[q._id].includes(opt._id) : responses[q._id] === opt._id) && (
                           <motion.div
-                            layoutId={`dot-${q._id}`}
-                            className="h-3 w-3 rounded-full bg-[#ef4444]"
-                          />
+                            layoutId={`dot-${q._id}-${opt._id}`}
+                            className={q.type === "multiple" ? "text-white" : "h-3 w-3 rounded-full bg-white"}
+                          >
+                            {q.type === "multiple" && <CheckCircle2 size={14} strokeWidth={4} />}
+                          </motion.div>
                         )}
                       </div>
                       <span
-                        className={`text-lg font-medium transition-colors ${responses[q._id] === opt._id ? "text-white" : "text-white/60 group-hover:text-white/80"}`}
+                        className={`text-lg font-medium transition-colors ${
+                          (Array.isArray(responses[q._id]) ? responses[q._id].includes(opt._id) : responses[q._id] === opt._id)
+                            ? "text-white"
+                            : "text-white/60 group-hover:text-white/80"
+                        }`}
                       >
                         {opt.text}
                       </span>

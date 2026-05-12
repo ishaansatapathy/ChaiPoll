@@ -33,7 +33,7 @@ const questionSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["single"],
+    enum: ["single", "multiple"],
     default: "single",
   },
   totalVotes: {
@@ -87,6 +87,16 @@ const pollSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    flagged: {
+      type: Boolean,
+      default: false,
+    },
+    flagReason: String,
+    flaggedAt: Date,
+    flaggedBy: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
     },
   },
   {

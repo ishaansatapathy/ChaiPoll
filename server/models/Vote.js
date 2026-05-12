@@ -5,9 +5,10 @@ const responseSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     required: true,
   },
-  selectedOptionId: {
-    type: mongoose.Schema.ObjectId,
+  optionIds: {
+    type: [mongoose.Schema.ObjectId],
     required: true,
+    validate: [v => Array.isArray(v) && v.length > 0, "At least one option must be selected"],
   },
 });
 

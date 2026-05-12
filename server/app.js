@@ -10,8 +10,10 @@ import passportConfig from "./config/passport.js";
 import authRoutes from "./routes/auth.js";
 import pollRoutes from "./routes/polls.js";
 import voteRoutes from "./routes/votes.js";
+import adminRoutes from "./routes/admin.js";
 import { getAllowedOrigins } from "./utils/allowedOrigins.js";
 import { requestLogger, errorLogger } from "./middleware/logger.js";
+import { updateLastActive } from "./middleware/roleAuth.js";
 import logger from "./utils/logger.js";
 import { swaggerOptions } from "./swagger-docs.js";
 
@@ -49,6 +51,9 @@ export function createApp() {
   app.use(passport.initialize());
   passportConfig(passport);
 
+  // Update last active timestamp for authenticated users
+  app.use(updateLastActive);
+
   // Swagger API documentation
   const swaggerSpec = swaggerJsdoc(swaggerOptions);
   app.use(
@@ -61,9 +66,16 @@ export function createApp() {
     })
   );
 
+  app.use("/api/v1/auth", authRoutes);
+  app.use("/api/v1/polls", pollRoutes);
+  app.use("/api/v1/votes", voteRoutes);
+  app.use("/api/v1/admin", adminRoutes);
+
+  // Backward compatibility redirects
   app.use("/api/auth", authRoutes);
   app.use("/api/polls", pollRoutes);
   app.use("/api/votes", voteRoutes);
+  app.use("/api/admin", adminRoutes);
 
   app.get("/", (req, res) => {
     res.send("ChaiPoll Nexus API is running...");
