@@ -111,7 +111,7 @@ export const forgotPassword = async (req, res) => {
     const user = await findUserByEmailForRecovery(email);
     if (!user) {
       console.warn(`[DEBUG] Recovery failed: User not found for "${email}"`);
-      return res.status(404).json({ message: "User not found with that email address." });
+      return res.status(404).json({ message: "No account found. Create one first!" });
     }
 
     console.log(`[DEBUG] Recovery started for: ${user.email}`);
