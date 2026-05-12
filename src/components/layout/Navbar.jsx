@@ -45,14 +45,14 @@ export function Navbar() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-4">
-          <Link 
-            to="/login" 
+          <Link
+            to="/login"
             className="hidden sm:block text-xs font-medium uppercase tracking-widest text-white/50 hover:text-white transition-colors"
           >
             Login
           </Link>
-          <Button 
-            to="/signup" 
+          <Button
+            to="/signup"
             className="h-9 px-5 text-[11px] uppercase tracking-[0.15em] font-bold bg-white text-black hover:bg-white/90 border-none rounded-full"
           >
             Start free

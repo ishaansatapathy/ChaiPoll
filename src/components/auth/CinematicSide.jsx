@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { RoughNotation } from 'react-rough-notation';
+import React from "react";
+import { motion } from "framer-motion";
+import { RoughNotation } from "react-rough-notation";
 
 const CinematicSide = () => {
   return (
@@ -27,7 +27,13 @@ const CinematicSide = () => {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="text-8xl font-bold tracking-tighter text-white"
           >
-            <RoughNotation type="highlight" show={true} color="rgba(255,255,255,0.05)" strokeWidth={10} padding={10}>
+            <RoughNotation
+              type="highlight"
+              show={true}
+              color="rgba(255,255,255,0.05)"
+              strokeWidth={10}
+              padding={10}
+            >
               Chai.
             </RoughNotation>
           </motion.h1>
@@ -72,7 +78,9 @@ const CinematicSide = () => {
         className="absolute bottom-0 left-0 flex items-center space-x-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-xl"
       >
         <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
-        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">Better Engagement</span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">
+          Better Engagement
+        </span>
       </motion.div>
     </div>
   );
@@ -87,7 +95,7 @@ const FloatingFragment = ({ src, className, delay }) => (
     }}
     transition={{
       opacity: { delay, duration: 1 },
-      y: { repeat: Infinity, duration: 6, ease: "easeInOut" }
+      y: { repeat: Infinity, duration: 6, ease: "easeInOut" },
     }}
     className={className}
   >

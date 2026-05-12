@@ -7,7 +7,7 @@ export function getAllowedOrigins() {
   const raw = process.env.ALLOWED_ORIGINS;
   if (raw && raw.trim()) {
     return raw
-      .split(',')
+      .split(",")
       .map((s) => s.trim())
       .filter(Boolean);
   }
@@ -15,7 +15,10 @@ export function getAllowedOrigins() {
   const fromClient = process.env.CLIENT_URL?.trim();
   const list = [];
   if (fromClient) list.push(fromClient);
-  // Sensible local default when ALLOWED_ORIGINS is unset
-  list.push('http://localhost:5173');
+  // Sensible local defaults when ALLOWED_ORIGINS is unset (support multiple dev ports)
+  list.push("http://localhost:5173");
+  list.push("http://localhost:5174");
+  list.push("http://127.0.0.1:5173");
+  list.push("http://127.0.0.1:5174");
   return [...new Set(list)];
 }

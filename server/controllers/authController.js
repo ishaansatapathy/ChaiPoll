@@ -1,11 +1,10 @@
-import User from '../models/User.js';
-import generateToken from '../utils/generateToken.js';
-import crypto from 'crypto';
-import sendEmail from '../utils/sendEmail.js';
-import { getClearJwtCookieOptions } from '../utils/jwtCookieOptions.js';
+import User from "../models/User.js";
+import generateToken from "../utils/generateToken.js";
+import crypto from "crypto";
+import sendEmail from "../utils/sendEmail.js";
+import { getClearJwtCookieOptions } from "../utils/jwtCookieOptions.js";
 
-const GENERIC_RECOVERY_MESSAGE =
-  'If an account exists for that email, we sent reset instructions.';
+const GENERIC_RECOVERY_MESSAGE = "If an account exists for that email, we sent reset instructions.";
 
 // @desc    Sign up
 // @route   POST /api/auth/signup
@@ -14,7 +13,7 @@ export const signup = async (req, res) => {
   try {
     const sanitizedEmail = email.toLowerCase().trim();
     const userExists = await User.findOne({ email: sanitizedEmail });
-    if (userExists) return res.status(400).json({ message: 'User already exists' });
+    if (userExists) return res.status(400).json({ message: "User already exists" });
 
     const user = await User.create({
       name: name.trim(),
@@ -31,11 +30,11 @@ export const signup = async (req, res) => {
         avatar: user.avatar,
       });
     } else {
-      res.status(400).json({ message: 'Invalid user data' });
+      res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ message: 'Unable to create account. Please try again.' });
+    console.error("Signup error:", error);
+    res.status(500).json({ message: "Unable to create account. Please try again." });
   }
 };
 
@@ -45,7 +44,7 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const sanitizedEmail = email.toLowerCase().trim();
-    const user = await User.findOne({ email: sanitizedEmail }).select('+password');
+    const user = await User.findOne({ email: sanitizedEmail }).select("+password");
     if (user && (await user.matchPassword(password))) {
       generateToken(res, user._id);
       res.json({
@@ -55,11 +54,11 @@ export const login = async (req, res) => {
         avatar: user.avatar,
       });
     } else {
-      res.status(401).json({ message: 'Invalid email or password' });
+      res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Unable to sign in. Please try again.' });
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Unable to sign in. Please try again." });
   }
 };
 
@@ -73,8 +72,8 @@ export const forgotPassword = async (req, res) => {
       return res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });
     }
 
-    const resetToken = crypto.randomBytes(20).toString('hex');
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const otp = crypto.randomInt(100_000, 1_000_000).toString();
 
     user.resetPasswordToken = resetToken;
     user.resetPasswordOTP = otp;
@@ -82,34 +81,39 @@ export const forgotPassword = async (req, res) => {
 
     await user.save();
 
-    if (method === 'otp') {
+    if (method === "otp") {
+      const otpPlain = `Your ChaiPoll password reset code is: ${otp}\n\nThis code expires in 10 minutes. If you did not request this, you can ignore this email.`;
       await sendEmail({
         email: user.email,
-        subject: 'Your Password Reset Code — ChaiPoll',
-        html: `<div style="font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
-          <h1 style="color: #ef4444; font-size: 24px;">Password Reset</h1>
+        subject: "Your ChaiPoll password reset code",
+        html: `<div style="font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+          <h1 style="color: #ef4444; font-size: 22px;">Password reset</h1>
           <p style="color: #a1a1a1;">Your 6-digit verification code is:</p>
-          <div style="font-size: 40px; font-weight: bold; letter-spacing: 10px; margin: 20px 0;">${otp}</div>
+          <p style="font-size: 32px; font-weight: bold; letter-spacing: 0.35em; margin: 24px 0;">${otp}</p>
+          <p style="color: #a1a1a1; font-size: 14px;">Code again (plain): <strong style="color: #fff; letter-spacing: 0.2em;">${otp}</strong></p>
           <p style="color: #666; font-size: 12px;">This code expires in 10 minutes.</p>
         </div>`,
+        text: otpPlain,
       });
     } else {
-      const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+      const resetUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}/reset-password/${resetToken}`;
+      const linkPlain = `Reset your ChaiPoll password:\n\n${resetUrl}\n\nThis link expires in 10 minutes.`;
       await sendEmail({
         email: user.email,
-        subject: 'Reset Your Password — ChaiPoll',
-        html: `<div style="font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
-          <h1 style="color: #ef4444; font-size: 24px;">Password Reset</h1>
-          <p style="color: #a1a1a1; margin-bottom: 24px;">Click the button below to reset your password.</p>
-          <a href="${resetUrl}" style="background: #fff; color: #000; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold;">Reset Password</a>
-          <p style="color: #666; font-size: 12px; margin-top: 20px;">This link expires in 10 minutes.</p>
+        subject: "Reset Your Password — ChaiPoll",
+        html: `<div style="font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+          <h1 style="color: #ef4444; font-size: 22px;">Password reset</h1>
+          <p style="color: #a1a1a1; margin-bottom: 24px;">Open this link to set a new password:</p>
+          <p style="margin-bottom: 16px;"><a href="${resetUrl}" style="color: #60a5fa;">${resetUrl}</a></p>
+          <p style="color: #666; font-size: 12px;">This link expires in 10 minutes.</p>
         </div>`,
+        text: linkPlain,
       });
     }
     res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });
   } catch (error) {
-    console.error('Email error:', error);
-    res.status(500).json({ message: 'Unable to send recovery email. Please try again later.' });
+    console.error("Email error:", error);
+    res.status(500).json({ message: "Unable to send recovery email. Please try again later." });
   }
 };
 
@@ -123,11 +127,11 @@ export const verifyOtp = async (req, res) => {
       resetPasswordOTP: otp,
       resetPasswordExpire: { $gt: Date.now() },
     });
-    if (!user) return res.status(400).json({ message: 'Invalid or expired code.' });
-    res.status(200).json({ message: 'Code verified successfully.' });
+    if (!user) return res.status(400).json({ message: "Invalid or expired code." });
+    res.status(200).json({ message: "Code verified successfully." });
   } catch (error) {
-    console.error('Verify OTP error:', error);
-    res.status(500).json({ message: 'Verification failed. Please try again.' });
+    console.error("Verify OTP error:", error);
+    res.status(500).json({ message: "Verification failed. Please try again." });
   }
 };
 
@@ -142,7 +146,7 @@ export const resetPassword = async (req, res) => {
     query.resetPasswordExpire = { $gt: Date.now() };
 
     const user = await User.findOne(query);
-    if (!user) return res.status(400).json({ message: 'Invalid or expired reset request.' });
+    if (!user) return res.status(400).json({ message: "Invalid or expired reset request." });
 
     user.password = newPassword;
     user.resetPasswordToken = undefined;
@@ -150,18 +154,18 @@ export const resetPassword = async (req, res) => {
     user.resetPasswordExpire = undefined;
     await user.save();
 
-    res.status(200).json({ message: 'Password reset successfully.' });
+    res.status(200).json({ message: "Password reset successfully." });
   } catch (error) {
-    console.error('Reset password error:', error);
-    res.status(500).json({ message: 'Password reset failed. Please try again.' });
+    console.error("Reset password error:", error);
+    res.status(500).json({ message: "Password reset failed. Please try again." });
   }
 };
 
 // @desc    Logout
 // @route   POST /api/auth/logout
 export const logout = (req, res) => {
-  res.cookie('jwt', '', getClearJwtCookieOptions());
-  res.status(200).json({ message: 'Logged out successfully' });
+  res.cookie("jwt", "", getClearJwtCookieOptions());
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
 // @desc    Get current user
@@ -184,7 +188,7 @@ export const updateDisplayName = async (req, res) => {
     const { displayName } = req.body;
     const user = await User.findById(req.user._id);
 
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     user.displayName = displayName;
     user.isOnboarded = true;
@@ -199,8 +203,8 @@ export const updateDisplayName = async (req, res) => {
       isOnboarded: user.isOnboarded,
     });
   } catch (error) {
-    console.error('Update display name error:', error);
-    res.status(500).json({ message: 'Failed to update display name' });
+    console.error("Update display name error:", error);
+    res.status(500).json({ message: "Failed to update display name" });
   }
 };
 
@@ -208,5 +212,5 @@ export const updateDisplayName = async (req, res) => {
 // @route   Used internally after passport.authenticate
 export const googleCallback = (req, res) => {
   generateToken(res, req.user._id);
-  res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/dashboard`);
+  res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}/dashboard`);
 };

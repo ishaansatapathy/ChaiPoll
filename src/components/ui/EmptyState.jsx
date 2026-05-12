@@ -9,7 +9,11 @@ export function EmptyState({ title, description, actionLabel, actionTo }) {
       </div>
       <h3 className="font-display text-2xl text-white">{title}</h3>
       <p className="mt-3 max-w-md text-sm leading-6 text-white/54">{description}</p>
-      {actionLabel && <Button to={actionTo} className="mt-6">{actionLabel}</Button>}
+      {actionLabel && (
+        <Button to={actionTo} className="mt-6">
+          {actionLabel}
+        </Button>
+      )}
     </div>
   );
 }

@@ -37,7 +37,11 @@ export function IntegrationArchitecture() {
 
         {/* The Flow Diagram */}
         <div className="absolute inset-0">
-          <svg className="w-full h-full opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <svg
+            className="w-full h-full opacity-20"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
             {connections.map((conn, i) => (
               <motion.path
                 key={i}
@@ -84,9 +88,7 @@ export function IntegrationArchitecture() {
           whileInView={{ opacity: 0.05, x: 0 }}
           className="absolute -bottom-20 -right-20 pointer-events-none select-none"
         >
-          <span className="font-display text-[20rem] text-white font-bold italic">
-            Flow
-          </span>
+          <span className="font-display text-[20rem] text-white font-bold italic">Flow</span>
         </motion.div>
       </div>
     </section>

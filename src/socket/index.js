@@ -1,7 +1,7 @@
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
 // Use environment variable for Socket URL
-const URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 
 export const socket = io(URL, {
   autoConnect: false,
@@ -12,7 +12,7 @@ export const socket = io(URL, {
 });
 
 // Global logging for debugging in development
-if (import.meta.env.MODE === 'development') {
+if (import.meta.env.MODE === "development") {
   socket.onAny((event, ...args) => {
     console.log(`[Socket Event] ${event}`, args);
   });

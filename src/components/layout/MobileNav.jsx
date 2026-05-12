@@ -26,9 +26,7 @@ export function MobileNav() {
           {({ isActive }) => (
             <>
               <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-              <span className="text-[9px] font-bold uppercase tracking-widest">
-                {item.label}
-              </span>
+              <span className="text-[9px] font-bold uppercase tracking-widest">{item.label}</span>
               {isActive && (
                 <motion.div
                   layoutId="mobileNavActive"

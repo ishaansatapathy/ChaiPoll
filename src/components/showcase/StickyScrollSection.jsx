@@ -5,7 +5,8 @@ import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
 const slides = [
   {
     title: "Realtime analytics",
-    description: "Watch responses pour in with millisecond precision. Our dashboard updates live without refresh.",
+    description:
+      "Watch responses pour in with millisecond precision. Our dashboard updates live without refresh.",
     preview: (
       <div className="h-full w-full bg-ink-900 rounded-xl border border-white/5 p-8 flex flex-col justify-center gap-6 overflow-hidden">
         <div className="flex items-center justify-between">
@@ -32,24 +33,45 @@ const slides = [
   },
   {
     title: "Anonymous responses",
-    description: "Privacy first. Collect honest feedback without compromising identity. Secure and encrypted.",
+    description:
+      "Privacy first. Collect honest feedback without compromising identity. Secure and encrypted.",
     preview: (
       <div className="h-full w-full bg-ink-900 rounded-xl border border-white/5 p-8 flex flex-col items-center justify-center text-center">
-        <RoughNotation type="box" show={true} color="#ef4444" strokeWidth={2} padding={20} animationDelay={500}>
+        <RoughNotation
+          type="box"
+          show={true}
+          color="#ef4444"
+          strokeWidth={2}
+          padding={20}
+          animationDelay={500}
+        >
           <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center mb-6">
-            <svg className="w-8 h-8 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            <svg
+              className="w-8 h-8 text-white/40"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
             </svg>
           </div>
         </RoughNotation>
         <h4 className="text-xl text-white mb-2 mt-4">End-to-End Encryption</h4>
-        <p className="text-sm text-white/40 max-w-[200px]">Data is hashed and anonymized before storage.</p>
+        <p className="text-sm text-white/40 max-w-[200px]">
+          Data is hashed and anonymized before storage.
+        </p>
       </div>
     ),
   },
   {
     title: "Publish results instantly",
-    description: "Generate beautiful public links to share findings with your community or stakeholders.",
+    description:
+      "Generate beautiful public links to share findings with your community or stakeholders.",
     preview: (
       <div className="h-full w-full bg-ink-900 rounded-xl border border-white/5 p-8 flex flex-col justify-center">
         <div className="p-4 bg-white/5 border border-white/10 rounded-lg mb-4">
@@ -65,7 +87,9 @@ const slides = [
         </div>
         <div className="mt-8 flex justify-end">
           <RoughNotation type="box" show={true} color="white" strokeWidth={1} padding={6}>
-            <div className="px-4 py-2 bg-white text-black text-xs font-bold rounded">SHARE LINK</div>
+            <div className="px-4 py-2 bg-white text-black text-xs font-bold rounded">
+              SHARE LINK
+            </div>
           </RoughNotation>
         </div>
       </div>
@@ -84,10 +108,7 @@ export function StickyScrollSection() {
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      const index = Math.min(
-        slides.length - 1,
-        Math.floor(latest * slides.length)
-      );
+      const index = Math.min(slides.length - 1, Math.floor(latest * slides.length));
       setActiveIndex(index);
     });
     return () => unsubscribe();
@@ -106,12 +127,14 @@ export function StickyScrollSection() {
                 animate={{
                   opacity: activeIndex === index ? 1 : 0,
                   y: activeIndex === index ? 0 : 20,
-                  pointerEvents: activeIndex === index ? "auto" : "none"
+                  pointerEvents: activeIndex === index ? "auto" : "none",
                 }}
                 transition={{ duration: 0.6, ease: "circOut" }}
                 className="absolute inset-0 flex flex-col justify-center"
               >
-                <span className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mb-4">Feature 0{index + 1}</span>
+                <span className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mb-4">
+                  Feature 0{index + 1}
+                </span>
                 <h2 className="font-display text-5xl md:text-6xl font-normal text-white mb-6">
                   {slide.title}
                 </h2>

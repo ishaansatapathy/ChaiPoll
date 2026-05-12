@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { getJwtCookieOptions, getClearJwtCookieOptions } from './jwtCookieOptions.js';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { getJwtCookieOptions, getClearJwtCookieOptions } from "./jwtCookieOptions.js";
 
-describe('jwtCookieOptions', () => {
+describe("jwtCookieOptions", () => {
   let origNodeEnv;
   let origSame;
   let origSecure;
@@ -23,23 +23,23 @@ describe('jwtCookieOptions', () => {
     else delete process.env.JWT_COOKIE_SECURE;
   });
 
-  it('defaults to lax + non-secure outside production', () => {
-    process.env.NODE_ENV = 'development';
+  it("defaults to lax + non-secure outside production", () => {
+    process.env.NODE_ENV = "development";
     const o = getJwtCookieOptions();
-    expect(o.sameSite).toBe('lax');
+    expect(o.sameSite).toBe("lax");
     expect(o.secure).toBe(false);
     expect(o.httpOnly).toBe(true);
   });
 
-  it('defaults to none + secure in production', () => {
-    process.env.NODE_ENV = 'production';
+  it("defaults to none + secure in production", () => {
+    process.env.NODE_ENV = "production";
     const o = getJwtCookieOptions();
-    expect(o.sameSite).toBe('none');
+    expect(o.sameSite).toBe("none");
     expect(o.secure).toBe(true);
   });
 
-  it('clear options match set options', () => {
-    process.env.NODE_ENV = 'development';
+  it("clear options match set options", () => {
+    process.env.NODE_ENV = "development";
     const set = getJwtCookieOptions();
     const clear = getClearJwtCookieOptions();
     expect(clear.sameSite).toBe(set.sameSite);

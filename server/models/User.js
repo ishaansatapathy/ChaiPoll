@@ -1,60 +1,57 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Please add a name']
+    required: [true, "Please add a name"],
   },
   email: {
     type: String,
-    required: [true, 'Please add an email'],
+    required: [true, "Please add an email"],
     unique: true,
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email'
-    ]
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, "Please add a valid email"],
   },
   password: {
     type: String,
-    required: function() {
-      return this.authProvider === 'local';
+    required: function () {
+      return this.authProvider === "local";
     },
     minlength: 8,
-    select: false
+    select: false,
   },
   avatar: {
     type: String,
-    default: 'default-avatar.png'
+    default: "default-avatar.png",
   },
   authProvider: {
     type: String,
-    enum: ['local', 'google', 'github'],
-    default: 'local'
+    enum: ["local", "google", "github"],
+    default: "local",
   },
   providerId: {
-    type: String
+    type: String,
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   resetPasswordToken: String,
   resetPasswordOTP: String,
   resetPasswordExpire: Date,
   displayName: {
     type: String,
-    trim: true
+    trim: true,
   },
   isOnboarded: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function() {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
     return;
   }
 
@@ -63,8 +60,8 @@ userSchema.pre('save', async function() {
 });
 
 // Match user entered password to hashed password in database
-userSchema.methods.matchPassword = async function(enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);

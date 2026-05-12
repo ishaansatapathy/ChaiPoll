@@ -1,16 +1,16 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 export function Skeleton({ className }) {
   return (
     <div className={`overflow-hidden rounded-md bg-white/5 relative ${className}`}>
       <motion.div
-        initial={{ x: '-100%' }}
-        animate={{ x: '100%' }}
+        initial={{ x: "-100%" }}
+        animate={{ x: "100%" }}
         transition={{
           repeat: Infinity,
           duration: 1.5,
-          ease: 'linear',
+          ease: "linear",
         }}
         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
       />
@@ -45,7 +45,9 @@ export function AnalyticsSkeleton() {
         <Skeleton className="h-16 w-48 rounded-3xl" />
       </div>
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {[1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
+        {[1, 2, 3, 4].map((i) => (
+          <CardSkeleton key={i} />
+        ))}
       </div>
       <div className="grid gap-10 lg:grid-cols-2 mt-16">
         <Skeleton className="h-[400px] rounded-[40px]" />

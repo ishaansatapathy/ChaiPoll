@@ -8,7 +8,11 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
@@ -31,12 +35,24 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "resend": "^6.12.3",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.7.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^15.14.0",
     "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.14",
+    "prettier": "^3.8.3",
     "supertest": "^7.1.0",
+    "typescript": "~5.7.3",
     "vitest": "^3.2.4"
   }
 }
