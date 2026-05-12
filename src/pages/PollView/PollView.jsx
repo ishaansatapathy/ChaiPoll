@@ -7,7 +7,7 @@ import { Badge } from "../../components/ui/Badge.jsx";
 import { getPollByCode, submitVote } from "../../services/api.js";
 import { socket } from "../../socket/index.js";
 import { Loader2, Shield, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import PollExpired from "./PollExpired.jsx";
 
 export default function PollView() {

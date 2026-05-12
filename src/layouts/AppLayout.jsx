@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "../components/layout/Sidebar.jsx";
 import { MobileNav } from "../components/layout/MobileNav.jsx";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext";
 
 export function AppLayout() {
   useAuth();

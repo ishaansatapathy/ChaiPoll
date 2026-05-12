@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { CinematicLogo } from "../ui/CinematicLogo.jsx";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import { motion } from "framer-motion";
 
 const items = [

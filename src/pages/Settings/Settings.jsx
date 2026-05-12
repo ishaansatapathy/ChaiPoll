@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
 import { LogOut, User as UserIcon } from "lucide-react";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Highlight } from "../../components/ui/Highlight.jsx";
 

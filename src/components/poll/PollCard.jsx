@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Badge } from "../ui/Badge.jsx";
 import { Card } from "../ui/Card.jsx";
 import { ShareModal } from "../share/ShareModal.jsx";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import { deletePoll } from "../../services/api.js";
 
 export function PollCard({ poll, onDeleteSuccess }) {
