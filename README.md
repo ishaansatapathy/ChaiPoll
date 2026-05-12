@@ -24,7 +24,7 @@ Full-stack polling app with realtime updates (**Socket.io**), JWT + OAuth auth, 
 
 ## Tech stack
 
-- **Frontend**: React (Vite), Tailwind, Framer Motion, React Flow, Recharts, Socket.io client; **ESLint 9** (flat config) + **Prettier**; TypeScript used for `tsc` on shared types (`src/types`) until a full `.tsx` migration.
+- **Frontend**: React (Vite), Tailwind, Framer Motion, React Flow, Recharts, Socket.io client; **ESLint 9** (flat config) + **Prettier**; **Core logic (API/Auth) migrated to TypeScript** for maximum production stability.
 - **Backend**: Node.js, Express, Socket.io, MongoDB, Mongoose, Passport.
 
 ## Scripts

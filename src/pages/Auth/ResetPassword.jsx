@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import axios from "axios";
 import heroImage from "../../../bg-image/hero-bg.png";
 import RoughChaiCodeMark from "../../components/auth/RoughChaiCodeMark";

@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Home, Search } from "lucide-react";
-import { Highlight } from "../../components/ui/Highlight.jsx";
 
 export default function NotFound() {
   return (
@@ -26,7 +25,7 @@ export default function NotFound() {
 
         <div className="p-8 rounded-[32px] border border-white/5 bg-white/[0.02] backdrop-blur-3xl mb-10">
           <p className="text-white/50 leading-relaxed">
-            The page you're looking for doesn't exist or has been moved.
+            The page you&apos;re looking for doesn&apos;t exist or has been moved.
           </p>
         </div>
 
