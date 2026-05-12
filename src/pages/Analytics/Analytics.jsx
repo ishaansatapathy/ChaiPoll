@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { QRCodeCanvas } from "qrcode.react";
 import {
   Activity,
   Zap,
@@ -9,6 +10,9 @@ import {
   BarChart2,
   LayoutDashboard,
   Plus,
+  Share2,
+  Copy,
+  Check,
 } from "lucide-react";
 import {
   Bar,
@@ -38,6 +42,15 @@ export default function Analytics() {
   const [showRough, setShowRough] = useState(false);
   const [activeTab, setActiveTab] = useState("charts");
   const [publishing, setPublishing] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const pollUrl = `${window.location.origin}/poll/${id}`;
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(pollUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   // Compute real metrics instead of hardcoded fakes
   const recentCount = recentVotes.filter(
@@ -175,6 +188,69 @@ export default function Analytics() {
               <Plus size={14} strokeWidth={3} /> NEW POLL
             </Link>
           </div>
+
+          {/* Share Hub: Only visible when a poll is selected */}
+          {id && poll && (
+            <div className="surface rounded-3xl border border-white/5 bg-[#050505]/50 backdrop-blur-3xl p-6 shadow-2xl space-y-6">
+              <div className="flex items-center gap-3 px-2 border-b border-white/5 pb-4">
+                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  <Share2 className="text-emerald-500" size={16} />
+                </div>
+                <h3 className="text-[10px] uppercase tracking-[0.4em] text-white/60 font-black">
+                  Share Poll
+                </h3>
+              </div>
+
+              <div className="flex flex-col items-center gap-6">
+                <div className="p-4 bg-white rounded-2xl shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                  <QRCodeCanvas
+                    value={pollUrl}
+                    size={140}
+                    level="H"
+                    includeMargin={false}
+                    imageSettings={{
+                      src: "/logo.png",
+                      x: undefined,
+                      y: undefined,
+                      height: 24,
+                      width: 24,
+                      excavate: true,
+                    }}
+                  />
+                </div>
+
+                <div className="w-full space-y-3">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 text-center">
+                    Direct Link
+                  </p>
+                  <button
+                    onClick={copyToClipboard}
+                    className="group relative w-full p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-between hover:bg-white/[0.06] hover:border-white/10 transition-all overflow-hidden"
+                  >
+                    <span className="text-[10px] font-mono text-white/40 truncate pr-4">
+                      {pollUrl.replace(/^https?:\/\//, "")}
+                    </span>
+                    <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
+                      {copied ? (
+                        <Check size={14} className="text-emerald-500" />
+                      ) : (
+                        <Copy size={14} className="text-white/40" />
+                      )}
+                    </div>
+                    {copied && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute inset-0 bg-emerald-500 flex items-center justify-center text-[10px] font-black text-white uppercase tracking-widest"
+                      >
+                        Link Copied!
+                      </motion.div>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Main Content */}
