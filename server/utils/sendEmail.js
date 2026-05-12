@@ -24,10 +24,12 @@ const sendEmail = async (options) => {
     process.env.BREVO_SENDER_NAME || process.env.FROM_NAME || process.env.SMTP_FROM_NAME || "ChaiPoll";
 
   if (!BREVO_API_KEY || !senderEmail) {
+    console.error(`[CONFIG ERROR] Missing credentials. API_KEY: ${BREVO_API_KEY ? 'Present' : 'MISSING'}, SENDER: ${senderEmail || 'MISSING'}`);
     throw new Error(
-      "Email is not configured: set BREVO_API_KEY and BREVO_SENDER_EMAIL (or FROM_EMAIL) on the server"
+      "Email is not configured: set BREVO_API_KEY and BREVO_SENDER_EMAIL on the server"
     );
   }
+  console.log(`[DEBUG] Using Brevo Key: ${BREVO_API_KEY.substring(0, 4)}... and Sender: ${senderEmail}`);
 
   const payload = {
     sender: {
