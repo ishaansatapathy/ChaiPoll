@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import Lenis from "lenis";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext";
 
 export function PublicLayout() {
   const { user, loading } = useAuth();

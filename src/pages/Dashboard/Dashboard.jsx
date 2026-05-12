@@ -8,7 +8,7 @@ import { PollCard } from "../../components/poll/PollCard.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import { Skeleton, CardSkeleton } from "../../components/ui/Skeleton.jsx";
 import { getMyPolls } from "../../services/api.js";
-import { useAuth } from "../../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext";
 import Onboarding from "../../components/auth/Onboarding.jsx";
 
 export default function Dashboard() {
