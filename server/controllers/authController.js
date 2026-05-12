@@ -10,12 +10,30 @@ const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** Exact lowercase match first (indexed), then case-insensitive (legacy DB rows). */
 async function findUserByEmailForRecovery(emailValue) {
   const trimmed = String(emailValue ?? "").trim();
+  console.log(`[DEBUG] Attempting recovery for: "${trimmed}"`);
   if (!trimmed) return null;
-  const byLower = await User.findOne({ email: trimmed.toLowerCase() });
-  if (byLower) return byLower;
-  return User.findOne({
-    email: { $regex: new RegExp(`^${escapeRegex(trimmed)}$`, "i") },
+  const lower = trimmed.toLowerCase();
+  
+  // Try exact match first
+  let user = await User.findOne({ email: lower });
+  if (user) {
+    console.log(`[DEBUG] Found user by exact match: ${user._id}`);
+    return user;
+  }
+
+  // Try case-insensitive regex that also ignores leading/trailing whitespace in the DB
+  // This handles users who accidentally signed up with " test@me.com "
+  user = await User.findOne({
+    email: { $regex: new RegExp(`^\\s*${escapeRegex(trimmed)}\\s*$`, "i") },
   });
+  
+  if (!user) {
+    console.warn(`[DEBUG] No user found for: "${trimmed}"`);
+    logger.warn("Recovery requested for non-existent email", { email: trimmed });
+  } else {
+    console.log(`[DEBUG] Found user by fuzzy regex: ${user._id} (Stored email: "${user.email}")`);
+  }
+  return user;
 }
 
 function emailMatchClause(emailValue) {
@@ -92,8 +110,11 @@ export const forgotPassword = async (req, res) => {
   try {
     const user = await findUserByEmailForRecovery(email);
     if (!user) {
-      return res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });
+      console.warn(`[DEBUG] Recovery failed: User not found for "${email}"`);
+      return res.status(404).json({ message: "User not found with that email address." });
     }
+
+    console.log(`[DEBUG] Recovery started for: ${user.email}`);
 
     const resetToken = crypto.randomBytes(20).toString("hex");
     const otp = crypto.randomInt(100_000, 1_000_000).toString();
@@ -120,7 +141,7 @@ export const forgotPassword = async (req, res) => {
       });
     } else {
       const resetUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}/reset-password/${resetToken}`;
-      const linkPlain = `Reset your ChaiPoll password:\n\n${resetUrl}\n\nThis link expires in 10 minutes.`;
+      const magicLinkText = `Reset your ChaiPoll password:\n\n${resetUrl}\n\nThis link expires in 10 minutes.`;
       await sendEmail({
         email: user.email,
         subject: "Reset Your Password — ChaiPoll",
@@ -130,7 +151,7 @@ export const forgotPassword = async (req, res) => {
           <p style="margin-bottom: 16px;"><a href="${resetUrl}" style="color: #60a5fa;">${resetUrl}</a></p>
           <p style="color: #666; font-size: 12px;">This link expires in 10 minutes.</p>
         </div>`,
-        text: linkPlain,
+        text: magicLinkText,
       });
     }
     res.status(200).json({ message: GENERIC_RECOVERY_MESSAGE });

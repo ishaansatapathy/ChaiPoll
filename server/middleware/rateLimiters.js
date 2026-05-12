@@ -14,10 +14,10 @@ export const authCredentialLimiter = rateLimit({
 
 /** Forgot password, OTP verify, reset — tight cap to slow enumeration and OTP guessing */
 export const passwordResetLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 10,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // 30 attempts
   skip: skipInTests,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: "Too many password reset attempts. Try again in an hour." },
+  message: { message: "Too many password reset attempts. Try again in 15 minutes." },
 });
