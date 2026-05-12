@@ -36,8 +36,7 @@ initializeSockets(io);
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://chai-poll.vercel.app',
-  'https://chai-poll.vercel.app/'
+  'https://chai-poll.vercel.app'
 ];
 
 app.use(cors({
@@ -46,13 +45,16 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
 }));
 
-// Rate Limiting: Disabled for production testing stabilization
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 500, // Increased limit for production testing
-//   message: { message: 'Too many requests from this IP, please try again after 15 minutes' }
-// });
-// app.use('/api/', limiter);
+// Security Headers
+app.use(helmet());
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: { message: 'Too many requests from this IP, please try again after 15 minutes' }
+});
+app.use('/api/', limiter);
 
 // Standard Middleware
 app.use(express.json());

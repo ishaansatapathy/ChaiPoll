@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { RoughNotation } from "react-rough-notation";
 import { Navbar } from "../../components/layout/Navbar.jsx";
 import { Button } from "../../components/ui/Button.jsx";
+import { Highlight } from "../../components/ui/Highlight.jsx";
 import { useSpotlight } from "../../hooks/useSpotlight.js";
 import heroImage from "../../../bg-image/ChatGPT Image May 10, 2026, 01_12_17 AM.png";
 
@@ -12,17 +13,6 @@ import { StickyScrollSection } from "../../components/showcase/StickyScrollSecti
 import { LiveResponseSection } from "../../components/showcase/LiveResponseSection.jsx";
 import { TypographySection } from "../../components/showcase/TypographySection.jsx";
 import { CinematicLogo } from "../../components/ui/CinematicLogo.jsx";
-
-function Highlight({ children }) {
-  return (
-    <span className="relative inline-block rounded-[2px] border border-white/14 bg-white/[0.015] px-[0.055em] pb-[0.01em]">
-      {["-left-1 -top-1", "-right-1 -top-1", "-bottom-1 -left-1", "-bottom-1 -right-1"].map((pos) => (
-        <span key={pos} className={`absolute ${pos} h-1 w-1 rounded-[1px] border border-white/25 bg-black`} />
-      ))}
-      {children}
-    </span>
-  );
-}
 
 export default function Home() {
   useSpotlight();
@@ -127,13 +117,13 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* New Cinematic Sections */}
+      {/* Showcase Sections */}
       <WorkflowSection />
       <StickyScrollSection />
       <LiveResponseSection />
       <TypographySection />
 
-      {/* Minimal Footer */}
+      {/* Footer */}
       <footer className="relative z-20 py-20 px-5 md:px-20 border-t border-white/5">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="flex items-center gap-8">

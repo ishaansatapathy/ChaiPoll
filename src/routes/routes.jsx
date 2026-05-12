@@ -6,8 +6,10 @@ import CreatePoll from "../pages/CreatePoll/CreatePoll.jsx";
 import PollView from "../pages/PollView/PollView.jsx";
 import Analytics from "../pages/Analytics/Analytics.jsx";
 import Results from "../pages/Results/Results.jsx";
+import NotFound from "../pages/NotFound/NotFound.jsx";
 import { AppLayout } from "../layouts/AppLayout.jsx";
 import { PublicLayout } from "../layouts/PublicLayout.jsx";
+import ProtectedRoute from "../components/auth/ProtectedRoute.jsx";
 
 export const routes = [
   {
@@ -19,10 +21,11 @@ export const routes = [
       { path: "/auth", element: <Auth /> },
       { path: "/poll/:id", element: <PollView /> },
       { path: "/results/:id", element: <Results /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
   {
-    element: <AppLayout />,
+    element: <ProtectedRoute><AppLayout /></ProtectedRoute>,
     children: [
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/create", element: <CreatePoll /> },

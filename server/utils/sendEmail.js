@@ -11,7 +11,7 @@ const sendEmail = async (options) => {
       },
       body: JSON.stringify({
         sender: {
-          name: 'ChaiPoll Intelligence',
+          name: 'ChaiPoll',
           email: 'ishaansatapathy09@gmail.com'
         },
         to: [{ email: options.email }],
@@ -27,10 +27,10 @@ const sendEmail = async (options) => {
       throw new Error(data.message || 'API rejected the request');
     }
 
-    console.log('Nexus Signal Dispatched via Brevo:', data.messageId);
+    console.log('Email sent via Brevo:', data.messageId);
     return data;
   } catch (err) {
-    console.error('Brevo System Failure:', err);
+    console.error('Email send failed:', err);
     throw err;
   }
 };

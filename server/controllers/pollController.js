@@ -56,10 +56,15 @@ export const createPoll = async (req, res) => {
 // @access  Public
 export const getPolls = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 50);
+    const skip = (page - 1) * limit;
+
     const polls = await Poll.find({ visibility: 'public' })
       .populate('createdBy', 'name avatar')
       .sort('-createdAt')
-      .limit(20);
+      .skip(skip)
+      .limit(limit);
       
     res.json(polls);
   } catch (error) {
@@ -73,8 +78,14 @@ export const getPolls = async (req, res) => {
 // @access  Private
 export const getMyPolls = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 50);
+    const skip = (page - 1) * limit;
+
     const polls = await Poll.find({ createdBy: req.user._id })
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .skip(skip)
+      .limit(limit);
       
     res.json(polls);
   } catch (error) {
