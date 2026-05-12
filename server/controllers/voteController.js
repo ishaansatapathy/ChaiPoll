@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Poll from '../models/Poll.js';
 import Vote from '../models/Vote.js';
 
@@ -16,11 +17,11 @@ export const submitVote = async (req, res) => {
     }
 
     if (!poll.isActive) {
-      return res.status(400).json({ message: 'Poll is closed' });
+      return res.status(400).json({ message: 'This poll is closed' });
     }
 
     if (poll.expiresAt && new Date(poll.expiresAt) < new Date()) {
-      return res.status(400).json({ message: 'Poll has expired' });
+      return res.status(400).json({ message: 'This poll has expired' });
     }
 
     // Security Check: Authenticated only?
@@ -49,10 +50,7 @@ export const submitVote = async (req, res) => {
       });
 
       // Atomic Update Vote Counts in Poll Model
-      const mongoose = (await import('mongoose')).default;
-      
       for (const resp of responses) {
-        // Convert string IDs to ObjectIDs to ensure matching in updateOne
         const qId = new mongoose.Types.ObjectId(resp.questionId);
         const oId = new mongoose.Types.ObjectId(resp.selectedOptionId);
 
@@ -86,21 +84,21 @@ export const submitVote = async (req, res) => {
         io.to(poll.pollCode).emit('pollUpdated', finalPoll);
         io.to(poll.pollCode).emit('new_participation', { 
           timestamp: new Date(),
-          location: 'Remote Node'
+          location: 'Remote'
         });
       }
 
-      res.status(201).json({ message: 'Responses submitted successfully', poll: finalPoll });
+      res.status(201).json({ message: 'Response submitted successfully', poll: finalPoll });
 
     } catch (dbError) {
       if (dbError.code === 11000) {
-        return res.status(400).json({ message: 'Double submission detected. Access denied.' });
+        return res.status(400).json({ message: 'You have already submitted a response to this poll.' });
       }
       throw dbError;
     }
 
   } catch (error) {
-    console.error('Warrior Vote Submission Failure:', error);
-    res.status(500).json({ message: 'Nexus connection failed. Mission aborted.' });
+    console.error('Vote submission error:', error);
+    res.status(500).json({ message: 'Failed to submit your response. Please try again.' });
   }
 };

@@ -13,9 +13,10 @@ const router = express.Router();
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const userExists = await User.findOne({ email });
+    const sanitizedEmail = email.toLowerCase().trim();
+    const userExists = await User.findOne({ email: sanitizedEmail });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name: name.trim(), email: sanitizedEmail, password });
     if (user) {
       generateToken(res, user._id);
       res.status(201).json({ _id: user._id, name: user.name, email: user.email, avatar: user.avatar });
@@ -32,7 +33,8 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email }).select('+password');
+    const sanitizedEmail = email.toLowerCase().trim();
+    const user = await User.findOne({ email: sanitizedEmail }).select('+password');
     if (user && (await user.matchPassword(password))) {
       generateToken(res, user._id);
       res.json({ _id: user._id, name: user.name, email: user.email, avatar: user.avatar });
@@ -48,9 +50,8 @@ router.post('/login', async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
   const { email, method } = req.body;
   try {
-    const user = await User.findOne({ email: email.toLowerCase() });
-    console.log(`[Discovery] Search for ${email}: ${user ? 'AGENT FOUND' : 'AGENT NOT FOUND'}`);
-    if (!user) return res.status(404).json({ message: 'No agent found with that signal.' });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) return res.status(404).json({ message: 'No account found with that email.' });
 
     const resetToken = crypto.randomBytes(20).toString('hex');
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -64,28 +65,31 @@ router.post('/forgot-password', async (req, res) => {
     if (method === 'otp') {
       await sendEmail({
         email: user.email,
-        subject: 'Identity Verification Code',
-        html: `<div style="font-family: sans-serif; background: #000; color: #fff; padding: 40px; border-radius: 20px;">
-          <h1 style="color: #ef4444;">Mission Recovery</h1>
-          <p>Your 6-digit identity decode sequence is:</p>
-          <div style="font-size: 40px; font-weight: bold; letter-spacing: 10px;">${otp}</div>
+        subject: 'Your Password Reset Code — ChaiPoll',
+        html: `<div style="font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+          <h1 style="color: #ef4444; font-size: 24px;">Password Reset</h1>
+          <p style="color: #a1a1a1;">Your 6-digit verification code is:</p>
+          <div style="font-size: 40px; font-weight: bold; letter-spacing: 10px; margin: 20px 0;">${otp}</div>
+          <p style="color: #666; font-size: 12px;">This code expires in 10 minutes.</p>
         </div>`
       });
     } else {
       const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
       await sendEmail({
         email: user.email,
-        subject: 'Identity Restoration Link',
-        html: `<div style="font-family: sans-serif; background: #000; color: #fff; padding: 40px; border-radius: 20px;">
-          <h1 style="color: #ef4444;">Mission Recovery</h1>
-          <a href="${resetUrl}" style="background: #fff; color: #000; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold;">RESTORE IDENTITY</a>
+        subject: 'Reset Your Password — ChaiPoll',
+        html: `<div style="font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+          <h1 style="color: #ef4444; font-size: 24px;">Password Reset</h1>
+          <p style="color: #a1a1a1; margin-bottom: 24px;">Click the button below to reset your password.</p>
+          <a href="${resetUrl}" style="background: #fff; color: #000; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold;">Reset Password</a>
+          <p style="color: #666; font-size: 12px; margin-top: 20px;">This link expires in 10 minutes.</p>
         </div>`
       });
     }
-    res.status(200).json({ message: 'Recovery signal dispatched.' });
+    res.status(200).json({ message: 'Recovery email sent successfully.' });
   } catch (error) {
     console.error('Email error:', error);
-    res.status(500).json({ message: `Signal failure: ${error.message}` });
+    res.status(500).json({ message: `Failed to send email: ${error.message}` });
   }
 });
 
@@ -93,9 +97,9 @@ router.post('/forgot-password', async (req, res) => {
 router.post('/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
   try {
-    const user = await User.findOne({ email, resetPasswordOTP: otp, resetPasswordExpire: { $gt: Date.now() } });
+    const user = await User.findOne({ email: email.toLowerCase().trim(), resetPasswordOTP: otp, resetPasswordExpire: { $gt: Date.now() } });
     if (!user) return res.status(400).json({ message: 'Invalid or expired code.' });
-    res.status(200).json({ message: 'Code authorized.' });
+    res.status(200).json({ message: 'Code verified successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Verification error.' });
   }
@@ -105,13 +109,13 @@ router.post('/verify-otp', async (req, res) => {
 router.post('/reset-password', async (req, res) => {
   const { email, otp, newPassword, token } = req.body;
   try {
-    let query = { email };
+    let query = { email: email.toLowerCase().trim() };
     if (otp) query.resetPasswordOTP = otp;
     else if (token) query.resetPasswordToken = token;
     query.resetPasswordExpire = { $gt: Date.now() };
 
     const user = await User.findOne(query);
-    if (!user) return res.status(400).json({ message: 'Recovery protocol failed.' });
+    if (!user) return res.status(400).json({ message: 'Invalid or expired reset request.' });
 
     user.password = newPassword;
     user.resetPasswordToken = undefined;
@@ -119,9 +123,9 @@ router.post('/reset-password', async (req, res) => {
     user.resetPasswordExpire = undefined;
     await user.save();
 
-    res.status(200).json({ message: 'Identity restored.' });
+    res.status(200).json({ message: 'Password reset successfully.' });
   } catch (error) {
-    res.status(500).json({ message: 'Restoration failure.' });
+    res.status(500).json({ message: 'Password reset failed.' });
   }
 });
 
@@ -141,7 +145,7 @@ router.get('/me', protect, async (req, res) => {
     name: req.user.name, 
     email: req.user.email, 
     avatar: req.user.avatar,
-    callsign: req.user.callsign,
+    displayName: req.user.callsign,
     isOnboarded: req.user.isOnboarded
   });
 });
@@ -155,7 +159,7 @@ router.get('/google/callback', passport.authenticate('google', {
   res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/dashboard`);
 });
 
-// @desc    Update Callsign/Onboarding
+// @desc    Update Display Name/Onboarding
 // @route   PATCH /api/auth/update-callsign
 // @access  Private
 router.patch('/update-callsign', protect, async (req, res) => {
@@ -163,15 +167,15 @@ router.patch('/update-callsign', protect, async (req, res) => {
     const { callsign } = req.body;
     const user = await User.findById(req.user._id);
     
-    if (!user) return res.status(404).json({ message: 'Agent not found' });
+    if (!user) return res.status(404).json({ message: 'User not found' });
     
     user.callsign = callsign;
     user.isOnboarded = true;
     await user.save();
     
-    res.json({ _id: user._id, name: user.name, email: user.email, avatar: user.avatar, callsign: user.callsign, isOnboarded: user.isOnboarded });
+    res.json({ _id: user._id, name: user.name, email: user.email, avatar: user.avatar, displayName: user.callsign, isOnboarded: user.isOnboarded });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to update callsign' });
+    res.status(500).json({ message: 'Failed to update display name' });
   }
 });
 

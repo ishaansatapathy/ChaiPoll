@@ -11,7 +11,8 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Ideally handle unauthorized errors
+      // Dispatch custom event so AuthContext can clear user state
+      window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     }
     return Promise.reject(error);
   }
@@ -28,6 +29,6 @@ export const getPollAnalytics = (code) => API.get(`/polls/${code}/analytics`);
 export const submitVote = (voteData) => API.post('/votes', voteData);
 
 // Auth APIs
-export const updateCallsign = (callsign) => API.patch('/auth/update-callsign', { callsign });
+export const updateDisplayName = (callsign) => API.patch('/auth/update-callsign', { callsign });
 
 export default API;

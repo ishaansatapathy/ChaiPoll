@@ -82,7 +82,7 @@ export function Sidebar() {
               </div>
               <div className="overflow-hidden">
                 <p className="text-sm font-bold text-white truncate">{user.name}</p>
-                <p className="text-[10px] text-white/30 truncate font-handwriting tracking-wider italic">Active Session</p>
+                <p className="text-[10px] text-white/30 truncate font-medium tracking-wider">{user.email}</p>
               </div>
             </div>
             <button 

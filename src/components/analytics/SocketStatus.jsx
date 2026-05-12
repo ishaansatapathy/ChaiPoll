@@ -39,7 +39,7 @@ export default function SocketStatus() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </div>
-            <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Neural Link Active</span>
+            <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Live Sync Active</span>
           </motion.div>
         ) : (
           <motion.div 
@@ -50,7 +50,7 @@ export default function SocketStatus() {
             className="flex items-center gap-3 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 backdrop-blur-xl"
           >
             <ZapOff className="text-red-400 animate-pulse" size={12} />
-            <span className="text-[9px] font-bold text-red-400 uppercase tracking-widest">Link Severed - Reconnecting</span>
+            <span className="text-[9px] font-bold text-red-400 uppercase tracking-widest">Offline - Reconnecting</span>
           </motion.div>
         )}
       </AnimatePresence>

@@ -45,8 +45,8 @@ const Auth = () => {
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_top,rgba(0,0,0,0)_40%,rgba(0,0,0,0.1)_72%,rgba(0,0,0,0.22)_100%)]" />
 
       <div className="relative z-10 flex min-h-screen w-full">
-        {/* Left Side: Exact Absolute Positioning */}
-        <div className="relative flex flex-1">
+        {/* Left Side: Decorative Annotations — hidden on mobile */}
+        <div className="relative flex-1 hidden md:flex">
           
           {/* Logo */}
           <div className="absolute top-[10%] left-[8%] opacity-95">
@@ -108,7 +108,7 @@ const Auth = () => {
         </div>
 
         {/* Right Side: Auth Card */}
-        <div className="relative flex w-[35%] min-w-[400px] flex-col items-center justify-center p-12 bg-gradient-to-l from-black/80 to-transparent border-l border-white/5">
+        <div className="relative flex w-full md:w-[35%] md:min-w-[380px] flex-col items-center justify-center p-6 sm:p-12 bg-gradient-to-l from-black/80 to-transparent md:border-l border-white/5">
           <div className="w-full max-w-md">
             <motion.div
               initial={{ opacity: 0, y: 16, scale: 0.98, filter: 'blur(10px)' }}

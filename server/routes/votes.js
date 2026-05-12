@@ -2,7 +2,6 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { submitVote } from '../controllers/voteController.js';
-import { optionalProtect } from '../middleware/auth.js';
 import { voteValidationRules, validate } from '../middleware/validator.js';
 
 const router = express.Router();
@@ -21,6 +20,6 @@ const optionalAuth = async (req, res, next) => {
   next();
 };
 
-router.post('/', optionalAuth, submitVote);
+router.post('/', optionalAuth, voteValidationRules, validate, submitVote);
 
 export default router;
