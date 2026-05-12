@@ -18,11 +18,15 @@ const parseBrevoBody = async (response) => {
 
 const sendEmail = async (options) => {
   const BREVO_API_KEY = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.FROM_EMAIL;
-  const senderName = process.env.FROM_NAME || "ChaiPoll";
+  const senderEmail =
+    process.env.BREVO_SENDER_EMAIL || process.env.FROM_EMAIL || process.env.SMTP_FROM;
+  const senderName =
+    process.env.BREVO_SENDER_NAME || process.env.FROM_NAME || process.env.SMTP_FROM_NAME || "ChaiPoll";
 
   if (!BREVO_API_KEY || !senderEmail) {
-    throw new Error("Email is not configured (BREVO_API_KEY and FROM_EMAIL required)");
+    throw new Error(
+      "Email is not configured: set BREVO_API_KEY and BREVO_SENDER_EMAIL (or FROM_EMAIL) on the server"
+    );
   }
 
   const payload = {
