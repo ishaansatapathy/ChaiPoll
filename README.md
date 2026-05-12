@@ -123,8 +123,8 @@ ChaiPoll now includes production-ready tools for code quality, testing, and docu
 - `NODE_ENV=production`
 - `PORT` — Render sets automatically; code uses `process.env.PORT`.
 - `MONGODB_URI`, `JWT_SECRET` (long random)
-- `CLIENT_URL` = your frontend URL (e.g. `https://your-app.vercel.app`)
-- `ALLOWED_ORIGINS` = comma list of every origin that calls the API and opens Socket.io (frontend + `http://localhost:5173` if you dev against prod API).
+- `CLIENT_URL` = **exact** frontend origin the browser uses (e.g. `https://chai-poll.vercel.app`). Must match the Vercel URL (hyphens / spelling count).
+- `ALLOWED_ORIGINS` = optional extra origins (comma-separated). **The server always merges** `CLIENT_URL` and local dev URLs with this list, so you are not forced to duplicate `CLIENT_URL` here—but you can still add preview domains, etc.
 - Google: `GOOGLE_CALLBACK_URL` = `https://<your-service>.onrender.com/api/auth/google/callback` and match in Google Cloud console.
 - Email: `BREVO_API_KEY`, `BREVO_SENDER_EMAIL` (verified sender in Brevo).
 
