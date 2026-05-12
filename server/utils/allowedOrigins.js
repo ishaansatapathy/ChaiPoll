@@ -1,24 +1,43 @@
 /**
- * CORS + Socket.io origins from env.
- * Set ALLOWED_ORIGINS="http://localhost:5173,https://myapp.vercel.app"
- * or rely on CLIENT_URL (plus localhost for local dev).
+ * CORS + Socket.io allowed origins (Express `cors` + Socket.io `cors.origin`).
+ *
+ * Always merges: comma-separated ALLOWED_ORIGINS, CLIENT_URL, and local dev URLs.
+ * This avoids a common footgun: ALLOWED_ORIGINS set on Render without the exact
+ * Vercel URL used by the browser (Origin header), which previously dropped CLIENT_URL
+ * entirely and caused CORS + Socket.io failures.
+ *
+ * Set CLIENT_URL to your live frontend, e.g. https://chai-poll.vercel.app (no typo vs hyphen).
  */
+const LOCAL_DEV_ORIGINS = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+];
+
+function stripTrailingSlashes(url) {
+  return url.replace(/\/+$/, "");
+}
+
 export function getAllowedOrigins() {
-  const raw = process.env.ALLOWED_ORIGINS;
-  if (raw && raw.trim()) {
-    return raw
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+  const list = [];
+
+  const fromAllowList = process.env.ALLOWED_ORIGINS?.trim();
+  if (fromAllowList) {
+    list.push(
+      ...fromAllowList
+        .split(",")
+        .map((s) => stripTrailingSlashes(s.trim()))
+        .filter(Boolean)
+    );
   }
 
   const fromClient = process.env.CLIENT_URL?.trim();
-  const list = [];
-  if (fromClient) list.push(fromClient);
-  // Sensible local defaults when ALLOWED_ORIGINS is unset (support multiple dev ports)
-  list.push("http://localhost:5173");
-  list.push("http://localhost:5174");
-  list.push("http://127.0.0.1:5173");
-  list.push("http://127.0.0.1:5174");
-  return [...new Set(list)];
+  if (fromClient) {
+    list.push(stripTrailingSlashes(fromClient));
+  }
+
+  list.push(...LOCAL_DEV_ORIGINS);
+
+  return [...new Set(list.filter(Boolean))];
 }

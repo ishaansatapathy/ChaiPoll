@@ -29,10 +29,17 @@ const RecoveryFlow = ({ onBack }) => {
         setStep(3);
       }
     } catch (err) {
-      const msg =
-        err.response?.data?.message ||
-        err.response?.data?.errors?.[0]?.msg ||
-        "Something went wrong. Try again.";
+      const noResponse = !err.response;
+      const networkLike =
+        noResponse &&
+        (err.code === "ERR_NETWORK" ||
+          err.message === "Network Error" ||
+          /Network Error/i.test(String(err.message || "")));
+      const msg = networkLike
+        ? "Request did not reach the server (network or CORS). On Vercel set VITE_API_URL; on Render set CLIENT_URL to this site’s exact URL (https://…) and redeploy."
+        : err.response?.data?.message ||
+          err.response?.data?.errors?.[0]?.msg ||
+          "Something went wrong. Try again.";
       setError(msg);
     } finally {
       setLoading(false);
