@@ -48,7 +48,8 @@ export default function Analytics() {
     const fetchPolls = async () => {
       try {
         const { data } = await getMyPolls();
-        setAllPolls(data);
+        // Support both old array format and new paginated object format
+        setAllPolls(Array.isArray(data) ? data : data.data || []);
       } catch (err) {
         console.error("Failed to fetch poll list", err);
       } finally {
