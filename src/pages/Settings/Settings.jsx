@@ -4,7 +4,7 @@ import { RoughNotation } from "react-rough-notation";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Highlight } from "../../components/ui/Highlight.jsx";
+import { Highlight } from "../../components/ui/Highlight";
 
 export default function Settings() {
   const { user, logout } = useAuth();

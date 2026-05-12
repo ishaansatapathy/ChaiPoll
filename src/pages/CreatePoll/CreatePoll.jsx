@@ -2,8 +2,8 @@ import React, { useState, useCallback } from "react";
 import { Plus, X, Loader2, Globe, Clock, Shield, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Highlight } from "../../components/ui/Highlight.jsx";
-import { createPoll } from "../../services/api.js";
+import { Highlight } from "../../components/ui/Highlight";
+import { createPoll } from "../../services/api";
 
 // Helper to generate unique IDs without relying on external state counters
 const genId = () => Math.random().toString(36).substring(2, 9);

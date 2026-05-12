@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Button } from "../ui/Button.jsx";
-import { CinematicLogo } from "../ui/CinematicLogo.jsx";
+import { Button } from "../ui/Button";
+import { CinematicLogo } from "../ui/CinematicLogo";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);

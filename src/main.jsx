@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App.jsx";
+import App from "./App";
 import "./styles/globals.css";
 
-import { ErrorBoundary } from "./components/utils/ErrorBoundary.jsx";
+import { ErrorBoundary } from "./components/utils/ErrorBoundary";
 
 import { AuthProvider } from "./context/AuthContext";
 

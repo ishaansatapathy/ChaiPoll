@@ -1,11 +1,11 @@
 import { BarChart3, Clock, Share2, Eye, Trash2, PieChart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Badge } from "../ui/Badge.jsx";
-import { Card } from "../ui/Card.jsx";
-import { ShareModal } from "../share/ShareModal.jsx";
+import { Badge } from "../ui/Badge";
+import { Card } from "../ui/Card";
+import { ShareModal } from "../share/ShareModal";
 import { useAuth } from "../../context/AuthContext";
-import { deletePoll } from "../../services/api.js";
+import { deletePoll } from "../../services/api";
 
 export function PollCard({ poll, onDeleteSuccess }) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);

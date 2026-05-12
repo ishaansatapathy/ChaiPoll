@@ -3,13 +3,13 @@ import { Plus, BarChart2, Users, Activity, Mail, AlertCircle } from "lucide-reac
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
-import { Highlight } from "../../components/ui/Highlight.jsx";
-import { PollCard } from "../../components/poll/PollCard.jsx";
-import { Button } from "../../components/ui/Button.jsx";
-import { Skeleton, CardSkeleton } from "../../components/ui/Skeleton.jsx";
-import { getMyPolls } from "../../services/api.js";
+import { Highlight } from "../../components/ui/Highlight";
+import { PollCard } from "../../components/poll/PollCard";
+import { Button } from "../../components/ui/Button";
+import { Skeleton, CardSkeleton } from "../../components/ui/Skeleton";
+import { getMyPolls } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
-import Onboarding from "../../components/auth/Onboarding.jsx";
+import Onboarding from "../../components/auth/Onboarding";
 
 export default function Dashboard() {
   const { user } = useAuth();
