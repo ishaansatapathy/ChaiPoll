@@ -106,14 +106,12 @@ ChaiPoll now includes production-ready tools for code quality, testing, and docu
 - **Type Definitions**: Core types defined for frontend & backend
 - **Migration Guide**: Incremental TypeScript adoption path
   ```bash
-  npm run type-check    # Check TypeScript errors
+  npm run typecheck     # Check TypeScript errors
   ```
 
 📖 **Read more:**
 
-- [IMPROVEMENTS.md](IMPROVEMENTS.md) - Detailed feature breakdown
-- [QUICK_START.md](QUICK_START.md) - Getting started guide
-- [TYPESCRIPT_MIGRATION_GUIDE.md](TYPESCRIPT_MIGRATION_GUIDE.md) - TypeScript migration steps
+- Check the codebase for inline documentation and tests.
 
 ## Deploy checklist (Render API + Vercel / static frontend)
 
