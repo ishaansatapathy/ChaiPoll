@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { Sidebar } from "../components/layout/Sidebar.jsx";
-import { MobileNav } from "../components/layout/MobileNav.jsx";
+import { Sidebar } from "../components/layout/Sidebar";
+import { MobileNav } from "../components/layout/MobileNav";
 import { useAuth } from "../context/AuthContext";
 
 export function AppLayout() {

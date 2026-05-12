@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Navbar } from "../../components/layout/Navbar.jsx";
-import { Badge } from "../../components/ui/Badge.jsx";
-import { Card } from "../../components/ui/Card.jsx";
-import { Button } from "../../components/ui/Button.jsx";
-import { Highlight } from "../../components/ui/Highlight.jsx";
-import { getPollByCode, getPollAnalytics } from "../../services/api.js";
+import { Navbar } from "../../components/layout/Navbar";
+import { Badge } from "../../components/ui/Badge";
+import { Card } from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
+import { Highlight } from "../../components/ui/Highlight";
+import { getPollByCode, getPollAnalytics } from "../../services/api";
 import { socket } from "../../socket/index.js";
 import { Loader2, Trophy, Users, Shield, LayoutGrid, Network } from "lucide-react";
-import ResponseFlow from "../../components/analytics/ResponseFlow.jsx";
+import ResponseFlow from "../../components/analytics/ResponseFlow";
 
 export default function Results() {
   const { id } = useParams();

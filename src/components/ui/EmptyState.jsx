@@ -1,5 +1,5 @@
 import { FileQuestion } from "lucide-react";
-import { Button } from "./Button.jsx";
+import { Button } from "./Button";
 
 export function EmptyState({ title, description, actionLabel, actionTo }) {
   return (

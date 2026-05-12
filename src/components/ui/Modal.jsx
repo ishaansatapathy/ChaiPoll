@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { Button } from "./Button.jsx";
+import { Button } from "./Button";
 
 export function Modal({ open, title, children, onClose }) {
   if (!open) return null;

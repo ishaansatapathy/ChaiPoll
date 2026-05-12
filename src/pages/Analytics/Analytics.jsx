@@ -26,13 +26,13 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ChartContainer } from "../../components/analytics/ChartContainer.jsx";
+import { ChartContainer } from "../../components/analytics/ChartContainer";
 import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
 import { getPollAnalytics, publishPoll, getMyPolls } from "../../services/api";
 import { socket } from "../../socket/index.js";
-import { AnalyticsSkeleton } from "../../components/ui/Skeleton.jsx";
-import ParticipantList from "../../components/analytics/ParticipantList.jsx";
+import { AnalyticsSkeleton } from "../../components/ui/Skeleton";
+import ParticipantList from "../../components/analytics/ParticipantList";
 
 export default function Analytics() {
   const { id } = useParams();

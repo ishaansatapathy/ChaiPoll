@@ -1,18 +1,18 @@
-import Home from "../pages/Home/Home.jsx";
-import Auth from "../pages/Auth/Auth.jsx";
-import Dashboard from "../pages/Dashboard/Dashboard.jsx";
-import Settings from "../pages/Settings/Settings.jsx";
-import CreatePoll from "../pages/CreatePoll/CreatePoll.jsx";
-import PollView from "../pages/PollView/PollView.jsx";
-import Analytics from "../pages/Analytics/Analytics.jsx";
-import Results from "../pages/Results/Results.jsx";
-import AdminDashboard from "../pages/AdminDashboard/AdminDashboard.jsx";
-import NotFound from "../pages/NotFound/NotFound.jsx";
-import ResetPassword from "../pages/Auth/ResetPassword.jsx";
-import VerifyEmail from "../pages/Auth/VerifyEmail.jsx";
-import { AppLayout } from "../layouts/AppLayout.jsx";
-import { PublicLayout } from "../layouts/PublicLayout.jsx";
-import ProtectedRoute from "../components/auth/ProtectedRoute.jsx";
+import Home from "../pages/Home/Home";
+import Auth from "../pages/Auth/Auth";
+import Dashboard from "../pages/Dashboard/Dashboard";
+import Settings from "../pages/Settings/Settings";
+import CreatePoll from "../pages/CreatePoll/CreatePoll";
+import PollView from "../pages/PollView/PollView";
+import Analytics from "../pages/Analytics/Analytics";
+import Results from "../pages/Results/Results";
+import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
+import NotFound from "../pages/NotFound/NotFound";
+import ResetPassword from "../pages/Auth/ResetPassword";
+import VerifyEmail from "../pages/Auth/VerifyEmail";
+import { AppLayout } from "../layouts/AppLayout";
+import { PublicLayout } from "../layouts/PublicLayout";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 export const routes = [
   {

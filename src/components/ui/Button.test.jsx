@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { Button } from "./Button.jsx";
+import { Button } from "./Button";
 
 describe("Button", () => {
   it("renders a native button", () => {

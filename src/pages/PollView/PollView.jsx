@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Navbar } from "../../components/layout/Navbar.jsx";
-import { Button } from "../../components/ui/Button.jsx";
-import { Badge } from "../../components/ui/Badge.jsx";
-import { getPollByCode, submitVote } from "../../services/api.js";
+import { Navbar } from "../../components/layout/Navbar";
+import { Button } from "../../components/ui/Button";
+import { Badge } from "../../components/ui/Badge";
+import { getPollByCode, submitVote } from "../../services/api";
 import { socket } from "../../socket/index.js";
 import { Loader2, Shield, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import PollExpired from "./PollExpired.jsx";
+import PollExpired from "./PollExpired";
 
 export default function PollView() {
   const { id } = useParams();

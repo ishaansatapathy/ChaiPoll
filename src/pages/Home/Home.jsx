@@ -2,17 +2,17 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { RoughNotation } from "react-rough-notation";
-import { Navbar } from "../../components/layout/Navbar.jsx";
-import { Button } from "../../components/ui/Button.jsx";
-import { Highlight } from "../../components/ui/Highlight.jsx";
+import { Navbar } from "../../components/layout/Navbar";
+import { Button } from "../../components/ui/Button";
+import { Highlight } from "../../components/ui/Highlight";
 import { useSpotlight } from "../../hooks/useSpotlight.js";
 import heroImage from "../../../bg-image/hero-bg.png";
 
-import { WorkflowSection } from "../../components/showcase/WorkflowSection.jsx";
-import { StickyScrollSection } from "../../components/showcase/StickyScrollSection.jsx";
-import { LiveResponseSection } from "../../components/showcase/LiveResponseSection.jsx";
-import { TypographySection } from "../../components/showcase/TypographySection.jsx";
-import { CinematicLogo } from "../../components/ui/CinematicLogo.jsx";
+import { WorkflowSection } from "../../components/showcase/WorkflowSection";
+import { StickyScrollSection } from "../../components/showcase/StickyScrollSection";
+import { LiveResponseSection } from "../../components/showcase/LiveResponseSection";
+import { TypographySection } from "../../components/showcase/TypographySection";
+import { CinematicLogo } from "../../components/ui/CinematicLogo";
 
 export default function Home() {
   useSpotlight();

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, ShieldCheck, KeyRound, ArrowLeft, Send, Zap } from "lucide-react";
 import { RoughNotation } from "react-rough-notation";
-import API from "../../services/api.js";
+import API from "../../services/api";
 
 const RecoveryFlow = ({ onBack }) => {
   const [step, setStep] = useState(1);

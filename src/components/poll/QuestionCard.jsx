@@ -1,6 +1,6 @@
 import { Trash2 } from "lucide-react";
-import { Button } from "../ui/Button.jsx";
-import { Input } from "../ui/Input.jsx";
+import { Button } from "../ui/Button";
+import { Input } from "../ui/Input";
 
 export function QuestionCard({ question, index, onChange, onRemove, onAddOption, onRemoveOption }) {
   return (

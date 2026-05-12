@@ -8,7 +8,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { CinematicLogo } from "../ui/CinematicLogo.jsx";
+import { CinematicLogo } from "../ui/CinematicLogo";
 import { useAuth } from "../../context/AuthContext";
 import { motion } from "framer-motion";
 
