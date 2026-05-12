@@ -7,6 +7,7 @@ import PollView from "../pages/PollView/PollView.jsx";
 import Analytics from "../pages/Analytics/Analytics.jsx";
 import Results from "../pages/Results/Results.jsx";
 import NotFound from "../pages/NotFound/NotFound.jsx";
+import ResetPassword from "../pages/Auth/ResetPassword.jsx";
 import { AppLayout } from "../layouts/AppLayout.jsx";
 import { PublicLayout } from "../layouts/PublicLayout.jsx";
 import ProtectedRoute from "../components/auth/ProtectedRoute.jsx";
@@ -19,6 +20,7 @@ export const routes = [
       { path: "/login", element: <Auth /> },
       { path: "/signup", element: <Auth /> },
       { path: "/auth", element: <Auth /> },
+      { path: "/reset-password/:token", element: <ResetPassword /> },
       { path: "/poll/:id", element: <PollView /> },
       { path: "/results/:id", element: <Results /> },
       { path: "*", element: <NotFound /> },
