@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Sidebar } from "../components/layout/Sidebar.jsx";
 import { MobileNav } from "../components/layout/MobileNav.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export function AppLayout() {
-  const { user } = useAuth();
+  useAuth();
 
   return (
     <div className="min-h-screen bg-ink-950">

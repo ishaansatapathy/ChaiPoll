@@ -7,15 +7,10 @@ import {
   Users,
   Target,
   BarChart2,
-  ChevronLeft,
-  ChevronRight,
   LayoutDashboard,
-  Search,
   Plus,
 } from "lucide-react";
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -25,13 +20,10 @@ import {
   YAxis,
 } from "recharts";
 import { ChartContainer } from "../../components/analytics/ChartContainer.jsx";
-import { AnalyticsCard } from "../../components/dashboard/AnalyticsCard.jsx";
-import { Badge } from "../../components/ui/Badge.jsx";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
-import { getPollAnalytics, publishPoll, getMyPolls } from "../../services/api.js";
+import { getPollAnalytics, publishPoll, getMyPolls } from "../../services/api";
 import { socket } from "../../socket/index.js";
-import { Highlight } from "../../components/ui/Highlight.jsx";
 import { AnalyticsSkeleton } from "../../components/ui/Skeleton.jsx";
 import ParticipantList from "../../components/analytics/ParticipantList.jsx";
 
@@ -197,7 +189,7 @@ export default function Analytics() {
                 Select a Poll
               </h2>
               <p className="text-white/30 max-w-sm mx-auto font-handwriting text-2xl italic leading-relaxed">
-                "Choose a poll from the sidebar to view its analytics."
+                &quot;Choose a poll from the sidebar to view its analytics.&quot;
               </p>
             </div>
           ) : (
@@ -280,7 +272,7 @@ export default function Analytics() {
                         {/* Hand-drawn label */}
                         <div className="absolute -bottom-6 -right-4 rotate-[-5deg]">
                           <span className="font-handwriting text-xl text-[#ef4444]/60 whitespace-nowrap">
-                            "Live Data Feed"
+                            &quot;Live Data Feed&quot;
                           </span>
                         </div>
                       </div>
