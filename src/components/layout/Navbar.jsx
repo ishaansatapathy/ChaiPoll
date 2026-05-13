@@ -3,8 +3,10 @@ import { Link, NavLink } from "react-router-dom";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/Button";
 import { CinematicLogo } from "../ui/CinematicLogo";
+import { useAuth } from "../../context/AuthContext";
 
 export function Navbar() {
+  const { user } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
 
@@ -39,6 +41,9 @@ export function Navbar() {
           <div className="flex items-center gap-1 rounded-full border border-white/5 bg-white/[0.03] p-1 backdrop-blur-md shadow-2xl">
             <NavItem to="/dashboard">Dashboard</NavItem>
             <NavItem to="/create">Create</NavItem>
+            {user?.role === "admin" && (
+              <NavItem to="/admin">Admin</NavItem>
+            )}
             <NavItem to="/results/chai-101">Results</NavItem>
           </div>
         </div>

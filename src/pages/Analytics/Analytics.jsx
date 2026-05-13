@@ -110,6 +110,7 @@ export default function Analytics() {
   const [exporting, setExporting] = useState(false);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, hasMore: false });
+  const [activeVoterList, setActiveVoterList] = useState(null); // { questionId, optionId }
   // Full time-series data from the dedicated endpoint
   const [fullTimeSeries, setFullTimeSeries] = useState([]);
   const [metrics, setMetrics] = useState(null);
@@ -595,18 +596,32 @@ function ChartsTab({ fullTimeSeries, poll, liveParticipations }) {
                 </BarChart>
               </ResponsiveContainer>
 
-              <div className="space-y-6">
-                {q.options.map((opt, oIdx) => {
-                  const percentage =
-                    q.totalVotes > 0
-                      ? Math.round((opt.voteCount / q.totalVotes) * 100)
-                      : 0;
+                  const votersForOption = recentVotes.filter(v => 
+                    v.responses?.some(r => r.questionId === q._id && r.selectedOptionId === opt._id)
+                  );
+                  
+                  const isExpanded = activeVoterList?.questionId === q._id && activeVoterList?.optionId === opt._id;
+
                   return (
                     <div key={opt._id} className="group relative">
                       <div className="mb-2 flex justify-between items-end">
-                        <span className="text-xs font-bold text-white/40 group-hover:text-white transition-colors uppercase tracking-wider">
-                          {opt.text}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-white/40 group-hover:text-white transition-colors uppercase tracking-wider">
+                            {opt.text}
+                          </span>
+                          {votersForOption.length > 0 && (
+                            <button 
+                              onClick={() => {
+                                setActiveVoterList(isExpanded ? null : { questionId: q._id, optionId: opt._id });
+                              }}
+                              className={`text-[8px] font-black uppercase tracking-widest mt-1 transition-all ${
+                                isExpanded ? "text-white opacity-100" : "text-[#ef4444] opacity-0 group-hover:opacity-100"
+                              }`}
+                            >
+                              {isExpanded ? "Hide Voters" : `View ${votersForOption.length} Voters`}
+                            </button>
+                          )}
+                        </div>
                         <span className="font-handwriting text-[#ef4444] text-xl">
                           {percentage}%
                         </span>
@@ -619,6 +634,29 @@ function ChartsTab({ fullTimeSeries, poll, liveParticipations }) {
                           transition={{ duration: 1, delay: oIdx * 0.1 }}
                         />
                       </div>
+
+                      {/* Voter Names Breakdown */}
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="mt-4 overflow-hidden"
+                          >
+                            <div className="flex flex-wrap gap-2 pb-4 pt-2">
+                              {votersForOption.map((v, vIdx) => (
+                                <span 
+                                  key={vIdx}
+                                  className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-bold text-white/40"
+                                >
+                                  {v.voterId?.name || v.voterId?.displayName || "Anonymous"}
+                                </span>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   );
                 })}
