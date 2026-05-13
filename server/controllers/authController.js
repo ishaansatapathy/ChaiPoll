@@ -242,7 +242,9 @@ export const verifyEmail = async (req, res) => {
 // @desc    Logout
 // @route   POST /api/auth/logout
 export const logout = (req, res) => {
-  res.cookie("jwt", "", getClearJwtCookieOptions());
+  const clearOpts = getClearJwtCookieOptions();
+  res.cookie("jwt", "", clearOpts);
+  res.cookie("jwt_refresh", "", { ...clearOpts, path: "/api" });
   res.status(200).json({ message: "Logged out successfully" });
 };
 

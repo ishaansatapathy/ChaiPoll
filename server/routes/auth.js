@@ -24,6 +24,7 @@ import {
   resendVerification,
   googleCallback,
 } from "../controllers/authController.js";
+import { refreshAccessToken } from "../controllers/refreshController.js";
 
 const router = express.Router();
 
@@ -46,6 +47,7 @@ router.post(
 );
 router.get("/verify-email/:token", verifyEmail);
 router.post("/resend-verification", protect, resendVerification);
+router.post("/refresh", refreshAccessToken);
 router.post("/logout", logout);
 
 router.get("/me", protect, getMe);

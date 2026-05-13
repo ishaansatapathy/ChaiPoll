@@ -45,13 +45,19 @@ export const submitVote = async (req, res) => {
       return res.status(400).json({ message: struct.message });
     }
 
+    // Normalize responses: accept both selectedOptionId (string) and optionIds (array)
+    const normalizedResponses = responses.map((r) => ({
+      questionId: r.questionId,
+      optionIds: r.optionIds || (r.selectedOptionId ? [r.selectedOptionId] : []),
+    }));
+
     let voterId = req.user ? req.user._id : null;
     const voterIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
     try {
       const finalPoll = await persistVoteSubmission({
         pollId: poll._id,
-        responses,
+        responses: normalizedResponses,
         voterId,
         voterIp,
       });

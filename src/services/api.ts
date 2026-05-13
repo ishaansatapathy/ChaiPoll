@@ -43,10 +43,57 @@ const API: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
+let isRefreshing = false;
+let refreshSubscribers: Array<() => void> = [];
+
+function subscribeTokenRefresh(cb: () => void) {
+  refreshSubscribers.push(cb);
+}
+
+function onRefreshed() {
+  refreshSubscribers.forEach((cb) => cb());
+  refreshSubscribers = [];
+}
+
 API.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // If 401 and not already retrying and not the refresh endpoint itself
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/auth/refresh") &&
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/signup")
+    ) {
+      originalRequest._retry = true;
+
+      if (!isRefreshing) {
+        isRefreshing = true;
+        try {
+          await API.post("/auth/refresh");
+          isRefreshing = false;
+          onRefreshed();
+          return API(originalRequest);
+        } catch {
+          isRefreshing = false;
+          refreshSubscribers = [];
+          window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+          return Promise.reject(error);
+        }
+      } else {
+        // Another request is already refreshing — queue this one
+        return new Promise((resolve) => {
+          subscribeTokenRefresh(() => {
+            resolve(API(originalRequest));
+          });
+        });
+      }
+    }
+
+    if (error.response?.status === 401) {
       window.dispatchEvent(new CustomEvent("auth:unauthorized"));
     }
     return Promise.reject(error);
