@@ -613,7 +613,7 @@ function ChartsTab({
                       : 0;
                   
                   const votersForOption = recentVotes.filter(v => 
-                    v.responses?.some(r => r.questionId === q._id && r.selectedOptionId === opt._id)
+                    v.responses?.some(r => r.questionId === q._id && r.optionIds?.includes(opt._id))
                   );
                   
                   const isExpanded = activeVoterList?.questionId === q._id && activeVoterList?.optionId === opt._id;
@@ -632,7 +632,7 @@ function ChartsTab({
                                 setActiveVoterList(isExpanded ? null : { questionId: q._id, optionId: opt._id });
                               }}
                               className={`text-[8px] font-black uppercase tracking-widest mt-1 transition-all ${
-                                isExpanded ? "text-white opacity-100" : "text-[#ef4444] opacity-0 group-hover:opacity-100"
+                                isExpanded ? "text-white opacity-100" : "text-[#ef4444] opacity-30 group-hover:opacity-100"
                               }`}
                             >
                               {isExpanded ? "Hide Voters" : `View ${votersForOption.length} Voters`}
