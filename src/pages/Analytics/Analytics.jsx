@@ -595,7 +595,13 @@ function ChartsTab({ fullTimeSeries, poll, liveParticipations }) {
                   />
                 </BarChart>
               </ResponsiveContainer>
-
+              <div className="space-y-6">
+                {q.options.map((opt, oIdx) => {
+                  const percentage =
+                    q.totalVotes > 0
+                      ? Math.round((opt.voteCount / q.totalVotes) * 100)
+                      : 0;
+                  
                   const votersForOption = recentVotes.filter(v => 
                     v.responses?.some(r => r.questionId === q._id && r.selectedOptionId === opt._id)
                   );
@@ -611,6 +617,7 @@ function ChartsTab({ fullTimeSeries, poll, liveParticipations }) {
                           </span>
                           {votersForOption.length > 0 && (
                             <button 
+                              type="button"
                               onClick={() => {
                                 setActiveVoterList(isExpanded ? null : { questionId: q._id, optionId: opt._id });
                               }}
