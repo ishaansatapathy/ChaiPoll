@@ -32,6 +32,69 @@ import AnalyticsHeader from "../../components/analytics/AnalyticsHeader";
 import AnalyticsConsole from "../../components/analytics/AnalyticsConsole";
 import SocketStatus from "../../components/analytics/SocketStatus";
 
+function QuestionInsightCard({ title, poll, type }) {
+  const insight = React.useMemo(() => {
+    if (!poll?.questions?.length) return null;
+
+    let target = null;
+    let value = "";
+
+    if (type === "consensus") {
+      // Find question where the top option has the highest lead
+      let maxPct = -1;
+      poll.questions.forEach((q) => {
+        if (!q.totalVotes) return;
+        const maxVotes = Math.max(...q.options.map((o) => o.voteCount));
+        const pct = (maxVotes / q.totalVotes) * 100;
+        if (pct > maxPct) {
+          maxPct = pct;
+          target = q;
+          value = `${Math.round(pct)}% agreement`;
+        }
+      });
+    } else if (type === "engagement") {
+      // Find question with most total votes
+      let maxVotes = -1;
+      poll.questions.forEach((q) => {
+        if (q.totalVotes > maxVotes) {
+          maxVotes = q.totalVotes;
+          target = q;
+          value = `${maxVotes} interactions`;
+        }
+      });
+    } else if (type === "dropoff") {
+      // Find question with lowest votes compared to total participants
+      let minVotes = Infinity;
+      poll.questions.forEach((q) => {
+        if (q.totalVotes < minVotes) {
+          minVotes = q.totalVotes;
+          target = q;
+          value = `${poll.totalParticipants - minVotes} skipped`;
+        }
+      });
+    }
+
+    return { target, value };
+  }, [poll, type]);
+
+  if (!insight?.target) return null;
+
+  return (
+    <div className="p-6 rounded-3xl border border-white/5 bg-white/[0.01] backdrop-blur-3xl overflow-hidden relative group">
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#ef4444]/5 blur-3xl group-hover:bg-[#ef4444]/10 transition-all" />
+      <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-4">
+        {title}
+      </p>
+      <h4 className="text-sm font-bold text-white mb-2 line-clamp-1">
+        {insight.target.text}
+      </h4>
+      <p className="font-handwriting text-[#ef4444] text-xl">
+        {insight.value}
+      </p>
+    </div>
+  );
+}
+
 export default function Analytics() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -412,7 +475,7 @@ function ChartsTab({ fullTimeSeries, poll, liveParticipations }) {
         </div>
       )}
 
-      {/* Time-Series Trend Chart — uses full data from dedicated endpoint */}
+      {/* Time-Series Trend Chart */}
       {fullTimeSeries.length > 1 && (
         <ChartContainer
           title="Responses Over Time"
@@ -467,6 +530,25 @@ function ChartsTab({ fullTimeSeries, poll, liveParticipations }) {
           </ResponsiveContainer>
         </ChartContainer>
       )}
+
+      {/* Tactical Highlights — Per Question Insights */}
+      <div className="grid md:grid-cols-3 gap-6">
+        <QuestionInsightCard
+          title="Strongest Consensus"
+          poll={poll}
+          type="consensus"
+        />
+        <QuestionInsightCard
+          title="Most Engaged"
+          poll={poll}
+          type="engagement"
+        />
+        <QuestionInsightCard
+          title="Highest Abandonment"
+          poll={poll}
+          type="dropoff"
+        />
+      </div>
 
       <h2 className="font-display text-3xl text-white border-l-4 border-[#ef4444] pl-6">
         Question Breakdown

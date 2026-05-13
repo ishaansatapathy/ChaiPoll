@@ -164,7 +164,34 @@ export default function CreatePoll() {
                 />
               ))}
             </AnimatePresence>
+
+            {/* Bottom Add Question Button */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              type="button"
+              onClick={addQuestion}
+              className="w-full py-8 rounded-[40px] border-2 border-dashed border-white/5 bg-white/[0.01] text-white/20 hover:text-[#ef4444] hover:border-[#ef4444]/40 hover:bg-[#ef4444]/5 transition-all group flex flex-col items-center justify-center gap-4"
+            >
+              <div className="p-4 rounded-full bg-white/5 group-hover:bg-[#ef4444] group-hover:text-white transition-all">
+                <Plus size={24} />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em]">
+                Add Question {questions.length + 1}
+              </span>
+            </motion.button>
           </div>
+        </div>
+
+        {/* Floating Quick Action (Mobile/Scroll) */}
+        <div className="fixed bottom-8 right-8 z-50 lg:hidden">
+          <button
+            type="button"
+            onClick={addQuestion}
+            className="h-16 w-16 rounded-full bg-[#ef4444] text-white shadow-[0_0_30px_rgba(239,68,68,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all"
+          >
+            <Plus size={24} strokeWidth={3} />
+          </button>
         </div>
 
         {/* Sidebar Settings */}
