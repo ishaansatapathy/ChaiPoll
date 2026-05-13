@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import Poll from "../models/Poll.js";
 
 const initializeSockets = (io) => {
   // Middleware for Socket Auth
@@ -8,14 +9,14 @@ const initializeSockets = (io) => {
       let token = socket.handshake.auth?.token || 
                   socket.handshake.headers.authorization?.split(" ")[1];
 
-      // Also try to get token from cookies
+      // Also try to get token from cookies (cookie name is "jwt")
       if (!token && socket.handshake.headers.cookie) {
         const cookies = socket.handshake.headers.cookie.split(';').reduce((acc, cookie) => {
           const [key, value] = cookie.trim().split('=');
           acc[key] = value;
           return acc;
         }, {});
-        token = cookies['token']; // Matches your auth token cookie name
+        token = cookies['jwt'];
       }
       
       if (!token) {
@@ -25,7 +26,7 @@ const initializeSockets = (io) => {
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.user = await User.findById(decoded.id).select("-password");
+      socket.user = await User.findById(decoded.userId).select("-password");
       next();
     } catch (err) {
       console.error("Socket Auth Error:", err.message);
@@ -36,13 +37,26 @@ const initializeSockets = (io) => {
   });
 
   io.on("connection", (socket) => {
-    console.log(`New client connected: ${socket.id}`);
+    console.log(`New client connected: ${socket.id}${socket.user ? ` (user: ${socket.user._id})` : " (anonymous)"}`);
 
-    // Join a poll room
-    socket.on("joinPollRoom", (pollCode) => {
+    // Join a poll room — verify the poll exists before allowing join
+    socket.on("joinPollRoom", async (pollCode) => {
       if (!pollCode) return;
 
       const roomStr = pollCode.toUpperCase();
+
+      // Verify poll exists before allowing room join
+      try {
+        const pollExists = await Poll.exists({ pollCode: roomStr });
+        if (!pollExists) {
+          socket.emit("error", { message: "Poll not found" });
+          return;
+        }
+      } catch {
+        socket.emit("error", { message: "Failed to verify poll" });
+        return;
+      }
+
       socket.join(roomStr);
       console.log(`Socket ${socket.id} joined room: ${roomStr}`);
 

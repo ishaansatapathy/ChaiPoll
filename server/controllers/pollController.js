@@ -1,5 +1,6 @@
 import Poll from "../models/Poll.js";
 import Vote from "../models/Vote.js";
+import { sanitizeText } from "../utils/sanitize.js";
 
 // @desc    Create a new poll
 // @route   POST /api/polls
@@ -13,20 +14,20 @@ export const createPoll = async (req, res) => {
 
     const { title, description, questions, visibility, expiresAt, settings } = req.body;
 
-    // Format questions and options
+    // Format questions and options with sanitization
     const formattedQuestions = questions.map((q) => {
-      const optionsWithIds = q.options.map((opt) => ({ text: opt, voteCount: 0 }));
+      const optionsWithIds = q.options.map((opt) => ({ text: sanitizeText(opt), voteCount: 0 }));
       return {
-        text: q.text,
+        text: sanitizeText(q.text),
         isMandatory: q.isMandatory !== undefined ? q.isMandatory : true,
         options: optionsWithIds,
-        type: "single",
+        type: q.type === "multiple" ? "multiple" : "single",
       };
     });
 
     const poll = await Poll.create({
-      title,
-      description,
+      title: sanitizeText(title),
+      description: sanitizeText(description || ""),
       questions: formattedQuestions,
       createdBy: req.user._id,
       visibility: visibility || "public",

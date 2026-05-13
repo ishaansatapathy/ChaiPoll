@@ -84,14 +84,20 @@ export function createApp() {
   app.use(errorLogger);
 
   app.use((err, req, res, _next) => {
-    logger.error("Unhandled error", {
+    const statusCode = err.statusCode || err.status || 500;
+    const isOperational = statusCode < 500;
+
+    logger.log(isOperational ? "warn" : "error", isOperational ? "Operational error" : "Unexpected server error", {
       message: err.message,
-      stack: err.stack,
-      statusCode: err.statusCode || 500,
+      stack: isOperational ? undefined : err.stack,
+      statusCode,
+      method: req.method,
+      url: req.originalUrl,
     });
-    res.status(500).json({
-      message: "Internal Server Error",
-      error: process.env.NODE_ENV === "development" ? err.message : undefined,
+
+    res.status(statusCode).json({
+      message: isOperational ? err.message : "Internal Server Error",
+      ...(process.env.NODE_ENV === "development" && !isOperational ? { error: err.message, stack: err.stack } : {}),
     });
   });
 

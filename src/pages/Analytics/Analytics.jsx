@@ -18,6 +18,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -49,6 +51,27 @@ export default function Analytics() {
   const [exporting, setExporting] = useState(false);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, hasMore: false });
+
+  // Compute time-series data from recentVotes for trend chart
+  const timeSeriesData = React.useMemo(() => {
+    if (!recentVotes || recentVotes.length === 0) return [];
+    const dayMap = {};
+    recentVotes.forEach((v) => {
+      const d = new Date(v.createdAt);
+      const key = `${d.getMonth() + 1}/${d.getDate()}`;
+      dayMap[key] = (dayMap[key] || 0) + 1;
+    });
+    // Sort chronologically and return last 14 entries
+    const entries = Object.entries(dayMap)
+      .map(([date, count]) => ({ date, responses: count }))
+      .slice(-14);
+    // Add cumulative total
+    let cum = 0;
+    return entries.map((e) => {
+      cum += e.responses;
+      return { ...e, cumulative: cum };
+    });
+  }, [recentVotes]);
 
   const pollUrl = `${window.location.origin}/poll/${id}`;
 
@@ -526,6 +549,63 @@ export default function Analytics() {
 
               {activeTab === "charts" ? (
                 <div className="space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+
+                  {/* Time-Series Trend Chart */}
+                  {timeSeriesData.length > 1 && (
+                    <ChartContainer
+                      title="Responses Over Time"
+                      description="Daily response volume and cumulative trend."
+                    >
+                      <ResponsiveContainer width="100%" height={280}>
+                        <AreaChart data={timeSeriesData}>
+                          <defs>
+                            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                              <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid stroke="rgba(255,255,255,0.03)" vertical={false} />
+                          <XAxis
+                            dataKey="date"
+                            stroke="rgba(255,255,255,0.1)"
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fontSize: 10, fontWeight: "bold" }}
+                          />
+                          <YAxis
+                            stroke="rgba(255,255,255,0.1)"
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fontSize: 10, fontWeight: "bold" }}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              background: "#050505",
+                              border: "1px solid rgba(255,255,255,0.1)",
+                              borderRadius: 20,
+                              padding: 12,
+                            }}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="responses"
+                            stroke="#ef4444"
+                            fill="url(#areaGrad)"
+                            strokeWidth={2}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="cumulative"
+                            stroke="rgba(255,255,255,0.15)"
+                            fill="none"
+                            strokeWidth={1.5}
+                            strokeDasharray="6 4"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
+                  )}
+
                   <h2 className="font-display text-3xl text-white border-l-4 border-[#ef4444] pl-6">
                     Question Breakdown
                   </h2>

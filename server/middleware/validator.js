@@ -30,7 +30,19 @@ export const voteValidationRules = [
   body("pollCode").notEmpty().withMessage("Poll code is required").isLength({ min: 6, max: 6 }),
   body("responses").isArray({ min: 1 }).withMessage("At least one response is required"),
   body("responses.*.questionId").notEmpty().withMessage("Question ID is required"),
-  body("responses.*.selectedOptionId").notEmpty().withMessage("Selected option ID is required"),
+  // Accept either optionIds (array) or selectedOptionId (string) — at least one must be present
+  body("responses.*.optionIds").optional().isArray({ min: 1 }).withMessage("optionIds must be a non-empty array"),
+  body("responses.*.selectedOptionId").optional().isString(),
+  body("responses").custom((responses) => {
+    for (const r of responses) {
+      const hasOptionIds = Array.isArray(r.optionIds) && r.optionIds.length > 0;
+      const hasSelectedId = typeof r.selectedOptionId === "string" && r.selectedOptionId.length > 0;
+      if (!hasOptionIds && !hasSelectedId) {
+        throw new Error("Each response must have optionIds or selectedOptionId");
+      }
+    }
+    return true;
+  }),
 ];
 
 export const signupValidationRules = [

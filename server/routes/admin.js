@@ -19,26 +19,26 @@ import {
 
 const router = express.Router();
 
-// All admin routes require authentication and admin role
-router.use(protect, adminOnly);
+// All admin routes require authentication
+router.use(protect);
 
 // User Management
-router.route("/users").get(getAllUsers);
-router.route("/users/:id").get(getUserById);
-router.patch("/users/:id/role", updateUserRole);
-router.patch("/users/:id/permissions/grant", grantPermission);
-router.patch("/users/:id/permissions/revoke", revokePermission);
-router.patch("/users/:id/ban", banUser);
-router.patch("/users/:id/unban", unbanUser);
+router.route("/users").get(adminOnly, getAllUsers);
+router.route("/users/:id").get(adminOnly, getUserById);
+router.patch("/users/:id/role", adminOnly, updateUserRole);
+router.patch("/users/:id/permissions/grant", adminOnly, grantPermission);
+router.patch("/users/:id/permissions/revoke", adminOnly, revokePermission);
+router.patch("/users/:id/ban", adminOnly, banUser);
+router.patch("/users/:id/unban", adminOnly, unbanUser);
 
 // Poll Management
-router.route("/polls").get(getAllPolls);
+router.route("/polls").get(adminOnly, getAllPolls);
 router.patch("/polls/:id/flag", moderatorOnly, flagPoll);
-router.patch("/polls/:id/unflag", unflagPoll);
-router.delete("/polls/:id", deletePollAdmin);
+router.patch("/polls/:id/unflag", moderatorOnly, unflagPoll);
+router.delete("/polls/:id", adminOnly, deletePollAdmin);
 
 // Dashboard & Analytics
-router.get("/stats", getDashboardStats);
-router.get("/logs", getActivityLogs);
+router.get("/stats", adminOnly, getDashboardStats);
+router.get("/logs", adminOnly, getActivityLogs);
 
 export default router;

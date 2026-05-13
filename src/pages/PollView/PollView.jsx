@@ -183,12 +183,30 @@ export default function PollView() {
                     )}
                   </h3>
                 </div>
-                <div className="grid gap-3">
+                <div
+                  className="grid gap-3"
+                  role={q.type === "multiple" ? "group" : "radiogroup"}
+                  aria-label={`${q.text}${q.isMandatory ? " (required)" : ""}`}
+                >
                   {q.options.map((opt) => (
                     <div
                       key={opt._id}
+                      role={q.type === "multiple" ? "checkbox" : "radio"}
+                      aria-checked={
+                        Array.isArray(responses[q._id])
+                          ? responses[q._id].includes(opt._id)
+                          : responses[q._id] === opt._id
+                      }
+                      aria-label={`${opt.text}${q.isMandatory ? " (required)" : ""}`}
+                      tabIndex={0}
                       onClick={() => handleOptionSelect(q, opt._id)}
-                      className={`group relative flex items-center gap-4 rounded-[24px] border p-6 cursor-pointer transition-all duration-500 ${
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleOptionSelect(q, opt._id);
+                        }
+                      }}
+                      className={`group relative flex items-center gap-4 rounded-[24px] border p-6 cursor-pointer transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-[#ef4444]/50 focus:ring-offset-2 focus:ring-offset-[#020202] ${
                         (Array.isArray(responses[q._id]) ? responses[q._id].includes(opt._id) : responses[q._id] === opt._id)
                           ? "border-[#ef4444] bg-[#ef4444]/5 shadow-[inset_0_0_30px_rgba(239,68,68,0.05)]"
                           : "border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10"
@@ -239,6 +257,7 @@ export default function PollView() {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
+                  aria-label={submitting ? "Submitting response" : "Submit your poll response"}
                   className="relative w-full h-20 rounded-[32px] font-black text-xs tracking-[0.4em] transition-all duration-500 flex items-center justify-center gap-4 bg-white text-black hover:bg-[#ef4444] hover:text-white"
                 >
                   {submitting ? (
