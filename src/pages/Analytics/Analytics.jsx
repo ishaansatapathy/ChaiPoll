@@ -613,7 +613,10 @@ function ChartsTab({
                       : 0;
                   
                   const votersForOption = recentVotes.filter(v => 
-                    v.responses?.some(r => r.questionId === q._id && r.optionIds?.includes(opt._id))
+                    v.responses?.some(r => 
+                      String(r.questionId) === String(q._id) && 
+                      r.optionIds?.some(oid => String(oid) === String(opt._id))
+                    )
                   );
                   
                   const isExpanded = activeVoterList?.questionId === q._id && activeVoterList?.optionId === opt._id;
