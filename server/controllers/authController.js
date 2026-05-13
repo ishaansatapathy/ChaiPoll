@@ -78,7 +78,7 @@ export const signup = async (req, res) => {
       res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    console.error("Signup error:", error);
+    logger.error("Signup error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Unable to create account. Please try again." });
   }
 };
@@ -103,7 +103,7 @@ export const login = async (req, res) => {
       res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
-    console.error("Login error:", error);
+    logger.error("Login error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Unable to sign in. Please try again." });
   }
 };
@@ -184,7 +184,7 @@ export const verifyOtp = async (req, res) => {
     if (!user) return res.status(400).json({ message: "Invalid or expired code." });
     res.status(200).json({ message: "Code verified successfully." });
   } catch (error) {
-    console.error("Verify OTP error:", error);
+    logger.error("Verify OTP error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Verification failed. Please try again." });
   }
 };
@@ -213,7 +213,7 @@ export const resetPassword = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successfully." });
   } catch (error) {
-    console.error("Reset password error:", error);
+    logger.error("Reset password error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Password reset failed. Please try again." });
   }
 };
@@ -234,7 +234,7 @@ export const verifyEmail = async (req, res) => {
 
     res.status(200).json({ message: "Email verified successfully!" });
   } catch (error) {
-    console.error("Email verification error:", error);
+    logger.error("Email verification error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Verification failed. Please try again." });
   }
 };
@@ -290,7 +290,7 @@ export const resendVerification = async (req, res) => {
 
     res.status(200).json({ message: "Verification email resent successfully!" });
   } catch (error) {
-    console.error("Resend verification error:", error);
+    logger.error("Resend verification error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Failed to resend email. Please try again." });
   }
 };
@@ -317,7 +317,7 @@ export const updateDisplayName = async (req, res) => {
       isOnboarded: user.isOnboarded,
     });
   } catch (error) {
-    console.error("Update display name error:", error);
+    logger.error("Update display name error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Failed to update display name" });
   }
 };

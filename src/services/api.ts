@@ -41,6 +41,9 @@ const API_BASE_URL: string = (import.meta as any).env.VITE_API_URL || "http://lo
 const API: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
+  headers: {
+    "X-Requested-With": "XMLHttpRequest",
+  },
 });
 
 let isRefreshing = false;
@@ -113,6 +116,8 @@ export const getPollAnalytics = (code: string, page = 1) =>
   API.get<any>(`/polls/${code}/analytics`, { params: { page } });
 export const exportPollData = (code: string) => 
   API.get(`/polls/${code}/export`, { responseType: 'blob' });
+export const getPollTimeSeries = (code: string) =>
+  API.get<any>(`/polls/${code}/analytics/timeseries`);
 export const deletePoll = (code: string) => API.delete(`/polls/${code}`);
 export const updatePoll = (code: string, data: Partial<Poll>) => API.put<Poll>(`/polls/${code}`, data);
 export const closePoll = (code: string) => API.patch<Poll>(`/polls/${code}/close`);

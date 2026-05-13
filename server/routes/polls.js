@@ -6,6 +6,7 @@ import {
   getMyPolls,
   getPollByCode,
   getPollAnalytics,
+  getPollTimeSeries,
   publishPoll,
   deletePoll,
   updatePoll,
@@ -23,6 +24,7 @@ router.route("/my-polls").get(protect, getMyPolls);
 router.route("/:code").get(getPollByCode).put(protect, updatePoll).delete(protect, deletePoll);
 
 router.route("/:code/analytics").get(protect, getPollAnalytics);
+router.route("/:code/analytics/timeseries").get(protect, getPollTimeSeries);
 router.route("/:code/export").get(protect, exportPollData);
 
 router.route("/:code/publish").patch(protect, publishPoll);

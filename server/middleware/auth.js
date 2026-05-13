@@ -61,7 +61,7 @@ const optionalProtect = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.userId).select("-password");
     } catch (error) {
-      console.error("Optional Auth failed:", error.message);
+      console.warn("Optional Auth:", error.message);
     }
   }
   next();

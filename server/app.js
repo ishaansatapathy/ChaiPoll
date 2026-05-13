@@ -14,6 +14,7 @@ import adminRoutes from "./routes/admin.js";
 import { getAllowedOrigins } from "./utils/allowedOrigins.js";
 import { requestLogger, errorLogger } from "./middleware/logger.js";
 import { updateLastActive } from "./middleware/roleAuth.js";
+import { csrfProtect } from "./middleware/csrf.js";
 import logger from "./utils/logger.js";
 import { swaggerOptions } from "./swagger-docs.js";
 
@@ -50,6 +51,9 @@ export function createApp() {
 
   app.use(passport.initialize());
   passportConfig(passport);
+
+  // CSRF protection for cookie-based auth
+  app.use(csrfProtect);
 
   // Update last active timestamp for authenticated users
   app.use(updateLastActive);

@@ -2,6 +2,25 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Poll from "../models/Poll.js";
 
+// Simple per-socket rate limiter
+const RATE_LIMIT_WINDOW_MS = 10_000; // 10 seconds
+const RATE_LIMIT_MAX = 30; // max events per window
+const MAX_ROOMS_PER_SOCKET = 5;
+
+function checkRateLimit(socket) {
+  const now = Date.now();
+  if (!socket._rateLimitReset || now > socket._rateLimitReset) {
+    socket._rateLimitCount = 0;
+    socket._rateLimitReset = now + RATE_LIMIT_WINDOW_MS;
+  }
+  socket._rateLimitCount = (socket._rateLimitCount || 0) + 1;
+  if (socket._rateLimitCount > RATE_LIMIT_MAX) {
+    socket.emit("error", { message: "Rate limit exceeded. Slow down." });
+    return false;
+  }
+  return true;
+}
+
 const initializeSockets = (io) => {
   // Middleware for Socket Auth
   io.use(async (socket, next) => {
@@ -29,7 +48,7 @@ const initializeSockets = (io) => {
       socket.user = await User.findById(decoded.userId).select("-password");
       next();
     } catch (err) {
-      console.error("Socket Auth Error:", err.message);
+      console.warn("Socket Auth:", err.message);
       // Still allow connection but as guest
       socket.user = null;
       next();
@@ -39,9 +58,19 @@ const initializeSockets = (io) => {
   io.on("connection", (socket) => {
     console.log(`New client connected: ${socket.id}${socket.user ? ` (user: ${socket.user._id})` : " (anonymous)"}`);
 
+    // Track joined rooms count
+    socket._joinedRooms = 0;
+
     // Join a poll room — verify the poll exists before allowing join
     socket.on("joinPollRoom", async (pollCode) => {
+      if (!checkRateLimit(socket)) return;
       if (!pollCode) return;
+
+      // Limit rooms per socket
+      if (socket._joinedRooms >= MAX_ROOMS_PER_SOCKET) {
+        socket.emit("error", { message: "Maximum room limit reached" });
+        return;
+      }
 
       const roomStr = pollCode.toUpperCase();
 
@@ -58,6 +87,7 @@ const initializeSockets = (io) => {
       }
 
       socket.join(roomStr);
+      socket._joinedRooms++;
       console.log(`Socket ${socket.id} joined room: ${roomStr}`);
 
       // Notify room about participant count
@@ -68,10 +98,12 @@ const initializeSockets = (io) => {
 
     // Leave a poll room
     socket.on("leavePollRoom", (pollCode) => {
+      if (!checkRateLimit(socket)) return;
       if (!pollCode) return;
 
       const roomStr = pollCode.toUpperCase();
       socket.leave(roomStr);
+      socket._joinedRooms = Math.max(0, (socket._joinedRooms || 0) - 1);
       console.log(`Socket ${socket.id} left room: ${roomStr}`);
 
       const room = io.sockets.adapter.rooms.get(roomStr);
@@ -99,3 +131,4 @@ const initializeSockets = (io) => {
 };
 
 export default initializeSockets;
+
