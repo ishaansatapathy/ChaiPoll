@@ -23,7 +23,7 @@ import {
   YAxis,
 } from "recharts";
 import { ChartContainer } from "../../components/analytics/ChartContainer";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { getPollAnalytics, publishPoll, getMyPolls, exportPollData, getPollTimeSeries } from "../../services/api";
 import { socket } from "../../socket/index.js";
 import { AnalyticsSkeleton } from "../../components/ui/Skeleton";
