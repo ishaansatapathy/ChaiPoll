@@ -1,9 +1,4 @@
 import mongoose from "mongoose";
-
-/**
- * Validates each response references a real question and option on the poll,
- * and that no question appears twice.
- */
 export function validateResponsesAgainstPoll(responses, poll) {
   const questionIds = new Set();
   for (const r of responses) {
@@ -19,7 +14,7 @@ export function validateResponsesAgainstPoll(responses, poll) {
     if (!q) {
       return { ok: false, message: "Invalid question for this poll" };
     }
-    
+
     const oIds = r.optionIds || (r.selectedOptionId ? [r.selectedOptionId] : []);
     if (oIds.length === 0) {
       return { ok: false, message: "At least one option must be selected" };
@@ -52,9 +47,9 @@ export function buildPollVoteIncrement(responses) {
     const qName = `q${i}`;
     $inc[`questions.$[${qName}].totalVotes`] = 1;
     arrayFilters.push({ [`${qName}._id`]: new mongoose.Types.ObjectId(resp.questionId) });
-    
+
     const oIds = resp.optionIds || (resp.selectedOptionId ? [resp.selectedOptionId] : []);
-    
+
     oIds.forEach((oid) => {
       const oName = `o${filterIdx++}`;
       $inc[`questions.$[${qName}].options.$[${oName}].voteCount`] = 1;

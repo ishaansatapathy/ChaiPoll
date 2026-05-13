@@ -1,11 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getJwtCookieOptions } from "./jwtCookieOptions.js";
 
-/**
- * Sets a short-lived access token and a long-lived refresh token in HTTP-only cookies.
- * Access token: 15 minutes — used for API authorization.
- * Refresh token: 30 days — used only to obtain a new access token.
- */
 const generateToken = (res, userId) => {
   const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "15m",
@@ -23,11 +18,11 @@ const generateToken = (res, userId) => {
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
-  // Refresh token — long maxAge, restricted path
+  // Refresh token — long maxAge
   res.cookie("jwt_refresh", refreshToken, {
     ...baseOpts,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    path: "/api",
+    path: "/", // Use root path to ensure maximum compatibility across subpaths
   });
 };
 
