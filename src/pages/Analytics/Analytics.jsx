@@ -295,6 +295,9 @@ export default function Analytics() {
                   fullTimeSeries={fullTimeSeries}
                   poll={poll}
                   liveParticipations={liveParticipations}
+                  recentVotes={recentVotes}
+                  activeVoterList={activeVoterList}
+                  setActiveVoterList={setActiveVoterList}
                 />
               ) : (
                 <ParticipantsTab
@@ -452,7 +455,14 @@ function EmptyAnalytics() {
   );
 }
 
-function ChartsTab({ fullTimeSeries, poll, liveParticipations }) {
+function ChartsTab({ 
+  fullTimeSeries, 
+  poll, 
+  liveParticipations, 
+  recentVotes,
+  activeVoterList,
+  setActiveVoterList 
+}) {
   return (
     <div className="space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-1000">
       {/* Live Participation Feed (Fix #2: new_participation consumer) */}
