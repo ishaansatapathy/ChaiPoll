@@ -24,12 +24,8 @@ const sendEmail = async (options) => {
     process.env.BREVO_SENDER_NAME || process.env.FROM_NAME || process.env.SMTP_FROM_NAME || "ChaiPoll";
 
   if (!BREVO_API_KEY || !senderEmail) {
-    logger.error("Email not configured", {
-      hasApiKey: Boolean(BREVO_API_KEY),
-      hasSender: Boolean(senderEmail),
-    });
     throw new Error(
-      "Email is not configured: set BREVO_API_KEY and BREVO_SENDER_EMAIL on the server"
+      "Email is not configured: set BREVO_API_KEY and BREVO_SENDER_EMAIL (or FROM_EMAIL) on the server"
     );
   }
 
@@ -74,11 +70,10 @@ const sendEmail = async (options) => {
     }
 
     const messageId = data.messageId ?? data.message_id;
-    const toDomain = options.email.includes("@") ? options.email.split("@")[1] : "unknown";
     if (messageId) {
-      logger.info("Transactional email accepted by Brevo", { messageId, toDomain });
+      logger.info("Transactional email accepted by Brevo", { messageId });
     } else {
-      logger.info("Transactional email accepted by Brevo", { status: response.status, toDomain });
+      logger.info("Transactional email accepted by Brevo", { status: response.status });
     }
     return data;
   } catch (err) {
