@@ -131,20 +131,24 @@ export function CinematicLogo({ size = 56, showText = true, className = "" }) {
 
       {showText && (
         <div className="flex flex-col">
-          <motion.h2
-            initial={{ opacity: 0, x: -15 }}
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="font-display text-3xl font-normal tracking-tight text-white leading-none flex items-center gap-2"
+            className="flex items-center"
           >
-            Chai<span className="text-[#ef4444] italic font-medium">Poll</span>
-          </motion.h2>
-          <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: "100%", opacity: 1 }}
-            transition={{ duration: 1, delay: 1.6 }}
-            className="h-[2px] bg-gradient-to-r from-[#ef4444] to-transparent mt-2 shadow-[0_0_12px_rgba(239,68,68,0.5)]"
-          />
+            <div className="relative group flex items-baseline">
+              <span className="font-display text-4xl font-black tracking-[-0.04em] text-white">
+                Chai
+              </span>
+              <span className="font-display text-4xl font-black tracking-[-0.04em] text-[#ef4444]">
+                Poll
+              </span>
+              
+              {/* Optional: Very subtle underline only for 'Poll' to give it that 'Chai' vibe */}
+              <div className="absolute -bottom-1 right-0 w-[40%] h-[3px] bg-[#ef4444] rounded-full opacity-50" />
+            </div>
+          </motion.div>
         </div>
       )}
     </div>
