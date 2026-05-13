@@ -53,7 +53,7 @@ const CinematicSide = () => {
             transition={{ delay: 0.5, duration: 0.8 }}
             className="text-8xl font-bold tracking-tighter text-white"
           >
-            <RoughNotation type="underline" show={true} color="#fff" strokeWidth={3} padding={5}>
+            <RoughNotation type="underline" show={true} color="#ef4444" strokeWidth={3} padding={5}>
               AI.
             </RoughNotation>
           </motion.h1>
