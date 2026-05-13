@@ -214,7 +214,11 @@ export default function Analytics() {
         socket.emit("joinPollRoom", id);
 
         socket.on("pollUpdated", (updatedPoll) => {
-          setPoll(updatedPoll);
+          if (updatedPoll.pollCode === id) {
+            setPoll(updatedPoll);
+            // Also refresh the first page of votes to show new participants
+            fetchData(1); 
+          }
         });
 
         // Listen for new_participation events (Fix #2)
@@ -613,10 +617,12 @@ function ChartsTab({
                       : 0;
                   
                   const votersForOption = recentVotes.filter(v => 
-                    v.responses?.some(r => 
-                      String(r.questionId) === String(q._id) && 
-                      r.optionIds?.some(oid => String(oid) === String(opt._id))
-                    )
+                    v.responses?.some(r => {
+                      const qMatch = String(r.questionId) === String(q._id);
+                      const oMatch = r.optionIds?.some(oid => String(oid) === String(opt._id)) || 
+                                    (r.selectedOptionId && String(r.selectedOptionId) === String(opt._id));
+                      return qMatch && oMatch;
+                    })
                   );
                   
                   const isExpanded = activeVoterList?.questionId === q._id && activeVoterList?.optionId === opt._id;
