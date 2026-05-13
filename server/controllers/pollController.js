@@ -1,6 +1,7 @@
 import Poll from "../models/Poll.js";
 import Vote from "../models/Vote.js";
 import { sanitizeText } from "../utils/sanitize.js";
+import logger from "../utils/logger.js";
 
 // @desc    Create a new poll
 // @route   POST /api/polls
@@ -52,7 +53,7 @@ export const createPoll = async (req, res) => {
 
     res.status(201).json(poll);
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error creating poll" });
   }
 };
@@ -81,7 +82,7 @@ export const getPolls = async (req, res) => {
       pagination: { page, limit, total, hasMore: skip + polls.length < total },
     });
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching polls" });
   }
 };
@@ -106,7 +107,7 @@ export const getMyPolls = async (req, res) => {
       pagination: { page, limit, total, hasMore: skip + polls.length < total },
     });
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching your polls" });
   }
 };
@@ -127,7 +128,7 @@ export const getPollByCode = async (req, res) => {
 
     res.json(poll);
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching poll" });
   }
 };
@@ -152,7 +153,7 @@ export const publishPoll = async (req, res) => {
 
     res.json({ message: "Poll results published successfully", poll });
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error publishing poll" });
   }
 };
@@ -193,8 +194,91 @@ export const getPollAnalytics = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching analytics" });
+  }
+};
+
+// @desc    Get time-series data for a poll (lightweight - only timestamps)
+// @route   GET /api/polls/:code/analytics/timeseries
+// @access  Private
+export const getPollTimeSeries = async (req, res) => {
+  try {
+    const poll = await Poll.findOne({ pollCode: req.params.code.toUpperCase() });
+
+    if (!poll) {
+      return res.status(404).json({ message: "Poll not found" });
+    }
+
+    if (poll.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // Aggregate votes by day for the time-series chart
+    const timeSeries = await Vote.aggregate([
+      { $match: { pollId: poll._id } },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+      { $project: { date: "$_id", responses: "$count", _id: 0 } },
+    ]);
+
+    // Compute cumulative totals
+    let cumulative = 0;
+    const series = timeSeries.map((entry) => {
+      cumulative += entry.responses;
+      return { ...entry, cumulative };
+    });
+
+    // Response rate: total votes vs unique question answers
+    const totalVotes = await Vote.countDocuments({ pollId: poll._id });
+    const mandatoryQuestions = poll.questions.filter((q) => q.isMandatory).length;
+    const totalQuestionAnswers = totalVotes * mandatoryQuestions;
+    const answeredCount = await Vote.aggregate([
+      { $match: { pollId: poll._id } },
+      { $unwind: "$responses" },
+      { $count: "total" },
+    ]);
+
+    const completionRate =
+      totalQuestionAnswers > 0
+        ? Math.round(((answeredCount[0]?.total || 0) / totalQuestionAnswers) * 100)
+        : 0;
+
+    // Average time between poll creation and vote
+    const avgResponseTime = await Vote.aggregate([
+      { $match: { pollId: poll._id } },
+      {
+        $project: {
+          responseTimeMs: { $subtract: ["$createdAt", poll.createdAt] },
+        },
+      },
+      { $group: { _id: null, avgMs: { $avg: "$responseTimeMs" } } },
+    ]);
+
+    const avgResponseMinutes = avgResponseTime[0]
+      ? Math.round(avgResponseTime[0].avgMs / 60000)
+      : 0;
+
+    res.json({
+      timeSeries: series,
+      metrics: {
+        totalResponses: totalVotes,
+        completionRate,
+        avgResponseMinutes,
+        questionsCount: poll.questions.length,
+        mandatoryCount: mandatoryQuestions,
+      },
+    });
+  } catch (error) {
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
+    res.status(500).json({ message: "Server error fetching time series" });
   }
 };
 
@@ -243,7 +327,7 @@ export const exportPollData = async (req, res) => {
     res.setHeader("Content-Disposition", `attachment; filename=poll-export-${poll.pollCode}.csv`);
     res.status(200).send(csv);
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching analytics" });
   }
 };
@@ -268,7 +352,7 @@ export const deletePoll = async (req, res) => {
 
     res.json({ message: "Poll deleted successfully" });
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error deleting poll" });
   }
 };
@@ -301,7 +385,7 @@ export const updatePoll = async (req, res) => {
     await poll.save();
     res.json(poll);
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error updating poll" });
   }
 };
@@ -326,7 +410,7 @@ export const closePoll = async (req, res) => {
 
     res.json({ message: "Poll closed successfully", poll });
   } catch (error) {
-    console.error(error);
+    logger.error("Poll controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error closing poll" });
   }
 };

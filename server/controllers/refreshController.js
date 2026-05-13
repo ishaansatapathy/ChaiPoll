@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
+import logger from "../utils/logger.js";
 
 /**
  * @desc    Refresh the access token using the refresh token cookie
@@ -41,7 +42,7 @@ export const refreshAccessToken = async (req, res) => {
       isVerified: user.isVerified,
     });
   } catch (error) {
-    console.error("Refresh token error:", error.message);
+    logger.error("Refresh token error", { message: error.message });
     res.status(401).json({ message: "Invalid or expired refresh token" });
   }
 };

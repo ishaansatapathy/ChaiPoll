@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Poll from "../models/Poll.js";
 import Vote from "../models/Vote.js";
+import logger from "../utils/logger.js";
 
 /**
  * @desc    Get all users (with pagination)
@@ -23,7 +24,7 @@ export const getAllUsers = async (req, res) => {
       pagination: { page, limit, total, hasMore: skip + users.length < total },
     });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching users" });
   }
 };
@@ -43,7 +44,7 @@ export const getUserById = async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching user" });
   }
 };
@@ -77,7 +78,7 @@ export const updateUserRole = async (req, res) => {
 
     res.json({ message: `User role updated to ${role}`, user });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error updating user role" });
   }
 };
@@ -119,7 +120,7 @@ export const grantPermission = async (req, res) => {
 
     res.json({ message: "Permission granted", user });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error granting permission" });
   }
 };
@@ -144,7 +145,7 @@ export const revokePermission = async (req, res) => {
 
     res.json({ message: "Permission revoked", user });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error revoking permission" });
   }
 };
@@ -176,7 +177,7 @@ export const banUser = async (req, res) => {
 
     res.json({ message: "User banned successfully", user });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error banning user" });
   }
 };
@@ -202,7 +203,7 @@ export const unbanUser = async (req, res) => {
 
     res.json({ message: "User unbanned successfully", user });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error unbanning user" });
   }
 };
@@ -232,7 +233,7 @@ export const getAllPolls = async (req, res) => {
       pagination: { page, limit, total, hasMore: skip + polls.length < total },
     });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching polls" });
   }
 };
@@ -262,7 +263,7 @@ export const flagPoll = async (req, res) => {
 
     res.json({ message: "Poll flagged successfully", poll });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error flagging poll" });
   }
 };
@@ -288,7 +289,7 @@ export const unflagPoll = async (req, res) => {
 
     res.json({ message: "Poll unflagged successfully", poll });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error unflagging poll" });
   }
 };
@@ -311,7 +312,7 @@ export const deletePollAdmin = async (req, res) => {
 
     res.json({ message: "Poll deleted successfully by admin" });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error deleting poll" });
   }
 };
@@ -370,7 +371,7 @@ export const getDashboardStats = async (req, res) => {
       activeUsers,
     });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching stats" });
   }
 };
@@ -401,7 +402,7 @@ export const getActivityLogs = async (req, res) => {
       recentFlags: flaggedPolls,
     });
   } catch (error) {
-    console.error(error);
+    logger.error("Admin controller error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Server error fetching logs" });
   }
 };

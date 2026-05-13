@@ -90,10 +90,25 @@ export const moderatorOnly = (req, res, next) => {
   return res.status(403).json({ message: "Moderator access required" });
 };
 
-// Update last active timestamp
+// Update last active timestamp — debounced to avoid a DB write on every request.
+// Only updates if at least 5 minutes have passed since the last tracked update.
+const _lastActiveCache = new Map();
+const LAST_ACTIVE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
 export const updateLastActive = (req, res, next) => {
   if (req.user) {
-    req.user.lastActiveAt = new Date();
+    const userId = req.user._id.toString();
+    const now = Date.now();
+    const lastUpdated = _lastActiveCache.get(userId) || 0;
+
+    if (now - lastUpdated > LAST_ACTIVE_INTERVAL_MS) {
+      _lastActiveCache.set(userId, now);
+      // Fire-and-forget — don't block the request
+      import("../models/User.js").then(({ default: User }) => {
+        User.findByIdAndUpdate(userId, { lastActiveAt: new Date() }).catch(() => {});
+      });
+    }
   }
   next();
 };
+

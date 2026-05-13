@@ -1,6 +1,7 @@
 import Poll from "../models/Poll.js";
 import { validateResponsesAgainstPoll } from "../utils/pollVoteIncrement.js";
 import { persistVoteSubmission, TallyUpdateError } from "../services/persistVoteSubmission.js";
+import logger from "../utils/logger.js";
 
 // @desc    Submit a vote for a poll
 // @route   POST /api/votes
@@ -86,7 +87,7 @@ export const submitVote = async (req, res) => {
       throw dbError;
     }
   } catch (error) {
-    console.error("Vote submission error:", error);
+    logger.error("Vote submission error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Failed to submit your response. Please try again." });
   }
 };
