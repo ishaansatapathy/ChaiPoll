@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Navbar } from "../../components/layout/Navbar";
 import { Button } from "../../components/ui/Button";
@@ -13,6 +13,7 @@ import PollExpired from "./PollExpired";
 export default function PollView() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [poll, setPoll] = useState(null);
   const [responses, setResponses] = useState({});
@@ -75,7 +76,7 @@ export default function PollView() {
 
   const handleSubmit = async () => {
     if (needsAuth) {
-      navigate("/auth");
+      navigate("/auth", { state: { from: location } });
       return;
     }
     const missing = poll.questions.filter((q) => q.isMandatory && !responses[q._id]);
@@ -156,7 +157,7 @@ export default function PollView() {
             <p className="text-white/40 mb-8 max-w-sm mx-auto italic">
               This poll requires authentication. Please sign in to cast your vote.
             </p>
-            <Button to="/auth" className="w-full max-w-xs mx-auto">
+            <Button to="/auth" state={{ from: location }} className="w-full max-w-xs mx-auto">
               Sign In to Vote
             </Button>
           </motion.div>

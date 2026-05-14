@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SocialButtons from "./SocialButtons";
 import RecoveryFlow from "./RecoveryFlow";
 
@@ -22,6 +22,7 @@ const AuthCard = ({ initialSignup = false }) => {
 
   const { login, signup } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   if (isRecovery) {
     return (
@@ -55,7 +56,8 @@ const AuthCard = ({ initialSignup = false }) => {
         }
         await signup({ name: formData.name, email: formData.email, password: formData.password });
       }
-      navigate("/dashboard");
+      const from = location.state?.from?.pathname || "/dashboard";
+      navigate(from, { replace: true });
     } catch (err) {
       const msg = err.response?.data?.message || err.message || "Something went wrong";
       setError(msg);
@@ -117,7 +119,7 @@ const AuthCard = ({ initialSignup = false }) => {
         </div>
       </div>
 
-      <SocialButtons />
+      <SocialButtons returnTo={location.state?.from?.pathname} />
 
       <div className="my-8" />
 

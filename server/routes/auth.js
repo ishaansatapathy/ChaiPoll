@@ -52,7 +52,13 @@ router.post("/logout", logout);
 
 router.get("/me", protect, getMe);
 
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/google", (req, res, next) => {
+  const returnTo = req.query.returnTo || "/dashboard";
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    state: returnTo,
+  })(req, res, next);
+});
 router.get(
   "/google/callback",
   passport.authenticate("google", {
