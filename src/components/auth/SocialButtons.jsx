@@ -1,9 +1,10 @@
 import React from "react";
 
-const SocialButtons = () => {
+const SocialButtons = ({ returnTo }) => {
   const handleGoogleLogin = () => {
     const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-    window.location.href = `${API_URL}/auth/google`;
+    const target = returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : "";
+    window.location.href = `${API_URL}/auth/google${target}`;
   };
 
   return (

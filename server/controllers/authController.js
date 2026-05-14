@@ -326,5 +326,6 @@ export const updateDisplayName = async (req, res) => {
 // @route   Used internally after passport.authenticate
 export const googleCallback = (req, res) => {
   generateToken(res, req.user._id);
-  res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}/dashboard`);
+  const returnTo = req.query.state || "/dashboard";
+  res.redirect(`${process.env.CLIENT_URL || "http://localhost:5173"}${returnTo}`);
 };

@@ -11,7 +11,7 @@ export function Button({ children, to, variant = "primary", className = "", ...p
 
   if (to) {
     return (
-      <Link to={to} className={classes}>
+      <Link to={to} className={classes} {...props}>
         {children}
       </Link>
     );
