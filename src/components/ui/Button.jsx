@@ -6,19 +6,19 @@ const variants = {
   ghost: "border-transparent bg-transparent text-white/68 hover:text-white",
 };
 
-export function Button({ children, to, variant = "primary", className = "", …props }) {
+export function Button({ children, to, variant = "primary", className = "", ...props }) {
   const classes = `inline-flex min-h-11 items-center justify-center rounded-full border px-5 text-sm font-semibold transition ${variants[variant]} ${className}`;
 
   if (to) {
     return (
-      <Link to={to} className={classes} {…props}>
+      <Link to={to} className={classes} {...props}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button className={classes} {…props}>
+    <button className={classes} {...props}>
       {children}
     </button>
   );

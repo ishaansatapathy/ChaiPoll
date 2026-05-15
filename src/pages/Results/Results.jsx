@@ -119,7 +119,7 @@ export default function Results() {
               className="space-y-20"
             >
               {poll.questions.map((q, qIdx) => {
-                const sorted = […q.options].sort((a, b) => b.voteCount - a.voteCount);
+                const sorted = [...q.options].sort((a, b) => b.voteCount - a.voteCount);
                 const total = q.totalVotes || 0;
                 return (
                   <div key={q._id} className="relative">

@@ -27,7 +27,7 @@ export default function CreatePoll() {
 
   const addQuestion = useCallback(() => {
     setQuestions((prev) => [
-      …prev,
+      ...prev,
       {
         id: genId(),
         text: "",
@@ -48,7 +48,7 @@ export default function CreatePoll() {
   );
 
   const updateQuestion = useCallback((id, updates) => {
-    setQuestions((prev) => prev.map((q) => (q.id === id ? { …q, …updates } : q)));
+    setQuestions((prev) => prev.map((q) => (q.id === id ? { ...q, ...updates } : q)));
   }, []);
 
   const handleSubmit = async (e) => {
@@ -62,7 +62,7 @@ export default function CreatePoll() {
       }
 
       const sanitizedQuestions = questions.map((q) => ({
-        …q,
+        ...q,
         options: q.options.filter((o) => o.trim()),
       }));
 
@@ -71,7 +71,7 @@ export default function CreatePoll() {
         if (q.options.length < 2) throw new Error("Each question needs at least 2 options");
       }
 
-      await createPoll({ …pollData, questions: sanitizedQuestions });
+      await createPoll({ ...pollData, questions: sanitizedQuestions });
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Failed to create poll");
@@ -118,7 +118,7 @@ export default function CreatePoll() {
                     placeholder="What's this poll about?"
                     className="w-full bg-transparent border-b border-white/10 py-3 text-3xl font-display text-white placeholder-white/10 transition-all focus:border-[#ef4444] focus:outline-none"
                     value={pollData.title}
-                    onChange={(e) => setPollData({ …pollData, title: e.target.value })}
+                    onChange={(e) => setPollData({ ...pollData, title: e.target.value })}
                     required
                   />
                 </div>
@@ -127,10 +127,10 @@ export default function CreatePoll() {
                     Description
                   </label>
                   <textarea
-                    placeholder="Context for participants…"
+                    placeholder="Context for participants..."
                     className="w-full bg-white/[0.02] rounded-2xl border border-white/5 p-5 text-sm text-white placeholder-white/10 transition-all focus:border-white/20 focus:outline-none min-h-[80px] resize-none"
                     value={pollData.description}
-                    onChange={(e) => setPollData({ …pollData, description: e.target.value })}
+                    onChange={(e) => setPollData({ ...pollData, description: e.target.value })}
                   />
                 </div>
               </div>
@@ -221,7 +221,7 @@ export default function CreatePoll() {
                   </div>
                   <select
                     value={pollData.visibility}
-                    onChange={(e) => setPollData({ …pollData, visibility: e.target.value })}
+                    onChange={(e) => setPollData({ ...pollData, visibility: e.target.value })}
                     className="w-full rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 text-[12px] text-white focus:border-[#ef4444] focus:outline-none appearance-none cursor-pointer"
                   >
                     <option value="public" className="bg-[#0a0a0a]">
@@ -246,7 +246,7 @@ export default function CreatePoll() {
                   <input
                     type="datetime-local"
                     value={pollData.expiresAt}
-                    onChange={(e) => setPollData({ …pollData, expiresAt: e.target.value })}
+                    onChange={(e) => setPollData({ ...pollData, expiresAt: e.target.value })}
                     className="w-full rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 text-[12px] text-white focus:border-amber-400 focus:outline-none [color-scheme:dark]"
                   />
                 </div>
@@ -254,8 +254,8 @@ export default function CreatePoll() {
                 <div
                   onClick={() =>
                     setPollData({
-                      …pollData,
-                      settings: { …pollData.settings, anonymous: !pollData.settings.anonymous },
+                      ...pollData,
+                      settings: { ...pollData.settings, anonymous: !pollData.settings.anonymous },
                     })
                   }
                   className="group relative flex items-center justify-between p-4 rounded-[24px] bg-white/[0.02] border border-white/5 cursor-pointer hover:border-white/20 transition-all duration-500 overflow-hidden"
@@ -314,13 +314,13 @@ export default function CreatePoll() {
 
 function QuestionEditor({ index, question, onUpdate, onRemove, canRemove }) {
   const handleOptionChange = (optIdx, val) => {
-    const newOptions = […question.options];
+    const newOptions = [...question.options];
     newOptions[optIdx] = val;
     onUpdate({ options: newOptions });
   };
 
   const addOption = () => {
-    onUpdate({ options: […question.options, ""] });
+    onUpdate({ options: [...question.options, ""] });
   };
 
   const removeOption = (optIdx) => {

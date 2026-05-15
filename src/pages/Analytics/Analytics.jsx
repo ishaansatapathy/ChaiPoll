@@ -44,7 +44,7 @@ function QuestionInsightCard({ title, poll, type }) {
       let maxPct = -1;
       poll.questions.forEach((q) => {
         if (!q.totalVotes) return;
-        const maxVotes = Math.max(…q.options.map((o) => o.voteCount));
+        const maxVotes = Math.max(...q.options.map((o) => o.voteCount));
         const pct = (maxVotes / q.totalVotes) * 100;
         if (pct > maxPct) {
           maxPct = pct;
@@ -223,7 +223,7 @@ export default function Analytics() {
 
         // Listen for new_participation events (Fix #2)
         socket.on("new_participation", (data) => {
-          setLiveParticipations((prev) => [data, …prev].slice(0, 20));
+          setLiveParticipations((prev) => [data, ...prev].slice(0, 20));
         });
       } catch (err) {
         console.error("Error fetching analytics:", err);
@@ -453,7 +453,7 @@ function EmptyAnalytics() {
         Select a Poll
       </h2>
       <p className="text-white/30 max-w-sm mx-auto font-handwriting text-2xl italic leading-relaxed">
-        &quot;Choose a poll from the sidebar to view its analytics.&quot;
+        "Choose a poll from the sidebar to view its analytics."
       </p>
     </div>
   );

@@ -9,12 +9,12 @@ import { RoughNotation } from "react-rough-notation";
 
 const authReducer = (state, action) => {
   switch (action.type) {
-    case "SET_LOGIN": return { …state, isLogin: action.payload, isRecovery: false };
-    case "SET_RECOVERY": return { …state, isRecovery: action.payload };
-    case "SET_FORM": return { …state, formData: { …state.formData, …action.payload }, error: "", showErrorNotation: false };
-    case "SET_ERROR": return { …state, error: action.payload, loading: false };
-    case "SET_ERROR_NOTATION": return { …state, showErrorNotation: action.payload };
-    case "SET_LOADING": return { …state, loading: action.payload };
+    case "SET_LOGIN": return { ...state, isLogin: action.payload, isRecovery: false };
+    case "SET_RECOVERY": return { ...state, isRecovery: action.payload };
+    case "SET_FORM": return { ...state, formData: { ...state.formData, ...action.payload }, error: "", showErrorNotation: false };
+    case "SET_ERROR": return { ...state, error: action.payload, loading: false };
+    case "SET_ERROR_NOTATION": return { ...state, showErrorNotation: action.payload };
+    case "SET_LOADING": return { ...state, loading: action.payload };
     default: return state;
   }
 };
@@ -222,7 +222,7 @@ const AuthCard = ({ initialSignup = false }) => {
           disabled={loading}
           className="w-full rounded-xl bg-[#d4d4d8] py-3.5 text-sm font-bold text-black transition-all hover:bg-white active:scale-[0.98] mt-2"
         >
-          {loading ? "Processing&hellip;" : isLogin ? "Sign In" : "Sign Up"}
+          {loading ? "Processing..." : isLogin ? "Sign In" : "Sign Up"}
         </button>
       </form>
     </div>

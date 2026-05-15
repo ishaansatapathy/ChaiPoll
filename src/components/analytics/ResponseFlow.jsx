@@ -148,7 +148,7 @@ export default function ResponseFlow({ poll, votes = [] }) {
         style: { stroke: "rgba(239, 68, 68, 0.3)", strokeWidth: 2, strokeDasharray: "8 4" },
         markerEnd: { type: MarkerType.ArrowClosed, color: "#ef4444", width: 16, height: 16 },
       });
-      const sortedOpts = […q.options];
+      const sortedOpts = [...q.options];
       const totalVotes = q.totalVotes || 0;
       sortedOpts.forEach((opt, oIdx) => {
         const oId = `o-${qIdx}-${oIdx}`;

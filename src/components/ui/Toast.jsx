@@ -36,7 +36,7 @@ export function useToast() {
 
   const addToast = useCallback((message, type = "error", duration = 3000) => {
     const id = Date.now();
-    setToasts((prev) => […prev, { id, message, type }]);
+    setToasts((prev) => [...prev, { id, message, type }]);
 
     if (duration > 0) {
       setTimeout(() => {

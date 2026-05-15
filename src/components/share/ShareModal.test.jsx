@@ -23,7 +23,7 @@ describe("ShareModal", () => {
   it("renders nothing when closed", () => {
     const { container } = render(
       <BrowserRouter>
-        <ShareModal {…defaultProps} isOpen={false} />
+        <ShareModal {...defaultProps} isOpen={false} />
       </BrowserRouter>
     );
     expect(container.querySelector("h2")).toBeNull();
@@ -32,7 +32,7 @@ describe("ShareModal", () => {
   it("renders modal title and QR code when open", () => {
     render(
       <BrowserRouter>
-        <ShareModal {…defaultProps} />
+        <ShareModal {...defaultProps} />
       </BrowserRouter>
     );
     expect(screen.getByText("Share Poll")).toBeInTheDocument();
@@ -43,7 +43,7 @@ describe("ShareModal", () => {
   it("displays the share URL containing the poll code", () => {
     render(
       <BrowserRouter>
-        <ShareModal {…defaultProps} />
+        <ShareModal {...defaultProps} />
       </BrowserRouter>
     );
     // The URL is rendered in a truncated <p> — use getAllByText and check at least one exists
@@ -54,7 +54,7 @@ describe("ShareModal", () => {
   it("calls writeText when copy button is clicked", async () => {
     render(
       <BrowserRouter>
-        <ShareModal {…defaultProps} />
+        <ShareModal {...defaultProps} />
       </BrowserRouter>
     );
 

@@ -14,7 +14,7 @@ export function QuestionCard({ question, index, onChange, onRemove, onAddOption,
       <Input
         label="Question"
         value={question.text}
-        onChange={(event) => onChange({ …question, text: event.target.value })}
+        onChange={(event) => onChange({ ...question, text: event.target.value })}
         placeholder="Ask something clear and answerable"
       />
       <div className="mt-4 grid gap-3">
@@ -24,9 +24,9 @@ export function QuestionCard({ question, index, onChange, onRemove, onAddOption,
               className="w-full"
               value={option}
               onChange={(event) => {
-                const next = […question.options];
+                const next = [...question.options];
                 next[optionIndex] = event.target.value;
-                onChange({ …question, options: next });
+                onChange({ ...question, options: next });
               }}
               placeholder={`Option ${optionIndex + 1}`}
             />
@@ -45,7 +45,7 @@ export function QuestionCard({ question, index, onChange, onRemove, onAddOption,
           <input
             type="checkbox"
             checked={question.required}
-            onChange={(event) => onChange({ …question, required: event.target.checked })}
+            onChange={(event) => onChange({ ...question, required: event.target.checked })}
             className="accent-white"
           />
           Required question
