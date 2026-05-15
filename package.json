@@ -19,7 +19,8 @@
     "lint:fix": "eslint . --fix && npm --prefix server run lint:fix",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "postinstall": "npm --prefix server install"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
