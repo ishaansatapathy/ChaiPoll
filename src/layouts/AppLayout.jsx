@@ -12,7 +12,6 @@ export function AppLayout() {
       <div className="relative flex flex-col lg:flex-row">
         <Sidebar />
         <main 
-          role="main" 
           aria-label="Main Content"
           className="min-h-screen flex-1 px-4 sm:px-6 lg:px-8 pb-32 lg:pb-10 pt-10"
         >

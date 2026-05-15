@@ -105,7 +105,7 @@ const Auth = () => {
 
           <div className="absolute bottom-8 text-white/20 text-[10px] uppercase tracking-[0.2em]">
             By continuing, you agree to our{" "}
-            <a href="#" className="underline hover:text-white">
+            <a href="/terms" className="underline hover:text-white">
               Terms of Service
             </a>
           </div>

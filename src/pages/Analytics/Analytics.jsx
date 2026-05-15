@@ -44,7 +44,7 @@ function QuestionInsightCard({ title, poll, type }) {
       let maxPct = -1;
       poll.questions.forEach((q) => {
         if (!q.totalVotes) return;
-        const maxVotes = Math.max(...q.options.map((o) => o.voteCount));
+        const maxVotes = Math.max(…q.options.map((o) => o.voteCount));
         const pct = (maxVotes / q.totalVotes) * 100;
         if (pct > maxPct) {
           maxPct = pct;
@@ -81,7 +81,7 @@ function QuestionInsightCard({ title, poll, type }) {
 
   return (
     <div className="p-6 rounded-3xl border border-white/5 bg-white/[0.01] backdrop-blur-3xl overflow-hidden relative group">
-      <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#ef4444]/5 blur-3xl group-hover:bg-[#ef4444]/10 transition-all" />
+      <div className="absolute -top-10 -right-10 size-32 bg-[#ef4444]/5 blur-3xl group-hover:bg-[#ef4444]/10 transition-all" />
       <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-4">
         {title}
       </p>
@@ -223,7 +223,7 @@ export default function Analytics() {
 
         // Listen for new_participation events (Fix #2)
         socket.on("new_participation", (data) => {
-          setLiveParticipations((prev) => [data, ...prev].slice(0, 20));
+          setLiveParticipations((prev) => [data, …prev].slice(0, 20));
         });
       } catch (err) {
         console.error("Error fetching analytics:", err);
@@ -336,7 +336,7 @@ function PollSidebar({ allPolls, pollListLoading, id }) {
       <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
         {pollListLoading
           ? [1, 2, 3].map((i) => (
-              <div key={i} className="h-16 w-full bg-white/5 rounded-2xl animate-pulse" />
+              <div key={`skeleton-poll-${i}`} className="h-16 w-full bg-white/5 rounded-2xl animate-pulse" />
             ))
           : allPolls.map((p) => (
               <Link
@@ -419,7 +419,7 @@ function ShareHub({ pollUrl, copied, copyToClipboard }) {
             <span className="text-[10px] font-mono text-white/40 truncate pr-4">
               {pollUrl.replace(/^https?:\/\//, "")}
             </span>
-            <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
+            <div className="flex items-center justify-center size-8 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
               {copied ? (
                 <Check size={14} className="text-emerald-500" />
               ) : (
@@ -476,9 +476,9 @@ function ChartsTab({
             Live Participation Feed
           </p>
           <div className="flex flex-wrap gap-2">
-            {liveParticipations.slice(0, 8).map((p, i) => (
+            {liveParticipations.slice(0, 8).map((p) => (
               <motion.div
-                key={i}
+                key={p.participationId || p.timestamp}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-400"
@@ -671,9 +671,9 @@ function ChartsTab({
                             className="mt-4 overflow-hidden"
                           >
                             <div className="flex flex-wrap gap-2 pb-4 pt-2">
-                              {votersForOption.map((v, vIdx) => (
+                              {votersForOption.map((v) => (
                                 <span 
-                                  key={vIdx}
+                                  key={v._id || v.voterId?._id}
                                   className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-bold text-white/40"
                                 >
                                   {v.voterId?.name || v.voterId?.displayName || "Anonymous"}

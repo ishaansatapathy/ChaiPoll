@@ -37,7 +37,7 @@ export default function AnalyticsHeader({
           disabled={exporting}
           className="flex items-center gap-3 px-6 py-4 rounded-[22px] bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all shadow-xl disabled:opacity-50"
         >
-          <Download size={14} /> {exporting ? "Exporting..." : "Export CSV"}
+          <Download size={14} /> {exporting ? "Exporting…" : "Export CSV"}
         </button>
 
         <div className="flex p-1.5 rounded-[22px] bg-[#050505] border border-white/10 backdrop-blur-2xl shadow-2xl">

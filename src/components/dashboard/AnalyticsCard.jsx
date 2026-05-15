@@ -34,12 +34,12 @@ export function AnalyticsCard({ label, value, trend, icon: Icon, showRough }) {
       </div>
 
       {/* Viewfinder Brackets */}
-      <div className="absolute top-4 left-4 w-3 h-3 border-t border-l border-white/10" />
-      <div className="absolute bottom-4 right-4 w-3 h-3 border-b border-r border-white/10" />
+      <div className="absolute top-4 left-4 size-3 border-t border-l border-white/10" />
+      <div className="absolute bottom-4 right-4 size-3 border-b border-r border-white/10" />
 
       {/* Header Section */}
       <div className="relative flex items-center justify-between mb-10">
-        <div className="h-10 w-10 rounded-xl bg-white/[0.02] flex items-center justify-center border border-white/5">
+        <div className="size-10 rounded-xl bg-white/[0.02] flex items-center justify-center border border-white/5">
           {Icon && (
             <Icon
               className="text-white/20 group-hover:text-[#ef4444] transition-colors"
@@ -51,7 +51,7 @@ export function AnalyticsCard({ label, value, trend, icon: Icon, showRough }) {
           <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">
             Operational
           </span>
-          <div className="h-1 w-1 rounded-full bg-[#ef4444] opacity-40 shadow-[0_0_8px_#ef4444]" />
+          <div className="size-1 rounded-full bg-[#ef4444] opacity-40 shadow-[0_0_8px_#ef4444]" />
         </div>
       </div>
 

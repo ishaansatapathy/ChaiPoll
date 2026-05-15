@@ -73,7 +73,7 @@ export function WorkflowSection() {
                   padding={8}
                   animationDelay={index * 200 + 1500}
                 >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-medium text-white transition-colors group-hover:border-white/30 group-hover:bg-white/10">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-medium text-white transition-colors group-hover:border-white/30 group-hover:bg-white/10">
                     {step.id}
                   </div>
                 </RoughNotation>

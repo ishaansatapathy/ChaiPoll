@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Loading admin dashboard...</div>
+        <div className="text-white">Loading admin dashboard…</div>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-black text-white p-8">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center gap-3 mb-8">
-          <Shield className="w-8 h-8 text-red-500" />
+          <Shield className="size-8 text-red-500" />
           <h1 className="text-4xl font-bold">Admin Dashboard</h1>
         </div>
       </motion.div>
@@ -109,7 +109,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Total Users</h3>
-              <Users className="w-6 h-6 text-blue-400" />
+              <Users className="size-6 text-blue-400" />
             </div>
             <p className="text-4xl font-bold mb-2">{stats.summary.totalUsers}</p>
             <p className="text-sm text-white/60">
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Total Polls</h3>
-              <TrendingUp className="w-6 h-6 text-green-400" />
+              <TrendingUp className="size-6 text-green-400" />
             </div>
             <p className="text-4xl font-bold mb-2">{stats.summary.totalPolls}</p>
             <p className="text-sm text-white/60">Public: {stats.pollsByVisibility.public || 0}</p>
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Banned Users</h3>
-              <Lock className="w-6 h-6 text-red-400" />
+              <Lock className="size-6 text-red-400" />
             </div>
             <p className="text-4xl font-bold mb-2">{stats.summary.bannedUsers}</p>
             <p className="text-sm text-white/60">Active restrictions</p>
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Flagged Polls</h3>
-              <AlertCircle className="w-6 h-6 text-yellow-400" />
+              <AlertCircle className="size-6 text-yellow-400" />
             </div>
             <p className="text-4xl font-bold mb-2">{stats.summary.flaggedPolls}</p>
             <p className="text-sm text-white/60">Pending review</p>
@@ -171,7 +171,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold">Total Votes</h3>
-              <Activity className="w-6 h-6 text-purple-400" />
+              <Activity className="size-6 text-purple-400" />
             </div>
             <p className="text-4xl font-bold mb-2">{stats.summary.totalVotes}</p>
             <p className="text-sm text-white/60">System-wide responses</p>
@@ -195,14 +195,14 @@ export default function AdminDashboard() {
             <tbody>
               {users.map((user) => (
                 <tr key={user._id} className="border-b border-white/5 hover:bg-white/5">
-                  <td className="py-4 px-4">{user.name}</td>
-                  <td className="py-4 px-4 text-white/60">{user.email}</td>
-                  <td className="py-4 px-4">
+                  <td className="p-4">{user.name}</td>
+                  <td className="p-4 text-white/60">{user.email}</td>
+                  <td className="p-4">
                     <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold">
                       {user.role}
                     </span>
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="p-4">
                     {user.isBanned ? (
                       <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs">
                         Banned
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
                       </span>
                     )}
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="p-4">
                     {!user.isBanned && (
                       <button
                         onClick={() => handleBanUser(user._id, "Moderate action")}
@@ -246,14 +246,14 @@ export default function AdminDashboard() {
             <tbody>
               {polls.map((poll) => (
                 <tr key={poll._id} className="border-b border-white/5 hover:bg-white/5">
-                  <td className="py-4 px-4 font-semibold">{poll.title}</td>
-                  <td className="py-4 px-4 text-white/60">{poll.createdBy?.name}</td>
-                  <td className="py-4 px-4">
+                  <td className="p-4 font-semibold">{poll.title}</td>
+                  <td className="p-4 text-white/60">{poll.createdBy?.name}</td>
+                  <td className="p-4">
                     <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs">
                       {poll.visibility}
                     </span>
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="p-4">
                     {poll.flagged ? (
                       <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs">
                         Flagged
@@ -264,7 +264,7 @@ export default function AdminDashboard() {
                       </span>
                     )}
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="p-4">
                     {!poll.flagged && (
                       <button
                         onClick={() => handleFlagPoll(poll._id, "Review needed")}

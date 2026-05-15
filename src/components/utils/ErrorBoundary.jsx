@@ -40,27 +40,27 @@ export class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
-          <div className="max-w-md w-full bg-gray-800 rounded-lg shadow-lg border border-gray-700 p-8">
+        <div className="min-h-screen flex items-center justify-center bg-zinc-900 p-4">
+          <div className="max-w-md w-full bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 p-8">
             <div className="flex justify-center mb-4">
-              <AlertCircle className="w-12 h-12 text-red-500" />
+              <AlertCircle className="size-12 text-red-500" />
             </div>
 
             <h2 className="text-2xl font-bold text-white text-center mb-4">
               Oops! Something went wrong
             </h2>
 
-            <p className="text-gray-400 text-center mb-6">
+            <p className="text-zinc-400 text-center mb-6">
               We encountered an unexpected error. Please try again or contact support if the problem
               persists.
             </p>
 
             {process.env.NODE_ENV === "development" && this.state.error && (
-              <details className="mb-6 bg-gray-900 p-4 rounded border border-gray-700">
+              <details className="mb-6 bg-zinc-900 p-4 rounded border border-zinc-700">
                 <summary className="text-yellow-500 cursor-pointer font-semibold">
                   Error Details (Development Only)
                 </summary>
-                <pre className="text-xs text-gray-300 mt-2 overflow-auto max-h-40 whitespace-pre-wrap break-words">
+                <pre className="text-xs text-zinc-300 mt-2 overflow-auto max-h-40 whitespace-pre-wrap break-words">
                   {this.state.error.toString()}
                   {this.state.errorInfo && this.state.errorInfo.componentStack}
                 </pre>
@@ -72,12 +72,12 @@ export class ErrorBoundary extends React.Component {
                 onClick={this.handleReset}
                 className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="size-4" />
                 Try Again
               </button>
               <button
                 onClick={() => (window.location.href = "/")}
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+                className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-2 px-4 rounded-lg transition"
               >
                 Go Home
               </button>

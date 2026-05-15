@@ -19,7 +19,7 @@ export const socket = io(URL, {
 
 // Global logging for debugging in development
 if (import.meta.env.MODE === "development") {
-  socket.onAny((event, ...args) => {
+  socket.onAny((event, …args) => {
     console.log(`[Socket Event] ${event}`, args);
   });
 }

@@ -64,12 +64,12 @@ export default function PollView() {
 
       if (isMultiple) {
         if (currentArray.includes(optionId)) {
-          return { ...prev, [questionId]: currentArray.filter(id => id !== optionId) };
+          return { …prev, [questionId]: currentArray.filter(id => id !== optionId) };
         } else {
-          return { ...prev, [questionId]: [...currentArray, optionId] };
+          return { …prev, [questionId]: […currentArray, optionId] };
         }
       } else {
-        return { ...prev, [questionId]: [optionId] };
+        return { …prev, [questionId]: [optionId] };
       }
     });
   };
@@ -214,7 +214,7 @@ export default function PollView() {
                       }`}
                     >
                       <div
-                        className={`h-6 w-6 rounded-${q.type === "multiple" ? "lg" : "full"} border-2 transition-all flex items-center justify-center ${
+                        className={`size-6 rounded-${q.type === "multiple" ? "lg" : "full"} border-2 transition-all flex items-center justify-center ${
                           (Array.isArray(responses[q._id]) ? responses[q._id].includes(opt._id) : responses[q._id] === opt._id)
                             ? "border-[#ef4444] bg-[#ef4444]"
                             : "border-white/10"
@@ -223,7 +223,7 @@ export default function PollView() {
                         {(Array.isArray(responses[q._id]) ? responses[q._id].includes(opt._id) : responses[q._id] === opt._id) && (
                           <motion.div
                             layoutId={`dot-${q._id}-${opt._id}`}
-                            className={q.type === "multiple" ? "text-white" : "h-3 w-3 rounded-full bg-white"}
+                            className={q.type === "multiple" ? "text-white" : "size-3 rounded-full bg-white"}
                           >
                             {q.type === "multiple" && <CheckCircle2 size={14} strokeWidth={4} />}
                           </motion.div>

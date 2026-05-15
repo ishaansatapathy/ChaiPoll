@@ -93,7 +93,7 @@ export default function Home() {
 
                     {/* Curly Arrow */}
                     <svg
-                      className="absolute -bottom-8 -left-10 h-12 w-12 -rotate-[15deg]"
+                      className="absolute -bottom-8 -left-10 size-12 -rotate-[15deg]"
                       viewBox="0 0 50 50"
                       fill="none"
                     >

@@ -45,9 +45,9 @@ const slides = [
           padding={20}
           animationDelay={500}
         >
-          <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center mb-6">
+          <div className="size-16 rounded-full bg-white/5 flex items-center justify-center mb-6">
             <svg
-              className="w-8 h-8 text-white/40"
+              className="size-8 text-white/40"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -76,14 +76,14 @@ const slides = [
       <div className="h-full w-full bg-ink-900 rounded-xl border border-white/5 p-8 flex flex-col justify-center">
         <div className="p-4 bg-white/5 border border-white/10 rounded-lg mb-4">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded bg-white/10" />
+            <div className="size-8 rounded bg-white/10" />
             <div className="h-3 w-40 bg-white/20 rounded" />
           </div>
         </div>
         <div className="space-y-3">
           <div className="h-2 w-full bg-white/10 rounded" />
           <div className="h-2 w-full bg-white/10 rounded" />
-          <div className="h-2 w-2/3 bg-white/10 rounded" />
+          <div className="size-2/3 bg-white/10 rounded" />
         </div>
         <div className="mt-8 flex justify-end">
           <RoughNotation type="box" show={true} color="white" strokeWidth={1} padding={6}>

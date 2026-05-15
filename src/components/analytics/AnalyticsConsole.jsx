@@ -174,7 +174,7 @@ export default function AnalyticsConsole({
 
             <div className="h-24 flex items-center justify-center bg-white/[0.01] rounded-3xl border border-white/5 relative overflow-hidden group/wave">
               <div className="absolute inset-0 flex items-center justify-center gap-1.5 opacity-20">
-                {[...Array(16)].map((_, i) => (
+                {[…Array(16)].map((_, i) => (
                   <motion.div
                     key={i}
                     animate={{ height: [8, 32, 8] }}
@@ -209,7 +209,7 @@ export default function AnalyticsConsole({
             }`}
           >
             {publishing
-              ? "PUBLISHING..."
+              ? "PUBLISHING…"
               : poll?.settings?.isPublished
                 ? "RESULTS PUBLISHED"
                 : "PUBLISH RESULTS"}
@@ -218,10 +218,10 @@ export default function AnalyticsConsole({
       </div>
 
       {/* Delicate Sketch Corners */}
-      <div className="absolute top-6 left-6 w-4 h-4 border-t border-l border-white/10" />
-      <div className="absolute top-6 right-6 w-4 h-4 border-t border-r border-white/10" />
-      <div className="absolute bottom-6 left-6 w-4 h-4 border-b border-l border-white/10" />
-      <div className="absolute bottom-6 right-6 w-4 h-4 border-b border-r border-white/10" />
+      <div className="absolute top-6 left-6 size-4 border-t border-l border-white/10" />
+      <div className="absolute top-6 right-6 size-4 border-t border-r border-white/10" />
+      <div className="absolute bottom-6 left-6 size-4 border-b border-l border-white/10" />
+      <div className="absolute bottom-6 right-6 size-4 border-b border-r border-white/10" />
     </div>
   );
 }

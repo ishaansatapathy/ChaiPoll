@@ -36,12 +36,12 @@ export default function RoughChaiCodeMark({ className = "" }) {
 
     const cupShadowPass = rc.path("M36 35 L43 98 L72 97 L84 29", common);
     const rimShadowPass = rc.ellipse(61, 30, 50, 12, {
-      ...common,
+      …common,
       strokeWidth: 0.95,
       roughness: 1.4,
     });
     const underlinePass = rc.path("M24 111 C 45 114, 77 112, 99 110", {
-      ...common,
+      …common,
       strokeWidth: 0.8,
       roughness: 1.4,
     });
@@ -56,7 +56,7 @@ export default function RoughChaiCodeMark({ className = "" }) {
       <div className="pointer-events-none absolute -inset-x-8 -inset-y-7 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.06),rgba(0,0,0,0)_65%)] blur-xl" />
       <div className="pointer-events-none absolute -inset-x-10 -inset-y-9 rounded-full bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.04),rgba(0,0,0,0)_60%)]" />
 
-      <div className="relative h-36 w-36">
+      <div className="relative size-36">
         <motion.svg
           viewBox="0 0 128 128"
           className="h-full w-full"

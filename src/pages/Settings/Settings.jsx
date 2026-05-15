@@ -9,6 +9,7 @@ import { Highlight } from "../../components/ui/Highlight";
 export default function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [imgError, setImgError] = React.useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -41,29 +42,26 @@ export default function Settings() {
             <div className="flex flex-wrap items-center gap-8 relative z-10">
               <div className="relative group">
                 <div className="absolute -inset-1 border border-[#ef4444]/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                {user?.avatar && !user.avatar.includes("default-avatar.png") ? (
+                {user?.avatar && !user.avatar.includes("default-avatar.png") && !imgError ? (
                   <img
                     src={user.avatar}
                     alt={user.name}
                     referrerPolicy="no-referrer"
-                    className="relative h-24 w-24 rounded-3xl object-cover border border-white/10"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                      e.target.nextSibling.style.display = "flex";
-                    }}
+                    className="relative size-24 rounded-3xl object-cover border border-white/10"
+                    onError={() => setImgError(true)}
                   />
                 ) : null}
                 <div
-                  className={`relative h-24 w-24 rounded-3xl bg-white/5 items-center justify-center border border-white/10 ${user?.avatar && !user.avatar.includes("default-avatar.png") ? "hidden" : "flex"}`}
+                  className={`relative size-24 rounded-3xl bg-white/5 items-center justify-center border border-white/10 ${(!user?.avatar || user.avatar.includes("default-avatar.png") || imgError) ? "flex" : "hidden"}`}
                 >
                   <UserIcon size={40} className="text-white/20" />
                 </div>
               </div>
               <div className="space-y-4 flex-1 min-w-[200px]">
                 <div className="relative inline-block">
-                  <label className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-1">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-1">
                     Display Name
-                  </label>
+                  </p>
                   <RoughNotation
                     type="underline"
                     show={true}
@@ -78,15 +76,15 @@ export default function Settings() {
                   </RoughNotation>
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-1">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-1">
                     Email Address
-                  </label>
+                  </p>
                   <p className="text-lg text-white/60">{user?.email || "No email linked"}</p>
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-1">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-bold block mb-1">
                     Account Created
-                  </label>
+                  </p>
                   <p className="text-sm text-white/40">Member since joining ChaiPoll</p>
                 </div>
               </div>

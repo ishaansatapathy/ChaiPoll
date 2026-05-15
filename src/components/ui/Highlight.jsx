@@ -5,7 +5,7 @@ export function Highlight({ children }) {
         (pos) => (
           <span
             key={pos}
-            className={`absolute ${pos} h-1 w-1 rounded-[1px] border border-white/25 bg-black`}
+            className={`absolute ${pos} size-1 rounded-[1px] border border-white/25 bg-black`}
           />
         )
       )}

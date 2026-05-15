@@ -12,7 +12,7 @@ export default function NotFound() {
         animate={{ opacity: 1, scale: 1 }}
         className="relative z-10 max-w-lg w-full text-center"
       >
-        <div className="inline-flex items-center justify-center w-24 h-24 rounded-[40px] bg-white/5 border border-white/10 mb-8">
+        <div className="inline-flex items-center justify-center size-24 rounded-[40px] bg-white/5 border border-white/10 mb-8">
           <Search className="text-white/20" size={40} />
         </div>
 
