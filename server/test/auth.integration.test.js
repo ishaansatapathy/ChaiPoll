@@ -115,4 +115,181 @@ describe("Auth Integration Tests", () => {
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/validation/i);
   });
+
+  // ============ 2FA Tests ============
+
+  describe("Two-Factor Authentication (2FA)", () => {
+    it("toggles 2FA on for authenticated user", async () => {
+      // First, create and login a user
+      await request(app).post("/api/auth/signup").send({
+        name: "2FA Tester",
+        email: "2fa@example.com",
+        password: "password123",
+      });
+
+      const loginRes = await request(app).post("/api/auth/login").send({
+        email: "2fa@example.com",
+        password: "password123",
+      });
+
+      const cookies = loginRes.headers["set-cookie"];
+
+      // Now toggle 2FA on
+      const toggleRes = await request(app)
+        .post("/api/auth/toggle-2fa")
+        .set("Cookie", cookies)
+        .send({ enabled: true });
+
+      expect(toggleRes.status).toBe(200);
+      expect(toggleRes.body.message).toMatch(/enabled successfully/i);
+      expect(toggleRes.body.twoFactorEnabled).toBe(true);
+
+      // Verify in database
+      const user = await User.findOne({ email: "2fa@example.com" });
+      expect(user.twoFactorEnabled).toBe(true);
+    });
+
+    it("toggles 2FA off for authenticated user", async () => {
+      // Create user with 2FA disabled first
+      const user = await User.create({
+        name: "2FA Off Tester",
+        email: "2faoff@example.com",
+        password: "password123",
+        twoFactorEnabled: false,
+      });
+
+      // Login and get cookies (no 2FA required)
+      const loginRes = await request(app).post("/api/auth/login").send({
+        email: "2faoff@example.com",
+        password: "password123",
+      });
+
+      const cookies = loginRes.headers["set-cookie"];
+
+      // Toggle 2FA off
+      const toggleRes = await request(app)
+        .post("/api/auth/toggle-2fa")
+        .set("Cookie", cookies)
+        .send({ enabled: false });
+
+      expect(toggleRes.status).toBe(200);
+      expect(toggleRes.body.message).toMatch(/disabled successfully/i);
+      expect(toggleRes.body.twoFactorEnabled).toBe(false);
+
+      // Verify in database
+      const updatedUser = await User.findOne({ email: "2faoff@example.com" });
+      expect(updatedUser.twoFactorEnabled).toBe(false);
+    });
+
+    it("requires 2FA verification after login when 2FA is enabled", async () => {
+      // Create user with 2FA enabled
+      const user = await User.create({
+        name: "2FA Login Tester",
+        email: "2falogin@example.com",
+        password: "password123",
+        twoFactorEnabled: true,
+      });
+
+      // Try to login
+      const loginRes = await request(app).post("/api/auth/login").send({
+        email: "2falogin@example.com",
+        password: "password123",
+      });
+
+      // Should indicate 2FA is required
+      expect(loginRes.status).toBe(200);
+      expect(loginRes.body.twoFactorRequired).toBe(true);
+      expect(loginRes.body.email).toBe("2falogin@example.com");
+
+      // User should have OTP set
+      const dbUser = await User.findOne({ email: "2falogin@example.com" });
+      expect(dbUser.twoFactorOTP).toBeDefined();
+      expect(dbUser.twoFactorOTPExpire).toBeDefined();
+    });
+
+    it("verifies 2FA with valid OTP and generates JWT", async () => {
+      // Create user and manually set OTP
+      const user = await User.create({
+        name: "2FA Verify Tester",
+        email: "2faverify@example.com",
+        password: "password123",
+        twoFactorEnabled: true,
+      });
+
+      const validOTP = "123456";
+      user.twoFactorOTP = validOTP;
+      user.twoFactorOTPExpire = Date.now() + 5 * 60 * 1000; // 5 minutes
+      await user.save();
+
+      // Verify OTP
+      const verifyRes = await request(app).post("/api/auth/verify-2fa").send({
+        email: "2faverify@example.com",
+        otp: validOTP,
+      });
+
+      expect(verifyRes.status).toBe(200);
+      expect(verifyRes.body._id).toBe(user._id.toString());
+      expect(verifyRes.body.email).toBe("2faverify@example.com");
+      expect(verifyRes.headers["set-cookie"]).toBeDefined();
+
+      // OTP should be cleared
+      const updatedUser = await User.findById(user._id);
+      expect(updatedUser.twoFactorOTP).toBeUndefined();
+      expect(updatedUser.twoFactorOTPExpire).toBeUndefined();
+    });
+
+    it("rejects 2FA with invalid OTP", async () => {
+      const user = await User.create({
+        name: "2FA Invalid Tester",
+        email: "2fainvalid@example.com",
+        password: "password123",
+        twoFactorEnabled: true,
+      });
+
+      const validOTP = "123456";
+      user.twoFactorOTP = validOTP;
+      user.twoFactorOTPExpire = Date.now() + 5 * 60 * 1000;
+      await user.save();
+
+      // Try with wrong OTP
+      const verifyRes = await request(app).post("/api/auth/verify-2fa").send({
+        email: "2fainvalid@example.com",
+        otp: "999999",
+      });
+
+      expect(verifyRes.status).toBe(401);
+      expect(verifyRes.body.message).toMatch(/invalid or expired/i);
+    });
+
+    it("rejects 2FA with expired OTP", async () => {
+      const user = await User.create({
+        name: "2FA Expired Tester",
+        email: "2faexpired@example.com",
+        password: "password123",
+        twoFactorEnabled: true,
+      });
+
+      const expiredOTP = "123456";
+      user.twoFactorOTP = expiredOTP;
+      user.twoFactorOTPExpire = Date.now() - 1000; // Expired 1 second ago
+      await user.save();
+
+      // Try with expired OTP
+      const verifyRes = await request(app).post("/api/auth/verify-2fa").send({
+        email: "2faexpired@example.com",
+        otp: expiredOTP,
+      });
+
+      expect(verifyRes.status).toBe(401);
+      expect(verifyRes.body.message).toMatch(/invalid or expired/i);
+    });
+
+    it("prevents toggle-2fa without authentication", async () => {
+      const toggleRes = await request(app)
+        .post("/api/auth/toggle-2fa")
+        .send({ enabled: true });
+
+      expect(toggleRes.status).toBe(401);
+    });
+  });
 });
