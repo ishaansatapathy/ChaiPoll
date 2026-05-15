@@ -36,12 +36,12 @@ export default function RoughChaiCodeMark({ className = "" }) {
 
     const cupShadowPass = rc.path("M36 35 L43 98 L72 97 L84 29", common);
     const rimShadowPass = rc.ellipse(61, 30, 50, 12, {
-      …common,
+      ...common,
       strokeWidth: 0.95,
       roughness: 1.4,
     });
     const underlinePass = rc.path("M24 111 C 45 114, 77 112, 99 110", {
-      …common,
+      ...common,
       strokeWidth: 0.8,
       roughness: 1.4,
     });

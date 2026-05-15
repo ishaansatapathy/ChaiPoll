@@ -45,7 +45,7 @@ export default function VerifyEmail() {
             </div>
             <div>
                 <h1 className="text-3xl font-display text-white mb-3">Verifying Account</h1>
-                <p className="text-sm text-white/40 italic font-handwriting text-2xl">Confirming your identity…</p>
+                <p className="text-sm text-white/40 italic font-handwriting text-2xl">Confirming your identity...</p>
             </div>
           </div>
         )}

@@ -58,7 +58,7 @@ export default function Onboarding() {
                   type="text"
                   value={displayName}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Your display name&hellip;"
+                  placeholder="Your display name..."
                   className="w-full bg-white/[0.03] border border-white/10 rounded-2xl h-16 px-8 text-center text-xl font-display text-white placeholder:text-white/10 focus:outline-none focus:border-[#ef4444]/50 transition-all"
                 />
                 <div className="absolute inset-0 rounded-2xl border border-[#ef4444]/0 group-focus-within:border-[#ef4444]/20 pointer-events-none transition-all" />

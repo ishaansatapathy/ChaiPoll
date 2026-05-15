@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useSyncExternalStore } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import API from "../services/api";
 
 export interface User {

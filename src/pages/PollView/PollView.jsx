@@ -64,12 +64,12 @@ export default function PollView() {
 
       if (isMultiple) {
         if (currentArray.includes(optionId)) {
-          return { …prev, [questionId]: currentArray.filter(id => id !== optionId) };
+          return { ...prev, [questionId]: currentArray.filter(id => id !== optionId) };
         } else {
-          return { …prev, [questionId]: […currentArray, optionId] };
+          return { ...prev, [questionId]: [...currentArray, optionId] };
         }
       } else {
-        return { …prev, [questionId]: [optionId] };
+        return { ...prev, [questionId]: [optionId] };
       }
     });
   };

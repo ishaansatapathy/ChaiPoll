@@ -239,7 +239,7 @@ export default function Dashboard() {
               <div className="space-y-8">
                 {polls.length > 0 ? (
                   polls.slice(0, 5).map((poll, idx) => {
-                    const maxVotes = Math.max(…polls.map((p) => p.totalParticipants || 0), 1);
+                    const maxVotes = Math.max(...polls.map((p) => p.totalParticipants || 0), 1);
                     const percentage =
                       Math.round(((poll.totalParticipants || 0) / maxVotes) * 100) || 0;
                     return (
@@ -266,7 +266,7 @@ export default function Dashboard() {
                 ) : (
                   <div className="py-10 text-center flex flex-col items-center gap-4">
                     <p className="text-white/10 font-display text-lg uppercase tracking-widest italic">
-                      Waiting for data…
+                      Waiting for data...
                     </p>
                     <span className="font-handwriting text-[#ef4444] text-xl rotate-[-5deg]">
                       Ready for liftoff!
