@@ -11,10 +11,11 @@ const optionalAuth = async (req, res, next) => {
   let token = req.cookies?.jwt;
   if (token) {
     try {
+      // Verify access token (short-lived) with JWT_SECRET
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.userId).select("-password");
     } catch {
-      // Ignore token errors for optional auth
+      // Token invalid/expired — continue as anonymous voter
     }
   }
   next();

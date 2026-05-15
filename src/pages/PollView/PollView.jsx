@@ -32,7 +32,11 @@ export default function PollView() {
         if (isMounted) {
           setPoll(data);
           if (data.settings?.isPublished) navigate(`/results/${id}`);
-          if (!socket.connected) socket.connect();
+          if (!socket.connected) {
+            // Set auth token placeholder for handshake logic
+            socket.auth = { ...socket.auth, token: "session-active" };
+            socket.connect();
+          }
           socket.emit("joinPollRoom", id);
           socket.on("participantJoined", (count) => setLiveCount(count));
           socket.on("participantLeft", (count) => setLiveCount(count));

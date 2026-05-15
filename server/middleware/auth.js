@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
+import logger from "../utils/logger.js";
+
+const refreshSecret = () => process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
 
 const protect = async (req, res, next) => {
   let token = req.cookies.jwt;
@@ -15,7 +18,7 @@ const protect = async (req, res, next) => {
       const refreshToken = req.cookies.jwt_refresh;
       if (refreshToken) {
         try {
-          const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+          const decoded = jwt.verify(refreshToken, refreshSecret());
           if (decoded.type === "refresh") {
             const user = await User.findById(decoded.userId).select("-password");
             if (user && !user.isBanned) {
@@ -36,7 +39,7 @@ const protect = async (req, res, next) => {
     const refreshToken = req.cookies.jwt_refresh;
     if (refreshToken) {
       try {
-        const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+        const decoded = jwt.verify(refreshToken, refreshSecret());
         if (decoded.type === "refresh") {
           const user = await User.findById(decoded.userId).select("-password");
           if (user && !user.isBanned) {
@@ -61,7 +64,7 @@ const optionalProtect = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.userId).select("-password");
     } catch (error) {
-      console.warn("Optional Auth:", error.message);
+      logger.debug("Optional auth token invalid", { message: error.message });
     }
   }
   next();

@@ -115,6 +115,7 @@ export default function CreatePoll() {
                   </label>
                   <input
                     type="text"
+                    data-testid="poll-title-input"
                     placeholder="What's this poll about?"
                     className="w-full bg-transparent border-b border-white/10 py-3 text-3xl font-display text-white placeholder-white/10 transition-all focus:border-[#ef4444] focus:outline-none"
                     value={pollData.title}

@@ -6,7 +6,10 @@ const generateToken = (res, userId) => {
     expiresIn: "15m",
   });
 
-  const refreshToken = jwt.sign({ userId, type: "refresh" }, process.env.JWT_SECRET, {
+  // Refresh tokens are signed with a separate secret so a compromised access
+  // token secret cannot be used to forge refresh tokens.
+  const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
+  const refreshToken = jwt.sign({ userId, type: "refresh" }, refreshSecret, {
     expiresIn: "30d",
   });
 

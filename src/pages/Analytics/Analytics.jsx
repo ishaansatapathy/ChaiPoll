@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import {
@@ -186,60 +186,85 @@ export default function Analytics() {
   }, []);
 
   // Fetch detailed data for the selected poll
+  // Use a stable ref so the socket listener always calls the latest version
+  // without creating a new subscription on every invocation.
+  const fetchDataRef = useRef(null);
+
+  const fetchData = useCallback(async (pageNum = 1) => {
+    if (!id) return;
+    setLoading(pageNum === 1);
+    try {
+      const [analyticsRes, timeSeriesRes] = await Promise.all([
+        getPollAnalytics(id, pageNum),
+        getPollTimeSeries(id).catch(() => null),
+      ]);
+
+      setPoll(analyticsRes.data.poll);
+      setRecentVotes(analyticsRes.data.recentVotes || []);
+      setPagination(analyticsRes.data.pagination);
+
+      if (timeSeriesRes?.data) {
+        setFullTimeSeries(timeSeriesRes.data.timeSeries || []);
+        setMetrics(timeSeriesRes.data.metrics || null);
+      }
+    } catch (err) {
+      // Client-side error — console is appropriate here (no server logger available)
+      console.error("Error fetching analytics:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  // Keep the ref current so socket handlers always call the latest version
+  useEffect(() => {
+    fetchDataRef.current = fetchData;
+  }, [fetchData]);
+
   useEffect(() => {
     if (!id) {
       setLoading(false);
       return;
     }
 
-    const fetchData = async (pageNum = 1) => {
-      setLoading(pageNum === 1);
-      try {
-        const [analyticsRes, timeSeriesRes] = await Promise.all([
-          getPollAnalytics(id, pageNum),
-          getPollTimeSeries(id).catch(() => null),
-        ]);
+    fetchData(page);
 
-        setPoll(analyticsRes.data.poll);
-        setRecentVotes(analyticsRes.data.recentVotes || []);
-        setPagination(analyticsRes.data.pagination);
+    if (!socket.connected) {
+      // Set auth token placeholder for handshake logic
+      socket.auth = { ...socket.auth, token: "session-active" };
+      socket.connect();
+    }
+    socket.emit("joinPollRoom", id);
 
-        // Set full time-series from the dedicated endpoint
-        if (timeSeriesRes?.data) {
-          setFullTimeSeries(timeSeriesRes.data.timeSeries || []);
-          setMetrics(timeSeriesRes.data.metrics || null);
-        }
-
-        if (!socket.connected) socket.connect();
-        socket.emit("joinPollRoom", id);
-
-        socket.on("pollUpdated", (updatedPoll) => {
-          if (updatedPoll.pollCode === id) {
-            setPoll(updatedPoll);
-            // Also refresh the first page of votes to show new participants
-            fetchData(1); 
-          }
-        });
-
-        // Listen for new_participation events (Fix #2)
-        socket.on("new_participation", (data) => {
-          setLiveParticipations((prev) => [data, ...prev].slice(0, 20));
-        });
-      } catch (err) {
-        console.error("Error fetching analytics:", err);
-      } finally {
-        setLoading(false);
+    // Register socket listeners once per poll — use the ref so the handler
+    // is never stale without re-subscribing on every data refresh.
+    const onPollUpdated = (updatedPoll) => {
+      if (updatedPoll.pollCode === id) {
+        setPoll(updatedPoll);
+        fetchDataRef.current?.(1);
       }
     };
 
-    fetchData(page);
+    const onNewParticipation = (data) => {
+      setLiveParticipations((prev) => [data, ...prev].slice(0, 20));
+    };
+
+    socket.on("pollUpdated", onPollUpdated);
+    socket.on("new_participation", onNewParticipation);
 
     return () => {
       socket.emit("leavePollRoom", id);
-      socket.off("pollUpdated");
-      socket.off("new_participation");
+      socket.off("pollUpdated", onPollUpdated);
+      socket.off("new_participation", onNewParticipation);
     };
-  }, [id, page]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  // Separate effect: re-fetch data when the pagination page changes (not id)
+  useEffect(() => {
+    if (!id || page === 1) return; // page 1 is already loaded by the id effect above
+    fetchData(page);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   if (loading && !poll) return <AnalyticsSkeleton />;
 

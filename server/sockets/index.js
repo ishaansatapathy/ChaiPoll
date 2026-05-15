@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Poll from "../models/Poll.js";
+import logger from "../utils/logger.js";
 
 // Simple per-socket rate limiter
 const RATE_LIMIT_WINDOW_MS = 10_000; // 10 seconds
@@ -48,7 +49,7 @@ const initializeSockets = (io) => {
       socket.user = await User.findById(decoded.userId).select("-password");
       next();
     } catch (err) {
-      console.warn("Socket Auth:", err.message);
+      logger.debug("Socket auth token invalid", { message: err.message });
       // Still allow connection but as guest
       socket.user = null;
       next();
@@ -56,7 +57,7 @@ const initializeSockets = (io) => {
   });
 
   io.on("connection", (socket) => {
-    console.log(`New client connected: ${socket.id}${socket.user ? ` (user: ${socket.user._id})` : " (anonymous)"}`);
+    logger.info("Socket connected", { socketId: socket.id, userId: socket.user?._id ?? "anonymous" });
 
     // Track joined rooms count
     socket._joinedRooms = 0;
@@ -88,7 +89,7 @@ const initializeSockets = (io) => {
 
       socket.join(roomStr);
       socket._joinedRooms++;
-      console.log(`Socket ${socket.id} joined room: ${roomStr}`);
+      logger.debug(`Socket ${socket.id} joined room: ${roomStr}`);
 
       // Notify room about participant count
       const room = io.sockets.adapter.rooms.get(roomStr);
@@ -104,7 +105,7 @@ const initializeSockets = (io) => {
       const roomStr = pollCode.toUpperCase();
       socket.leave(roomStr);
       socket._joinedRooms = Math.max(0, (socket._joinedRooms || 0) - 1);
-      console.log(`Socket ${socket.id} left room: ${roomStr}`);
+      logger.debug(`Socket ${socket.id} left room: ${roomStr}`);
 
       const room = io.sockets.adapter.rooms.get(roomStr);
       const participantCount = room ? room.size : 0;
@@ -125,7 +126,7 @@ const initializeSockets = (io) => {
     });
 
     socket.on("disconnect", () => {
-      console.log(`Client disconnected: ${socket.id}`);
+      logger.debug(`Socket disconnected: ${socket.id}`);
     });
   });
 };
