@@ -58,7 +58,7 @@ const AuthCard = ({ initialSignup = false }) => {
         await verify2FA(formData.email, state.otp);
       } else if (isLogin) {
         const res = await login({ email: formData.email, password: formData.password });
-        if ((res as any).twoFactorRequired) {
+        if (res.twoFactorRequired) {
           dispatch({ type: "SET_2FA", payload: true });
           return;
         }
@@ -73,7 +73,7 @@ const AuthCard = ({ initialSignup = false }) => {
       }
       const from = location.state?.from?.pathname || "/dashboard";
       navigate(from, { replace: true });
-    } catch (err: any) {
+    } catch (err) {
       const msg = err.response?.data?.message || err.message || "Something went wrong";
       dispatch({ type: "SET_ERROR", payload: msg });
       if (
