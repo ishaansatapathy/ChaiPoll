@@ -17,6 +17,8 @@ interface AuthContextType {
   login: (userData: any) => Promise<User>;
   logout: () => Promise<void>;
   setDisplayName: (displayName: string) => Promise<User>;
+  toggle2FA: (enabled: boolean) => Promise<void>;
+  verify2FA: (email: string, otp: string) => Promise<User>;
   API_URL: string;
 }
 
@@ -92,8 +94,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return response.data;
   };
 
+  const verify2FA = async (email: string, otp: string) => {
+    const response = await API.post<User>("/auth/verify-2fa", { email, otp });
+    setUser(response.data);
+    return response.data;
+  };
+
+  const toggle2FA = async (enabled: boolean) => {
+    await API.post("/auth/toggle-2fa", { enabled });
+    if (user) {
+      setUser({ ...user, twoFactorEnabled: enabled } as any);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout, setDisplayName, API_URL }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, logout, setDisplayName, verify2FA, toggle2FA, API_URL }}>
       {children}
     </AuthContext.Provider>
   );

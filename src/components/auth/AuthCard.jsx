@@ -15,6 +15,7 @@ const authReducer = (state, action) => {
     case "SET_ERROR": return { ...state, error: action.payload, loading: false };
     case "SET_ERROR_NOTATION": return { ...state, showErrorNotation: action.payload };
     case "SET_LOADING": return { ...state, loading: action.payload };
+    case "SET_2FA": return { ...state, is2FA: action.payload, loading: false, error: "" };
     default: return state;
   }
 };
@@ -26,11 +27,13 @@ const AuthCard = ({ initialSignup = false }) => {
     formData: { name: "", email: "", password: "", confirmPassword: "" },
     error: "",
     showErrorNotation: false,
-    loading: false
+    loading: false,
+    is2FA: false,
+    otp: ""
   });
 
-  const { isLogin, isRecovery, formData, error, showErrorNotation, loading } = state;
-  const { login, signup } = useAuth();
+  const { isLogin, isRecovery, formData, error, showErrorNotation, loading, is2FA } = state;
+  const { login, signup, verify2FA } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -51,8 +54,14 @@ const AuthCard = ({ initialSignup = false }) => {
     dispatch({ type: "SET_LOADING", payload: true });
 
     try {
-      if (isLogin) {
-        await login({ email: formData.email, password: formData.password });
+      if (is2FA) {
+        await verify2FA(formData.email, state.otp);
+      } else if (isLogin) {
+        const res = await login({ email: formData.email, password: formData.password });
+        if ((res as any).twoFactorRequired) {
+          dispatch({ type: "SET_2FA", payload: true });
+          return;
+        }
       } else {
         if (formData.password.length < 8) {
           throw new Error("Password must be at least 8 characters");
@@ -64,7 +73,7 @@ const AuthCard = ({ initialSignup = false }) => {
       }
       const from = location.state?.from?.pathname || "/dashboard";
       navigate(from, { replace: true });
-    } catch (err) {
+    } catch (err: any) {
       const msg = err.response?.data?.message || err.message || "Something went wrong";
       dispatch({ type: "SET_ERROR", payload: msg });
       if (
@@ -98,80 +107,109 @@ const AuthCard = ({ initialSignup = false }) => {
         </h2>
 
         <div className="flex bg-[#1a1a1a] rounded-[1.2rem] p-1 border border-white/[0.04] mt-1">
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "SET_LOGIN", payload: true })}
-            className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
-              isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
-            }`}
-          >
-            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">
-              Sign
-            </span>
-            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">In</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: "SET_LOGIN", payload: false })}
-            className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
-              !isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
-            }`}
-          >
-            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">
-              Sign
-            </span>
-            <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">Up</span>
-          </button>
+          {!is2FA && (
+            <>
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "SET_LOGIN", payload: true })}
+                className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
+                  isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
+                }`}
+              >
+                <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">
+                  Sign
+                </span>
+                <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">In</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "SET_LOGIN", payload: false })}
+                className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
+                  !isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
+                }`}
+              >
+                <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">
+                  Sign
+                </span>
+                <span className="text-[8px] font-bold uppercase tracking-widest leading-tight">Up</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
 
-      <SocialButtons returnTo={location.state?.from?.pathname} />
+      {!is2FA && <SocialButtons returnTo={location.state?.from?.pathname} />}
 
       <div className="my-8" />
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <AnimatePresence mode="wait">
-          {!isLogin && (
+          {is2FA ? (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="space-y-5 overflow-hidden"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="space-y-5"
             >
               <Input
-                label="Full Name"
-                name="name"
+                label="2FA Code"
+                name="otp"
                 type="text"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="John Doe"
+                value={state.otp}
+                onChange={(e) => dispatch({ type: "SET_FORM", payload: { otp: e.target.value } })}
+                placeholder="000000"
                 required
               />
+              <p className="text-[10px] text-white/40 text-center uppercase tracking-widest">
+                Enter the 6-digit code sent to your email.
+              </p>
             </motion.div>
+          ) : (
+            !isLogin && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="space-y-5 overflow-hidden"
+              >
+                <Input
+                  label="Full Name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="John Doe"
+                  required
+                />
+              </motion.div>
+            )
           )}
         </AnimatePresence>
 
-        <Input
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          placeholder="name@company.com"
-          required
-        />
+        {!is2FA && (
+          <>
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="name@company.com"
+              required
+            />
 
-        <Input
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          placeholder="••••••••"
-          required
-        />
+            <Input
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="••••••••"
+              required
+            />
+          </>
+        )}
 
-        {isLogin && (
+        {isLogin && !is2FA && (
           <div className="flex justify-end -mt-3">
             <button
               type="button"
@@ -183,7 +221,7 @@ const AuthCard = ({ initialSignup = false }) => {
           </div>
         )}
 
-        {!isLogin && (
+        {!isLogin && !is2FA && (
           <Input
             label="Confirm Password"
             name="confirmPassword"
@@ -222,8 +260,18 @@ const AuthCard = ({ initialSignup = false }) => {
           disabled={loading}
           className="w-full rounded-xl bg-[#d4d4d8] py-3.5 text-sm font-bold text-black transition-all hover:bg-white active:scale-[0.98] mt-2"
         >
-          {loading ? "Processing..." : isLogin ? "Sign In" : "Sign Up"}
+          {loading ? "Processing..." : is2FA ? "Verify Code" : isLogin ? "Sign In" : "Sign Up"}
         </button>
+
+        {is2FA && (
+          <button
+            type="button"
+            onClick={() => dispatch({ type: "SET_2FA", payload: false })}
+            className="w-full text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold hover:text-white transition-colors mt-2"
+          >
+            Back to Login
+          </button>
+        )}
       </form>
     </div>
   );

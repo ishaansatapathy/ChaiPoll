@@ -23,6 +23,8 @@ import {
   updateDisplayName,
   resendVerification,
   googleCallback,
+  toggle2FA,
+  verify2FA,
 } from "../controllers/authController.js";
 import { refreshAccessToken } from "../controllers/refreshController.js";
 
@@ -48,6 +50,8 @@ router.post(
 router.get("/verify-email/:token", verifyEmail);
 router.post("/resend-verification", protect, resendVerification);
 router.post("/refresh", refreshAccessToken);
+router.post("/verify-2fa", passwordResetLimiter, verify2FA);
+router.post("/toggle-2fa", protect, toggle2FA);
 router.post("/logout", logout);
 
 router.get("/me", protect, getMe);

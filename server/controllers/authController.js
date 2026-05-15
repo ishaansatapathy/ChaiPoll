@@ -90,7 +90,34 @@ export const login = async (req, res) => {
   try {
     const sanitizedEmail = email.toLowerCase().trim();
     const user = await User.findOne({ email: sanitizedEmail }).select("+password");
+    
     if (user && (await user.matchPassword(password))) {
+      // Check if 2FA is enabled
+      if (user.twoFactorEnabled) {
+        const otp = crypto.randomInt(100_000, 1_000_000).toString();
+        user.twoFactorOTP = otp;
+        user.twoFactorOTPExpire = Date.now() + 5 * 60 * 1000; // 5 minutes
+        await user.save();
+
+        await sendEmail({
+          email: user.email,
+          subject: "Your ChaiPoll 2FA Code",
+          html: `<div style="font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f5; padding: 40px; border-radius: 20px;">
+            <h1 style="color: #ef4444; font-size: 22px;">Security Verification</h1>
+            <p style="color: #a1a1a1;">Your two-factor authentication code is:</p>
+            <p style="font-size: 32px; font-weight: bold; letter-spacing: 0.35em; margin: 24px 0;">${otp}</p>
+            <p style="color: #666; font-size: 12px;">This code expires in 5 minutes.</p>
+          </div>`,
+          text: `Your 2FA code is: ${otp}`
+        });
+
+        return res.status(200).json({ 
+          twoFactorRequired: true, 
+          email: user.email,
+          message: "2FA code sent to your email" 
+        });
+      }
+
       generateToken(res, user._id);
       res.json({
         _id: user._id,
@@ -292,6 +319,62 @@ export const resendVerification = async (req, res) => {
   } catch (error) {
     logger.error("Resend verification error", { message: error.message, stack: error.stack });
     res.status(500).json({ message: "Failed to resend email. Please try again." });
+  }
+};
+
+// @desc    Toggle 2FA
+// @route   POST /api/auth/toggle-2fa
+// @access  Private
+export const toggle2FA = async (req, res) => {
+  try {
+    const { enabled } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.twoFactorEnabled = enabled;
+    await user.save();
+
+    res.json({
+      message: `Two-factor authentication ${enabled ? "enabled" : "disabled"} successfully`,
+      twoFactorEnabled: user.twoFactorEnabled,
+    });
+  } catch (error) {
+    logger.error("Toggle 2FA error", { message: error.message, stack: error.stack });
+    res.status(500).json({ message: "Failed to update 2FA settings" });
+  }
+};
+
+// @desc    Verify 2FA Code
+// @route   POST /api/auth/verify-2fa
+export const verify2FA = async (req, res) => {
+  const { email, otp } = req.body;
+  try {
+    const user = await User.findOne({
+      email: email.toLowerCase().trim(),
+      twoFactorOTP: otp,
+      twoFactorOTPExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid or expired 2FA code" });
+    }
+
+    // Clear OTP
+    user.twoFactorOTP = undefined;
+    user.twoFactorOTPExpire = undefined;
+    await user.save();
+
+    generateToken(res, user._id);
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+      isVerified: user.isVerified,
+    });
+  } catch (error) {
+    logger.error("Verify 2FA error", { message: error.message, stack: error.stack });
+    res.status(500).json({ message: "Verification failed" });
   }
 };
 

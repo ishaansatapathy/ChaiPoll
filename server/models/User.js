@@ -41,6 +41,12 @@ const userSchema = new mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordOTP: String,
   resetPasswordExpire: Date,
+  twoFactorEnabled: {
+    type: Boolean,
+    default: false,
+  },
+  twoFactorOTP: String,
+  twoFactorOTPExpire: Date,
   displayName: {
     type: String,
     trim: true,
