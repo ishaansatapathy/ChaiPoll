@@ -55,7 +55,7 @@ const AuthCard = ({ initialSignup = false }) => {
 
     try {
       if (is2FA) {
-        await verify2FA(formData.email, state.otp);
+        await verify2FA(formData.email, formData.otp);
       } else if (isLogin) {
         const res = await login({ email: formData.email, password: formData.password });
         if (res.twoFactorRequired) {
@@ -154,7 +154,7 @@ const AuthCard = ({ initialSignup = false }) => {
                 label="2FA Code"
                 name="otp"
                 type="text"
-                value={state.otp}
+                value={formData.otp || ""}
                 onChange={(e) => dispatch({ type: "SET_FORM", payload: { otp: e.target.value } })}
                 placeholder="000000"
                 required
