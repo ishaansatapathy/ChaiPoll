@@ -26,15 +26,15 @@ export default function ParticipantList({ votes }) {
               {vote.voterId?.avatar ? (
                 <img
                   src={vote.voterId.avatar}
-                  className="relative h-14 w-14 rounded-full border-2 border-white/10 object-cover p-0.5"
+                  className="relative size-14 rounded-full border-2 border-white/10 object-cover p-0.5"
                   alt="Voter"
                 />
               ) : (
-                <div className="relative h-14 w-14 rounded-full bg-white/5 flex items-center justify-center border-2 border-white/10">
+                <div className="relative size-14 rounded-full bg-white/5 flex items-center justify-center border-2 border-white/10">
                   <User className="text-white/20" size={24} />
                 </div>
               )}
-              <div className="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 rounded-full border-2 border-[#020202] shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+              <div className="absolute bottom-0 right-0 size-3 bg-emerald-500 rounded-full border-2 border-[#020202] shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-1">
@@ -58,14 +58,14 @@ export default function ParticipantList({ votes }) {
             <div className="flex flex-col items-end min-w-[100px]">
               <div className="flex items-center gap-2 text-white">
                 <Clock size={12} className="text-[#ef4444]" />
-                <span className="text-[11px] font-bold uppercase tracking-widest">
+                <span className="text-[11px] font-bold uppercase tracking-widest" suppressHydrationWarning>
                   {new Date(vote.createdAt).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </span>
               </div>
-              <p className="text-[9px] text-white/20 mt-1 uppercase font-black tracking-tighter">
+              <p className="text-[9px] text-white/20 mt-1 uppercase font-black tracking-tighter" suppressHydrationWarning>
                 {new Date(vote.createdAt).toLocaleDateString()}
               </p>
             </div>

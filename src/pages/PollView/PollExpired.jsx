@@ -12,7 +12,7 @@ export default function PollExpired({ title }) {
         animate={{ opacity: 1, scale: 1 }}
         className="relative z-10 max-w-lg w-full text-center"
       >
-        <div className="inline-flex items-center justify-center w-24 h-24 rounded-[40px] bg-[#ef4444]/10 border border-[#ef4444]/20 mb-8 relative">
+        <div className="inline-flex items-center justify-center size-24 rounded-[40px] bg-[#ef4444]/10 border border-[#ef4444]/20 mb-8 relative">
           <Clock className="text-[#ef4444] animate-pulse" size={40} />
           <div className="absolute -top-2 -right-2">
             <AlertCircle className="text-[#ef4444]" size={24} />

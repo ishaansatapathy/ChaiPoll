@@ -186,7 +186,7 @@ export default function Dashboard() {
             </div>
           ) : polls.length === 0 ? (
             <div className="border border-dashed border-white/10 rounded-3xl p-16 text-center bg-white/[0.01]">
-              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-white/5">
+              <div className="mb-4 inline-flex size-16 items-center justify-center rounded-full bg-white/5">
                 <BarChart2 className="text-white/20" size={32} />
               </div>
               <h3 className="text-xl text-white mb-2 font-display uppercase tracking-wider">
@@ -219,7 +219,7 @@ export default function Dashboard() {
         >
           <div className="sticky top-8">
             <div className="surface rounded-3xl p-8 border border-white/5 bg-gradient-to-br from-white/[0.03] to-transparent backdrop-blur-3xl overflow-hidden relative">
-              <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#ef4444]/10 blur-[80px]" />
+              <div className="absolute -top-10 -right-10 size-40 bg-[#ef4444]/10 blur-[80px]" />
 
               <div className="flex items-start justify-between mb-10">
                 <div>
@@ -239,7 +239,7 @@ export default function Dashboard() {
               <div className="space-y-8">
                 {polls.length > 0 ? (
                   polls.slice(0, 5).map((poll, idx) => {
-                    const maxVotes = Math.max(...polls.map((p) => p.totalParticipants || 0), 1);
+                    const maxVotes = Math.max(…polls.map((p) => p.totalParticipants || 0), 1);
                     const percentage =
                       Math.round(((poll.totalParticipants || 0) / maxVotes) * 100) || 0;
                     return (
@@ -266,7 +266,7 @@ export default function Dashboard() {
                 ) : (
                   <div className="py-10 text-center flex flex-col items-center gap-4">
                     <p className="text-white/10 font-display text-lg uppercase tracking-widest italic">
-                      Waiting for data...
+                      Waiting for data…
                     </p>
                     <span className="font-handwriting text-[#ef4444] text-xl rotate-[-5deg]">
                       Ready for liftoff!

@@ -9,23 +9,23 @@ const CinematicSide = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="absolute top-0 left-0 flex items-center space-x-3"
+        className="absolute top-0 left-0 flex items-center gap-3"
       >
-        <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-          <div className="h-4 w-4 rounded-full border-2 border-black" />
+        <div className="size-10 rounded-xl bg-white flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+          <div className="size-4 rounded-full border-2 border-black" />
         </div>
-        <span className="text-2xl font-bold tracking-tight text-white">ChaiPoll</span>
+        <span className="text-2xl font-semibold tracking-tight text-white">ChaiPoll</span>
       </motion.div>
 
       {/* Main Content Area */}
-      <div className="flex h-full flex-col justify-center space-y-12">
+      <div className="flex h-full flex-col justify-center gap-12">
         {/* Large Typography with Annotations */}
-        <div className="space-y-4">
+        <div className="grid gap-4">
           <motion.h1
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-8xl font-bold tracking-tighter text-white"
+            className="text-8xl font-semibold tracking-tighter text-white"
           >
             <RoughNotation
               type="highlight"
@@ -42,7 +42,7 @@ const CinematicSide = () => {
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-8xl font-bold tracking-tighter text-white"
+            className="text-8xl font-semibold tracking-tighter text-white"
           >
             Poll.
           </motion.h1>
@@ -51,7 +51,7 @@ const CinematicSide = () => {
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-8xl font-bold tracking-tighter text-white"
+            className="text-8xl font-semibold tracking-tighter text-white"
           >
             <RoughNotation type="underline" show={true} color="#ef4444" strokeWidth={3} padding={5}>
               AI.
@@ -75,9 +75,9 @@ const CinematicSide = () => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 0.4, scale: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-0 left-0 flex items-center space-x-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-xl"
+        className="absolute bottom-0 left-0 flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-xl"
       >
-        <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
+        <div className="size-2 rounded-full bg-white animate-pulse" />
         <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white">
           Better Engagement
         </span>

@@ -79,10 +79,10 @@ export function LiveResponseSection() {
             ))}
 
             {/* Particles */}
-            {[...Array(20)].map((_, i) => (
+            {[…Array(20)].map((_, i) => (
               <motion.div
                 key={`p-${i}`}
-                className="absolute h-1 w-1 bg-white/20 rounded-full"
+                className="absolute size-1 bg-white/20 rounded-full"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,

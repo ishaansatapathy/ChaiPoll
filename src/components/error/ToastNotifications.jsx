@@ -9,12 +9,12 @@ export function ErrorToast({ message, onClose, duration = 5000 }) {
 
   return (
     <div className="fixed bottom-4 right-4 bg-red-900 border border-red-700 rounded-lg shadow-lg p-4 flex gap-3 items-start max-w-sm animate-slide-in">
-      <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+      <AlertCircle className="size-5 text-red-400 flex-shrink-0 mt-0.5" />
       <div className="flex-1">
         <p className="text-red-100 text-sm">{message}</p>
       </div>
       <button onClick={onClose} className="text-red-400 hover:text-red-300 flex-shrink-0">
-        <X className="w-4 h-4" />
+        <X className="size-4" />
       </button>
     </div>
   );
@@ -28,12 +28,12 @@ export function SuccessToast({ message, onClose, duration = 3000 }) {
 
   return (
     <div className="fixed bottom-4 right-4 bg-green-900 border border-green-700 rounded-lg shadow-lg p-4 flex gap-3 items-start max-w-sm animate-slide-in">
-      <div className="w-5 h-5 bg-green-400 rounded-full flex-shrink-0 mt-0.5" />
+      <div className="size-5 bg-green-400 rounded-full flex-shrink-0 mt-0.5" />
       <div className="flex-1">
         <p className="text-green-100 text-sm">{message}</p>
       </div>
       <button onClick={onClose} className="text-green-400 hover:text-green-300 flex-shrink-0">
-        <X className="w-4 h-4" />
+        <X className="size-4" />
       </button>
     </div>
   );

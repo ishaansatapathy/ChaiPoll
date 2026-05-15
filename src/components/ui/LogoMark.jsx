@@ -1,9 +1,9 @@
 export function LogoMark({ className = "" }) {
   return (
     <span
-      className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-white/14 bg-gradient-to-br from-white to-white/90 ${className}`}
+      className={`flex size-10 items-center justify-center overflow-hidden rounded-lg border border-white/14 bg-gradient-to-br from-white to-white/90 ${className}`}
     >
-      <svg viewBox="0 0 40 40" className="h-6 w-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 40 40" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Tea cup silhouette with poll bars */}
         <defs>
           <linearGradient id="cupGradient" x1="0%" y1="0%" x2="100%" y2="100%">

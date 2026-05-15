@@ -58,7 +58,7 @@ const ResetPassword = () => {
           {success ? (
             <div className="space-y-4">
               <p className="text-green-500 text-sm font-bold uppercase tracking-widest">Success!</p>
-              <p className="text-white/60 text-xs">Your password has been updated. Redirecting to login...</p>
+              <p className="text-white/60 text-xs">Your password has been updated. Redirecting to login…</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -92,7 +92,7 @@ const ResetPassword = () => {
                 disabled={loading}
                 className="w-full rounded-xl bg-[#d4d4d8] py-3.5 text-sm font-bold text-black transition-all hover:bg-white active:scale-[0.98] mt-2"
               >
-                {loading ? "Updating..." : "Update Password"}
+                {loading ? "Updating…" : "Update Password"}
               </button>
             </form>
           )}

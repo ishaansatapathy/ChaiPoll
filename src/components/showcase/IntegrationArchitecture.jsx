@@ -68,7 +68,7 @@ export function IntegrationArchitecture() {
               style={{ left: node.x, top: node.y }}
             >
               <div className="flex flex-col items-center -translate-x-1/2 -translate-y-1/2">
-                <div className="h-4 w-4 rounded-full border border-white/40 bg-ink-950 shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all group-hover:scale-150 group-hover:border-white group-hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]" />
+                <div className="size-4 rounded-full border border-white/40 bg-ink-950 shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all group-hover:scale-150 group-hover:border-white group-hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]" />
                 <span className="mt-4 text-[10px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap transition-colors group-hover:text-white">
                   {node.label}
                 </span>

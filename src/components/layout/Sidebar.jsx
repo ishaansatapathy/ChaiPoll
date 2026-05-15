@@ -83,7 +83,7 @@ export function Sidebar() {
                   src={user.avatar}
                   alt={user.name}
                   referrerPolicy="no-referrer"
-                  className="h-10 w-10 rounded-2xl object-cover ring-2 ring-white/5 group-hover:ring-[#ef4444]/20 transition-all"
+                  className="size-10 rounded-2xl object-cover ring-2 ring-white/5 group-hover:ring-[#ef4444]/20 transition-all"
                   onError={(e) => {
                     e.target.style.display = "none";
                     e.target.nextSibling.style.display = "flex";
@@ -91,7 +91,7 @@ export function Sidebar() {
                 />
               ) : null}
               <div
-                className={`h-10 w-10 rounded-2xl bg-white/5 items-center justify-center border border-white/5 ${user.avatar && !user.avatar.includes("default-avatar.png") ? "hidden" : "flex"}`}
+                className={`size-10 rounded-2xl bg-white/5 items-center justify-center border border-white/5 ${user.avatar && !user.avatar.includes("default-avatar.png") ? "hidden" : "flex"}`}
               >
                 <UserIcon size={20} className="text-white/30" />
               </div>

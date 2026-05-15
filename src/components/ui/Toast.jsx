@@ -6,9 +6,9 @@ export function Toast({ type = "error", message, onClose }) {
   const bgColor = isError ? "bg-red-900 border-red-700" : "bg-green-900 border-green-700";
   const textColor = isError ? "text-red-100" : "text-green-100";
   const icon = isError ? (
-    <AlertCircle className="w-5 h-5 text-red-400" />
+    <AlertCircle className="size-5 text-red-400" />
   ) : (
-    <CheckCircle className="w-5 h-5 text-green-400" />
+    <CheckCircle className="size-5 text-green-400" />
   );
 
   return (
@@ -25,7 +25,7 @@ export function Toast({ type = "error", message, onClose }) {
           isError ? "text-red-400 hover:text-red-300" : "text-green-400 hover:text-green-300"
         }
       >
-        <X className="w-4 h-4" />
+        <X className="size-4" />
       </button>
     </div>
   );
@@ -36,7 +36,7 @@ export function useToast() {
 
   const addToast = useCallback((message, type = "error", duration = 3000) => {
     const id = Date.now();
-    setToasts((prev) => [...prev, { id, message, type }]);
+    setToasts((prev) => […prev, { id, message, type }]);
 
     if (duration > 0) {
       setTimeout(() => {

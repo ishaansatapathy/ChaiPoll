@@ -23,7 +23,7 @@ export function CardSkeleton() {
     <div className="rounded-[32px] border border-white/5 bg-white/[0.02] p-6 space-y-4">
       <div className="flex justify-between items-center">
         <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-8 w-8 rounded-full" />
+        <Skeleton className="size-8 rounded-full" />
       </div>
       <Skeleton className="h-10 w-full" />
       <div className="flex gap-2">
@@ -46,7 +46,7 @@ export function AnalyticsSkeleton() {
       </div>
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <CardSkeleton key={i} />
+          <CardSkeleton key={`skeleton-card-${i}`} />
         ))}
       </div>
       <div className="grid gap-10 lg:grid-cols-2 mt-16">

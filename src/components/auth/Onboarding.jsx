@@ -36,8 +36,8 @@ export default function Onboarding() {
           animate={{ scale: 1, y: 0 }}
           className="max-w-xl w-full surface rounded-[40px] border border-white/10 bg-white/[0.02] p-12 relative overflow-hidden"
         >
-          <div className="absolute -top-24 -left-24 w-64 h-64 bg-[#ef4444]/10 blur-[100px] rounded-full" />
-          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-[#ef4444]/5 blur-[80px] rounded-full" />
+          <div className="absolute -top-24 -left-24 size-64 bg-[#ef4444]/10 blur-[100px] rounded-full" />
+          <div className="absolute -bottom-24 -right-24 size-64 bg-[#ef4444]/5 blur-[80px] rounded-full" />
           <div className="relative z-10 text-center">
             <div className="mb-8 inline-flex p-4 rounded-3xl bg-[#ef4444]/10 border border-[#ef4444]/20">
               <Sparkles className="text-[#ef4444]" size={40} />
@@ -50,7 +50,7 @@ export default function Onboarding() {
               <span className="text-white/40 italic">{user.name}.</span>
             </h2>
             <p className="text-lg text-white/60 mb-10 leading-relaxed font-handwriting">
-              "Pick a display name — this is how others will see you on ChaiPoll."
+              &quot;Pick a display name, this is how others will see you on ChaiPoll.&quot;
             </p>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="relative group">
@@ -58,9 +58,8 @@ export default function Onboarding() {
                   type="text"
                   value={displayName}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Your display name..."
+                  placeholder="Your display name&hellip;"
                   className="w-full bg-white/[0.03] border border-white/10 rounded-2xl h-16 px-8 text-center text-xl font-display text-white placeholder:text-white/10 focus:outline-none focus:border-[#ef4444]/50 transition-all"
-                  autoFocus
                 />
                 <div className="absolute inset-0 rounded-2xl border border-[#ef4444]/0 group-focus-within:border-[#ef4444]/20 pointer-events-none transition-all" />
               </div>

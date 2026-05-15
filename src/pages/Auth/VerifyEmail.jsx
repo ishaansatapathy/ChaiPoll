@@ -32,9 +32,9 @@ export default function VerifyEmail() {
         className="surface max-w-md w-full rounded-[40px] p-12 border border-white/5 bg-[#050505]/50 backdrop-blur-3xl shadow-2xl relative z-10 text-center"
       >
         <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
-            <span className="h-1 w-1 rounded-full bg-[#ef4444]" />
+            <span className="size-1 rounded-full bg-[#ef4444]" />
             <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20">Security Hub</p>
-            <span className="h-1 w-1 rounded-full bg-[#ef4444]" />
+            <span className="size-1 rounded-full bg-[#ef4444]" />
         </div>
 
         {status === "verifying" && (
@@ -45,7 +45,7 @@ export default function VerifyEmail() {
             </div>
             <div>
                 <h1 className="text-3xl font-display text-white mb-3">Verifying Account</h1>
-                <p className="text-sm text-white/40 italic font-handwriting text-2xl">Confirming your identity...</p>
+                <p className="text-sm text-white/40 italic font-handwriting text-2xl">Confirming your identity…</p>
             </div>
           </div>
         )}
@@ -95,10 +95,10 @@ export default function VerifyEmail() {
         )}
 
         {/* Delicate Sketch Corners */}
-        <div className="absolute top-8 left-8 w-4 h-4 border-t border-l border-white/10" />
-        <div className="absolute top-8 right-8 w-4 h-4 border-t border-r border-white/10" />
-        <div className="absolute bottom-8 left-8 w-4 h-4 border-b border-l border-white/10" />
-        <div className="absolute bottom-8 right-8 w-4 h-4 border-b border-r border-white/10" />
+        <div className="absolute top-8 left-8 size-4 border-t border-l border-white/10" />
+        <div className="absolute top-8 right-8 size-4 border-t border-r border-white/10" />
+        <div className="absolute bottom-8 left-8 size-4 border-b border-l border-white/10" />
+        <div className="absolute bottom-8 right-8 size-4 border-b border-r border-white/10" />
       </motion.div>
     </div>
   );

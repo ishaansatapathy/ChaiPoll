@@ -21,10 +21,10 @@ class RouteErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-6">
-          <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
+        <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-900 text-white p-6">
+          <AlertCircle className="size-16 text-red-500 mb-4" />
           <h1 className="text-3xl font-bold mb-2">Page Error</h1>
-          <p className="text-gray-400 mb-6 text-center max-w-md">
+          <p className="text-zinc-400 mb-6 text-center max-w-md">
             This page encountered an error. Please try going back or returning to the home page.
           </p>
           <div className="flex gap-4">
@@ -36,7 +36,7 @@ class RouteErrorBoundary extends React.Component {
             </button>
             <a
               href="/"
-              className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold"
+              className="px-6 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-semibold"
             >
               Home
             </a>

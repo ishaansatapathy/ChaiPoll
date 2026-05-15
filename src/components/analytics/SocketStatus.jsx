@@ -35,9 +35,9 @@ export default function SocketStatus() {
             exit={{ opacity: 0, y: 20 }}
             className="flex items-center gap-3 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-xl"
           >
-            <div className="relative flex h-2 w-2">
+            <div className="relative flex size-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="relative inline-flex rounded-full size-2 bg-emerald-500"></span>
             </div>
             <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">
               Live Sync Active

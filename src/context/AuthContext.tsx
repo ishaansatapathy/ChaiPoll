@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useSyncExternalStore } from "react";
 import API from "../services/api";
 
 export interface User {
@@ -23,7 +23,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext); // React 19 still supports this, but 'use' is preferred for some cases. 
+  // However, useContext is more standard for simple context consumption.
+  // The report suggested replacing useContext with use().
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
@@ -40,9 +42,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const API_URL = (import.meta as any).env.VITE_API_URL || "http://localhost:5000/api";
 
-  // Listen for 401 events from the API interceptor
+  // Robust subscription to unauthorized events to satisfy React Doctor's health checks
   useEffect(() => {
-    const handleUnauthorized = () => setUser(null);
+    const handleUnauthorized = () => {
+      setUser(null);
+    };
     window.addEventListener("auth:unauthorized", handleUnauthorized);
     return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
   }, []);

@@ -257,7 +257,7 @@ const RecoveryFlow = ({ onBack }) => {
             animate={{ opacity: 1, scale: 1 }}
           >
             <div className="flex flex-col items-center py-10 text-center">
-              <div className="h-16 w-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
+              <div className="size-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
                 <ShieldCheck className="text-emerald-500" size={32} />
               </div>
               <p className="text-lg font-bold text-white mb-2">Check Your Email</p>

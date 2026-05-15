@@ -17,7 +17,7 @@ export default function ProtectedRoute({ children }) {
         >
           <Loader2 className="animate-spin text-[#ef4444]" size={32} strokeWidth={1.5} />
           <p className="text-[10px] uppercase tracking-[0.4em] text-white/30 font-bold">
-            Loading...
+            Loading…
           </p>
         </motion.div>
       </div>

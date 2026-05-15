@@ -7,19 +7,29 @@ import RecoveryFlow from "./RecoveryFlow";
 
 import { RoughNotation } from "react-rough-notation";
 
-const AuthCard = ({ initialSignup = false }) => {
-  const [isLogin, setIsLogin] = useState(!initialSignup);
-  const [isRecovery, setIsRecovery] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [error, setError] = useState("");
-  const [showErrorNotation, setShowErrorNotation] = useState(false);
-  const [loading, setLoading] = useState(false);
+const authReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_LOGIN": return { …state, isLogin: action.payload, isRecovery: false };
+    case "SET_RECOVERY": return { …state, isRecovery: action.payload };
+    case "SET_FORM": return { …state, formData: { …state.formData, …action.payload }, error: "", showErrorNotation: false };
+    case "SET_ERROR": return { …state, error: action.payload, loading: false };
+    case "SET_ERROR_NOTATION": return { …state, showErrorNotation: action.payload };
+    case "SET_LOADING": return { …state, loading: action.payload };
+    default: return state;
+  }
+};
 
+const AuthCard = ({ initialSignup = false }) => {
+  const [state, dispatch] = React.useReducer(authReducer, {
+    isLogin: !initialSignup,
+    isRecovery: false,
+    formData: { name: "", email: "", password: "", confirmPassword: "" },
+    error: "",
+    showErrorNotation: false,
+    loading: false
+  });
+
+  const { isLogin, isRecovery, formData, error, showErrorNotation, loading } = state;
   const { login, signup } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,22 +37,18 @@ const AuthCard = ({ initialSignup = false }) => {
   if (isRecovery) {
     return (
       <div className="relative w-full max-w-[360px] mx-auto bg-[#0c0c0c] border border-white/[0.04] rounded-[1.5rem] p-8 shadow-2xl overflow-visible min-h-[500px]">
-        <RecoveryFlow onBack={() => setIsRecovery(false)} />
+        <RecoveryFlow onBack={() => dispatch({ type: "SET_RECOVERY", payload: false })} />
       </div>
     );
   }
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
-    setShowErrorNotation(false);
+    dispatch({ type: "SET_FORM", payload: { [e.target.name]: e.target.value } });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-    setShowErrorNotation(false);
+    dispatch({ type: "SET_LOADING", payload: true });
 
     try {
       if (isLogin) {
@@ -60,22 +66,22 @@ const AuthCard = ({ initialSignup = false }) => {
       navigate(from, { replace: true });
     } catch (err) {
       const msg = err.response?.data?.message || err.message || "Something went wrong";
-      setError(msg);
+      dispatch({ type: "SET_ERROR", payload: msg });
       if (
         msg.toLowerCase().includes("already exists") ||
         msg.toLowerCase().includes("compromised")
       ) {
-        setTimeout(() => setShowErrorNotation(true), 100);
+        setTimeout(() => dispatch({ type: "SET_ERROR_NOTATION", payload: true }), 100);
       }
     } finally {
-      setLoading(false);
+      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 
   return (
     <div className="relative w-full max-w-[310px] mx-auto bg-[#0c0c0c] border border-white/[0.04] rounded-[1.8rem] p-7 shadow-2xl overflow-visible">
       <div className="flex items-start justify-between mb-8">
-        <h2 className="text-[32px] font-bold text-white tracking-tight leading-[1.1]">
+        <h2 className="text-[32px] font-semibold text-white tracking-tight leading-[1.1]">
           {isLogin ? (
             <>
               Welcome
@@ -94,7 +100,7 @@ const AuthCard = ({ initialSignup = false }) => {
         <div className="flex bg-[#1a1a1a] rounded-[1.2rem] p-1 border border-white/[0.04] mt-1">
           <button
             type="button"
-            onClick={() => setIsLogin(true)}
+            onClick={() => dispatch({ type: "SET_LOGIN", payload: true })}
             className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
               isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
             }`}
@@ -106,7 +112,7 @@ const AuthCard = ({ initialSignup = false }) => {
           </button>
           <button
             type="button"
-            onClick={() => setIsLogin(false)}
+            onClick={() => dispatch({ type: "SET_LOGIN", payload: false })}
             className={`flex flex-col items-center justify-center w-12 h-10 rounded-[1rem] transition-all ${
               !isLogin ? "bg-[#2a2a2a] text-white shadow-md" : "text-white/40 hover:text-white/60"
             }`}
@@ -169,7 +175,7 @@ const AuthCard = ({ initialSignup = false }) => {
           <div className="flex justify-end -mt-3">
             <button
               type="button"
-              onClick={() => setIsRecovery(true)}
+              onClick={() => dispatch({ type: "SET_RECOVERY", payload: true })}
               className="text-[10px] font-bold text-white/30 uppercase tracking-widest hover:text-[#ef4444] transition-colors"
             >
               Forgot password?
@@ -204,7 +210,7 @@ const AuthCard = ({ initialSignup = false }) => {
                 padding={2}
               >
                 <p className="text-[11px] text-red-500 font-bold uppercase tracking-widest italic flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
                   {error.includes("already exists") ? "Account already exists." : error}
                 </p>
               </RoughNotation>
@@ -216,7 +222,7 @@ const AuthCard = ({ initialSignup = false }) => {
           disabled={loading}
           className="w-full rounded-xl bg-[#d4d4d8] py-3.5 text-sm font-bold text-black transition-all hover:bg-white active:scale-[0.98] mt-2"
         >
-          {loading ? "Processing..." : isLogin ? "Sign In" : "Sign Up"}
+          {loading ? "Processing&hellip;" : isLogin ? "Sign In" : "Sign Up"}
         </button>
       </form>
     </div>
