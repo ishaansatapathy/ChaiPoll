@@ -2,6 +2,15 @@ import Poll from "../models/Poll.js";
 import { validateResponsesAgainstPoll } from "../utils/pollVoteIncrement.js";
 import { persistVoteSubmission, TallyUpdateError } from "../services/persistVoteSubmission.js";
 import logger from "../utils/logger.js";
+import crypto from "crypto";
+
+/**
+ * One-way hash an IP address for privacy-compliant duplicate detection.
+ * SHA-256 is sufficient — we never need to reverse it.
+ */
+function hashIp(ip) {
+  return crypto.createHash("sha256").update(ip ?? "").digest("hex");
+}
 
 // @desc    Submit a vote for a poll
 // @route   POST /api/votes
@@ -53,7 +62,8 @@ export const submitVote = async (req, res) => {
     }));
 
     let voterId = req.user ? req.user._id : null;
-    const voterIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    const rawIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress;
+    const voterIp = hashIp(rawIp);
 
     try {
       const finalPoll = await persistVoteSubmission({

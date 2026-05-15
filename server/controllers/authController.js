@@ -285,6 +285,9 @@ export const getMe = async (req, res) => {
     avatar: req.user.avatar,
     displayName: req.user.displayName,
     isOnboarded: req.user.isOnboarded,
+    role: req.user.role,
+    twoFactorEnabled: req.user.twoFactorEnabled,
+    permissions: req.user.permissions,
   });
 };
 

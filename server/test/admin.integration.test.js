@@ -141,7 +141,8 @@ describe("Admin Management Tests", () => {
     // Unban user
     const res = await request(app)
       .patch(`/api/admin/users/${regularUser._id}/unban`)
-      .set("Cookie", adminCookie);
+      .set("Cookie", adminCookie)
+      .set("X-Requested-With", "XMLHttpRequest");
 
     expect(res.status).toBe(200);
     expect(res.body.user.isBanned).toBe(false);

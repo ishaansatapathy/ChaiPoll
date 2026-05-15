@@ -16,7 +16,8 @@ export const refreshAccessToken = async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    const refreshSecret = process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET;
+    const decoded = jwt.verify(refreshToken, refreshSecret);
 
     if (decoded.type !== "refresh") {
       return res.status(401).json({ message: "Invalid token type" });

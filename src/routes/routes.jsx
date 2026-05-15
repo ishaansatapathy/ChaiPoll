@@ -13,6 +13,7 @@ import VerifyEmail from "../pages/Auth/VerifyEmail";
 import { AppLayout } from "../layouts/AppLayout";
 import { PublicLayout } from "../layouts/PublicLayout";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import AdminRoute from "../components/auth/AdminRoute";
 
 export const routes = [
   {
@@ -41,7 +42,14 @@ export const routes = [
       { path: "/analytics/global", element: <Analytics /> },
       { path: "/analytics/:id", element: <Analytics /> },
       { path: "/settings", element: <Settings /> },
-      { path: "/admin", element: <AdminDashboard /> },
+      {
+        path: "/admin",
+        element: (
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        ),
+      },
     ],
   },
 ];

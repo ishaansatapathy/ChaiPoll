@@ -107,18 +107,22 @@ const pollSchema = new mongoose.Schema(
 );
 
 // Generate unique pollCode before validation if it doesn't exist
+const MAX_POLL_CODE_RETRIES = 10;
 pollSchema.pre("validate", async function () {
   if (!this.pollCode) {
-    let isUnique = false;
     let generatedCode;
+    let attempts = 0;
 
-    while (!isUnique) {
+    while (attempts < MAX_POLL_CODE_RETRIES) {
       generatedCode = crypto.randomBytes(4).toString("hex").slice(0, 6).toUpperCase();
       // Use this.constructor to reference the model before it's fully compiled
       const existingPoll = await this.constructor.findOne({ pollCode: generatedCode });
-      if (!existingPoll) {
-        isUnique = true;
-      }
+      if (!existingPoll) break;
+      attempts++;
+    }
+
+    if (attempts >= MAX_POLL_CODE_RETRIES) {
+      throw new Error("Failed to generate a unique poll code after maximum retries. Please try again.");
     }
 
     this.pollCode = generatedCode;

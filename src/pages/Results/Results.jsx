@@ -32,7 +32,11 @@ export default function Results() {
           } catch {
             /* analytics optional */
           }
-          if (!socket.connected) socket.connect();
+          if (!socket.connected) {
+            // Set auth token placeholder for handshake logic
+            socket.auth = { ...socket.auth, token: "session-active" };
+            socket.connect();
+          }
           socket.emit("joinPollRoom", id);
           socket.on("pollUpdated", (u) => setPoll(u));
         }

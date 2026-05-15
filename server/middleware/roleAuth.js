@@ -1,6 +1,7 @@
 /**
  * Role-based and permission-based authorization middleware
  */
+import logger from "../utils/logger.js";
 
 // Check if user has specific role
 export const authorize = (...roles) => {
