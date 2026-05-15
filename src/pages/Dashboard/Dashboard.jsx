@@ -8,6 +8,7 @@ import { PollCard } from "../../components/poll/PollCard";
 import { Button } from "../../components/ui/Button";
 import { Skeleton, CardSkeleton } from "../../components/ui/Skeleton";
 import { getMyPolls } from "../../services/api";
+import API from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import Onboarding from "../../components/auth/Onboarding";
 

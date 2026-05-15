@@ -12,10 +12,6 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
@@ -37,6 +33,10 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
   const handleBanUser = async (userId, reason) => {
     try {
