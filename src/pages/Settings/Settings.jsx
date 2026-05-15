@@ -1,19 +1,31 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
-import { LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon, Shield, CheckCircle2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Highlight } from "../../components/ui/Highlight";
 
 export default function Settings() {
-  const { user, logout } = useAuth();
+  const { user, logout, toggle2FA } = useAuth();
   const navigate = useNavigate();
   const [imgError, setImgError] = React.useState(false);
+  const [toggling, setToggling] = React.useState(false);
 
   const handleLogout = async () => {
     await logout();
     navigate("/");
+  };
+
+  const handleToggle2FA = async () => {
+    setToggling(true);
+    try {
+      await toggle2FA(!user?.twoFactorEnabled);
+    } catch (err) {
+      console.error("Toggle 2FA failed", err);
+    } finally {
+      setToggling(false);
+    }
   };
 
   return (
@@ -88,6 +100,51 @@ export default function Settings() {
                   <p className="text-sm text-white/40">Member since joining ChaiPoll</p>
                 </div>
               </div>
+            </div>
+          </motion.div>
+
+          {/* Security Section */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="surface rounded-3xl p-8 border border-white/5 bg-white/[0.02] relative overflow-hidden"
+          >
+            <div className="flex items-center gap-6 mb-8">
+              <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+                <Shield className="text-blue-500" size={24} />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Security</h3>
+                <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-black">
+                  Protect your account
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-white font-bold">Two-Factor Authentication</h4>
+                  {user?.twoFactorEnabled && (
+                    <CheckCircle2 size={14} className="text-emerald-500" />
+                  )}
+                </div>
+                <p className="text-xs text-white/40 max-w-[280px]">
+                  Requires an OTP from your email to sign in to your account.
+                </p>
+              </div>
+              <button
+                onClick={handleToggle2FA}
+                disabled={toggling}
+                className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                  user?.twoFactorEnabled
+                    ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500/20"
+                    : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10 hover:text-white"
+                } disabled:opacity-50`}
+              >
+                {toggling ? "UPDATING..." : user?.twoFactorEnabled ? "ENABLED" : "ENABLE"}
+              </button>
             </div>
           </motion.div>
         </div>
