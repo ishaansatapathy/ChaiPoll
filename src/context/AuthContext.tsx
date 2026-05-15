@@ -75,8 +75,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const login = async (userData: any) => {
-    const response = await API.post<User>("/auth/login", userData);
-    setUser(response.data);
+    const response = await API.post<any>("/auth/login", userData);
+    if (!response.data.twoFactorRequired) {
+      setUser(response.data);
+    }
     return response.data;
   };
 
